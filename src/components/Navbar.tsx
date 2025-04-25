@@ -114,7 +114,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <a href="#" className="text-xl font-bold text-white">
               <span className="gradient-text bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500">
-                Ayush.dev
+                Ayush Sharma
               </span>
             </a>
           </div>

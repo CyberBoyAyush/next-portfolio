@@ -98,10 +98,11 @@ interface ProjectCardProps {
 const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isTouch, setIsTouch] = useState(false);
   
   // For tracking mouse movement for spotlight effect
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
+    if (!cardRef.current || isTouch) return;
     
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -110,8 +111,10 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
     setMousePosition({ x, y });
   };
 
-  // Fix for touch devices
+  // Detect touch devices
   useEffect(() => {
+    setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    
     const handleResize = () => {
       // Reset mouse position when window resizes
       setMousePosition({ x: 0, y: 0 });
@@ -149,12 +152,14 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
       } h-full`}
     >
       {/* Spotlight effect on hover - only show on non-touch devices */}
-      <div 
-        className="pointer-events-none absolute inset-0 z-30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 hidden md:block"
-        style={{
-          background: `radial-gradient(400px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.06), transparent 40%)`
-        }}
-      />
+      {!isTouch && (
+        <div 
+          className="pointer-events-none absolute inset-0 z-30 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          style={{
+            background: `radial-gradient(400px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.06), transparent 40%)`
+          }}
+        />
+      )}
 
       {/* Background image with overlay */}
       <div className="absolute inset-0 z-0 overflow-hidden">
@@ -164,15 +169,16 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/70" />
         
-        {/* Project image */}
+        {/* Project image - adaptive loading for mobile */}
         <Image 
-          src={`${project.image}?w=800&q=80`}
+          src={`${project.image}?w=${isTouch ? '400' : '800'}&q=${isTouch ? '70' : '80'}`}
           alt={project.title}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
           style={{ opacity: 0.5 }}
           priority={index < 3}
+          loading={index >= 3 ? "lazy" : "eager"}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.style.opacity = "0.3";
@@ -182,10 +188,10 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
       </div>
 
       {/* Glassmorphism card content */}
-      <div className={`relative z-10 flex h-full flex-col p-5 sm:p-6 ${isSelected ? 'md:p-7' : ''}`}>
+      <div className={`relative z-10 flex h-full flex-col p-4 sm:p-5 ${isSelected ? 'md:p-6' : ''}`}>
         <div className="flex-1">
           {/* Tags and featured badge */}
-          <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-3 md:mb-4">
             <div className="flex flex-wrap gap-2">
               {project.featured && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-amber-400/20 border border-amber-400/30 px-2 py-0.5 text-xs font-medium text-amber-300">
@@ -204,7 +210,7 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
 
           {/* Title and description */}
           <h3 className={`font-bold text-white transition-colors duration-300 group-hover:text-purple-300 ${
-            isSelected ? 'text-xl md:text-2xl mb-3' : 'text-lg md:text-xl mb-2'
+            isSelected ? 'text-lg sm:text-xl md:text-2xl mb-2 md:mb-3' : 'text-base sm:text-lg md:text-xl mb-1.5 md:mb-2'
           }`}>
             {project.title}
           </h3>
@@ -217,8 +223,8 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
             viewport={{ once: true }}
             className={`text-gray-300 ${
               isSelected 
-                ? 'mb-6 text-sm md:text-base line-clamp-none' 
-                : 'mb-4 text-xs md:text-sm line-clamp-2'
+                ? 'mb-5 text-xs sm:text-sm md:text-base line-clamp-none' 
+                : 'mb-3 text-xs md:text-sm line-clamp-2 sm:line-clamp-3'
             }`}
           >
             {project.description}
@@ -231,20 +237,20 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="mb-4"
+            className="mb-3 md:mb-4"
           >
-            <div className="flex flex-wrap gap-2">
-              {project.tags.slice(0, isSelected ? project.tags.length : 3).map((tag) => (
+            <div className="flex flex-wrap gap-1.5 md:gap-2">
+              {project.tags.slice(0, isSelected ? project.tags.length : (isTouch ? 2 : 3)).map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center rounded-full bg-white/5 border border-white/10 px-2 py-0.5 text-xs font-medium text-gray-300"
+                  className="inline-flex items-center rounded-full bg-white/5 border border-white/10 px-1.5 py-0.5 text-[10px] sm:text-xs font-medium text-gray-300 sm:px-2"
                 >
                   {tag}
                 </span>
               ))}
-              {!isSelected && project.tags.length > 3 && (
-                <span className="inline-flex items-center rounded-full bg-white/5 border border-white/10 px-2 py-0.5 text-xs font-medium text-gray-400">
-                  +{project.tags.length - 3}
+              {!isSelected && project.tags.length > (isTouch ? 2 : 3) && (
+                <span className="inline-flex items-center rounded-full bg-white/5 border border-white/10 px-1.5 py-0.5 text-[10px] sm:text-xs font-medium text-gray-400 sm:px-2">
+                  +{project.tags.length - (isTouch ? 2 : 3)}
                 </span>
               )}
             </div>
@@ -254,7 +260,7 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
         {/* Footer */}
         <div>
           {/* Project duration */}
-          <div className="flex items-center gap-1.5 mb-4">
+          <div className="flex items-center gap-1.5 mb-3 md:mb-4">
             <Github size={12} className="text-gray-400" />
             <span className="text-xs text-gray-400">{project.duration}</span>
           </div>
@@ -266,7 +272,7 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className={`flex ${isSelected ? 'gap-3 md:gap-4 flex-col sm:flex-row' : 'gap-2 md:gap-3'}`}
+            className={`flex ${isSelected ? 'gap-2 md:gap-3 flex-col sm:flex-row' : 'gap-2'}`}
           >
             {isSelected ? (
               <>
@@ -275,7 +281,7 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-r ${project.color} px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm font-medium text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25`}
+                  className={`flex flex-1 items-center justify-center gap-1.5 sm:gap-2 rounded-lg bg-gradient-to-r ${project.color} px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 md:py-2.5 text-xs font-medium text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25 active:translate-y-0.5`}
                 >
                   <ExternalLink size={14} className="hidden sm:inline-block" /> Live Demo
                 </a>
@@ -284,13 +290,13 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/5 backdrop-blur-sm px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm font-medium text-white transition-all duration-300 hover:bg-white/10"
+                  className="flex flex-1 items-center justify-center gap-1.5 sm:gap-2 rounded-lg border border-white/10 bg-white/5 backdrop-blur-sm px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 md:py-2.5 text-xs font-medium text-white transition-all duration-300 hover:bg-white/10 active:translate-y-0.5"
                 >
                   <Github size={14} className="hidden sm:inline-block" /> Source Code
                 </a>
               </>
             ) : (
-              <button className="group/arrow flex w-full items-center justify-between rounded-lg border border-white/10 bg-white/5 backdrop-blur-sm px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm font-medium text-white transition-all duration-300 hover:bg-white/10">
+              <button className="group/arrow flex w-full items-center justify-between rounded-lg border border-white/10 bg-white/5 backdrop-blur-sm px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 md:py-2.5 text-xs font-medium text-white transition-all duration-300 hover:bg-white/10 active:translate-y-0.5">
                 View Details
                 <Github size={14} className="transition-transform duration-300 group-hover/arrow:translate-x-1" />
               </button>
@@ -316,26 +322,35 @@ const Portfolio = () => {
   
   // Check if the device is mobile
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+    const checkDevice = () => {
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isSmallScreen = window.innerWidth < 768;
+      setIsMobile(isTouchDevice || isSmallScreen);
+      
       // Reset project selection on mobile when resizing
-      if (window.innerWidth < 768) {
+      if (isTouchDevice || isSmallScreen) {
         setSelectedProject(null);
       }
     };
     
     // Initial check
-    handleResize();
+    checkDevice();
     
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    // Update on resize
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
   }, []);
   
   // Handle project selection and deselection
   const toggleProjectSelection = (id: number) => {
-    // On mobile, don't expand cards
-    if (isMobile) return;
+    // On mobile, create a more direct user experience
+    if (isMobile) {
+      // On mobile, show the project details instead of redirecting
+      setSelectedProject(prev => prev === id ? null : id);
+      return;
+    }
     
+    // On desktop, toggle expanded card
     setSelectedProject(prev => prev === id ? null : id);
   };
   
@@ -357,16 +372,32 @@ const Portfolio = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Improved touch interaction for mobile
+  useEffect(() => {
+    if (!gridRef.current) return;
+    
+    const handleTouchStart = (e: TouchEvent) => {
+      // Handle touch interactions specially
+      const target = e.target as Node;
+      if (gridRef.current && gridRef.current.contains(target)) {
+        // Touch handling logic if needed
+      }
+    };
+    
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    return () => document.removeEventListener('touchstart', handleTouchStart);
+  }, []);
+
   return (
-    <section id="portfolio" className="relative py-16 md:py-24 overflow-hidden">
+    <section id="portfolio" className="relative py-12 sm:py-16 md:py-24 overflow-hidden">
       {/* Enhanced background elements - optimized for all devices */}
       <div className="absolute inset-0 -z-10">
-        {/* Dynamic background gradients - reduced intensity for better performance */}
-        <div className="absolute top-1/4 right-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-purple-900/10 rounded-full blur-[100px] md:blur-[150px] opacity-50 md:opacity-70" />
-        <div className="absolute bottom-1/3 left-1/3 w-[250px] md:w-[500px] h-[250px] md:h-[500px] bg-indigo-900/10 rounded-full blur-[100px] md:blur-[150px] opacity-40 md:opacity-50" />
+        {/* Dynamic background gradients - reduced intensity for better performance on mobile */}
+        <div className="absolute top-1/4 right-1/4 w-[200px] sm:w-[300px] md:w-[500px] h-[200px] sm:h-[300px] md:h-[500px] bg-purple-900/10 rounded-full blur-[80px] sm:blur-[100px] md:blur-[150px] opacity-30 sm:opacity-50 md:opacity-70" />
+        <div className="absolute bottom-1/3 left-1/3 w-[150px] sm:w-[250px] md:w-[500px] h-[150px] sm:h-[250px] md:h-[500px] bg-indigo-900/10 rounded-full blur-[80px] sm:blur-[100px] md:blur-[150px] opacity-30 sm:opacity-40 md:opacity-50" />
         
         {/* Futuristic grid pattern overlay - simplified for mobile */}
-        <div className="absolute inset-0 bg-grid-pattern bg-[length:30px_30px] md:bg-[length:50px_50px] opacity-[0.02] md:opacity-[0.03]"></div>
+        <div className="absolute inset-0 bg-grid-pattern bg-[length:20px_20px] sm:bg-[length:30px_30px] md:bg-[length:50px_50px] opacity-[0.015] sm:opacity-[0.02] md:opacity-[0.03]"></div>
       </div>
       
       {/* Content Container */}
@@ -377,25 +408,25 @@ const Portfolio = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
-          className="max-w-3xl mx-auto text-center mb-12 md:mb-16"
+          className="max-w-3xl mx-auto text-center mb-8 sm:mb-10 md:mb-16"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="inline-flex items-center justify-center px-3 py-1 mb-3 md:px-4 md:py-1.5 md:mb-4 rounded-full bg-purple-500/10 border border-purple-500/20"
+            className="inline-flex items-center justify-center px-2.5 py-1 sm:px-3 md:px-4 sm:py-1 md:py-1.5 mb-2 sm:mb-3 md:mb-4 rounded-full bg-purple-500/10 border border-purple-500/20"
           >
-            <span className="text-xs md:text-sm font-medium text-purple-400">Featured Projects</span>
+            <span className="text-[10px] sm:text-xs md:text-sm font-medium text-purple-400">Featured Projects</span>
           </motion.div>
           
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 md:mb-6">
             <span className="gradient-text bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-violet-500 to-indigo-500">
               My Creative Portfolio
             </span>
           </h2>
           
-          <p className="text-base md:text-lg text-gray-400">
+          <p className="text-sm sm:text-base md:text-lg text-gray-400">
             Explore my latest projects showcasing innovative solutions and technical expertise.
           </p>
         </motion.div>
@@ -403,7 +434,7 @@ const Portfolio = () => {
         {/* Projects Grid with improved responsive layout */}
         <div 
           ref={gridRef} 
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 auto-rows-fr"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 auto-rows-fr"
         >
           {projects.slice(0, visibleProjects).map((project, index) => (
             <ProjectCard 
@@ -416,10 +447,10 @@ const Portfolio = () => {
           ))}
         </div>
         
-        {/* Load More Button with enhanced animation - more accessible on mobile */}
+        {/* Load More Button with enhanced animation and touch-friendly design */}
         {visibleProjects < projects.length && (
           <motion.div 
-            className="mt-8 md:mt-12 flex justify-center"
+            className="mt-6 sm:mt-8 md:mt-12 flex justify-center"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -427,7 +458,7 @@ const Portfolio = () => {
           >
             <motion.button
               onClick={loadMoreProjects}
-              className="group relative inline-flex items-center gap-2 md:gap-3 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 px-6 md:px-8 py-2.5 md:py-3.5 text-xs sm:text-sm font-medium text-white transition-all hover:shadow-lg hover:shadow-purple-500/20 overflow-hidden"
+              className="group relative inline-flex items-center gap-2 md:gap-3 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3.5 text-xs sm:text-sm font-medium text-white transition-all hover:shadow-lg hover:shadow-purple-500/20 active:translate-y-0.5 overflow-hidden"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
             >
