@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { ExternalLink, Github, ArrowRight, Star, Clock, Calendar, Code, ChevronRight, Eye, Layers } from 'lucide-react';
+import { ExternalLink, Github, ArrowRight, Star, Clock, Calendar, Eye, Layers, Code, ChevronRight } from 'lucide-react';
 
 // Updated project data with enhanced information
 const projects = [
@@ -365,60 +365,12 @@ const ProjectCard = ({ project, index, isSelected, onClick }: {
   );
 };
 
-const FilterButton = ({ 
-  active, 
-  onClick, 
-  children 
-}: { 
-  active: boolean, 
-  onClick: () => void, 
-  children: React.ReactNode 
-}) => (
-  <motion.button
-    onClick={onClick}
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
-    className={`relative px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
-      active 
-      ? 'text-white' 
-      : 'text-gray-400 hover:text-white'
-    } overflow-hidden`}
-  >
-    {active && (
-      <motion.span 
-        layoutId="activeFilterBackground"
-        className="absolute inset-0 bg-gradient-to-r from-purple-600 to-indigo-600"
-        initial={false}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      />
-    )}
-    <span className="relative z-10">{children}</span>
-  </motion.button>
-);
-
 // Main Portfolio Component
 const Portfolio = () => {
   const [visibleProjects, setVisibleProjects] = useState(6);
-  const [filter, setFilter] = useState('all');
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
-  
-  // Categories for filtering
-  const categories = [
-    { id: 'all', name: 'All Projects' },
-    { id: 'featured', name: 'Featured' },
-    { id: 'web', name: 'Web Apps' },
-    { id: 'mobile', name: 'Mobile Apps' },
-    { id: 'backend', name: 'Backend' },
-  ];
-  
-  // Filter projects based on selected category
-  const filteredProjects = filter === 'all' 
-    ? projects 
-    : filter === 'featured' 
-      ? projects.filter(project => project.featured) 
-      : projects.filter(project => project.category === filter);
   
   // Handle project selection and deselection
   const toggleProjectSelection = (id: number) => {
@@ -428,15 +380,9 @@ const Portfolio = () => {
   // Load more projects handler
   const loadMoreProjects = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setVisibleProjects(prev => Math.min(prev + 3, filteredProjects.length));
+    setVisibleProjects(prev => Math.min(prev + 3, projects.length));
   };
 
-  // Reset visible projects when filter changes
-  useEffect(() => {
-    setVisibleProjects(6);
-    setSelectedProject(null);
-  }, [filter]);
-  
   // Handle click outside to deselect project
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -492,64 +438,25 @@ const Portfolio = () => {
             From responsive web applications to powerful backend systems.
           </p>
         </motion.div>
-        
-        {/* Category Filter with animated selection indicator */}
-        <motion.div 
-          className="flex justify-center mb-12 overflow-x-auto pb-2 hide-scrollbar"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <div className="inline-flex p-1 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-            {categories.map((category) => (
-              <FilterButton
-                key={category.id}
-                active={filter === category.id}
-                onClick={() => setFilter(category.id)}
-              >
-                {category.name}
-              </FilterButton>
-            ))}
-          </div>
-        </motion.div>
 
         {/* Projects Grid with expanded card functionality */}
         <div 
           ref={gridRef} 
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr"
         >
-          <AnimatePresence mode="wait">
-            {filteredProjects.length === 0 ? (
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="col-span-full flex flex-col items-center justify-center py-20"
-                key="no-projects"
-              >
-                <div className="rounded-full bg-white/5 p-6 mb-4">
-                  <Code size={32} className="text-gray-400" />
-                </div>
-                <h3 className="text-xl font-medium text-gray-300 mb-2">No projects found</h3>
-                <p className="text-gray-400">Try selecting a different category.</p>
-              </motion.div>
-            ) : (
-              filteredProjects.slice(0, visibleProjects).map((project, index) => (
-                <ProjectCard 
-                  key={project.id}
-                  project={project}
-                  index={index}
-                  isSelected={selectedProject === project.id}
-                  onClick={() => toggleProjectSelection(project.id)}
-                />
-              ))
-            )}
-          </AnimatePresence>
+          {projects.slice(0, visibleProjects).map((project, index) => (
+            <ProjectCard 
+              key={project.id}
+              project={project}
+              index={index}
+              isSelected={selectedProject === project.id}
+              onClick={() => toggleProjectSelection(project.id)}
+            />
+          ))}
         </div>
         
         {/* Load More Button with enhanced animation */}
-        {visibleProjects < filteredProjects.length && (
+        {visibleProjects < projects.length && (
           <motion.div 
             className="mt-12 flex justify-center"
             initial={{ opacity: 0, y: 20 }}
