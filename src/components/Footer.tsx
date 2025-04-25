@@ -31,9 +31,9 @@ const Footer = () => {
   // Social links with hover colors
   const socialLinks = [
     { icon: Github, href: 'https://github.com/cyberboyayush', label: 'GitHub', hoverColor: 'hover:text-white' },
-    { icon: Linkedin, href: 'https://linkedin.com/', label: 'LinkedIn', hoverColor: 'hover:text-blue-400' },
-    { icon: Twitter, href: 'https://twitter.com/', label: 'Twitter', hoverColor: 'hover:text-sky-400' },
-    { icon: Mail, href: 'mailto:hello@ayushsharma.dev', label: 'Email', hoverColor: 'hover:text-purple-400' },
+    { icon: Linkedin, href: 'https://linkedin.com/in/cyberboyayush', label: 'LinkedIn', hoverColor: 'hover:text-blue-400' },
+    { icon: Twitter, href: 'https://twitter.com/cyberboyayush', label: 'Twitter', hoverColor: 'hover:text-sky-400' },
+    { icon: Mail, href: 'mailto:connect@ayush-sharma.in', label: 'Email', hoverColor: 'hover:text-purple-400' },
   ];
 
   return (
@@ -119,8 +119,8 @@ const Footer = () => {
             <div>
               <h3 className="text-white font-medium text-sm mb-3 uppercase tracking-wide">Contact</h3>
               <div className="space-y-2">
-                <p className="text-gray-400 text-sm">San Francisco, CA</p>
-                <p className="text-gray-400 text-sm">hello@ayushsharma.dev</p>
+                <p className="text-gray-400 text-sm">Jaipur, India</p>
+                <p className="text-gray-400 text-sm">connect@ayush-sharma.in</p>
               </div>
             </div>
             
