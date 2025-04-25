@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { motion, useInView, AnimatePresence, useAnimationControls } from 'framer-motion';
-import { Typewriter } from 'react-simple-typewriter';
+import { useState, useEffect, useRef } from 'react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { Typewriter, useTypewriter } from 'react-simple-typewriter';
 import { SiHtml5, SiCss3, SiJavascript, SiTypescript, SiReact, 
   SiNextdotjs, SiNodedotjs, SiExpress, SiMongodb, SiTailwindcss, 
   SiFirebase, SiSupabase, SiTensorflow, SiAppwrite, SiClerk,
@@ -383,8 +383,7 @@ const Skills = () => {
             </span>
           </h2>
           <p className="mt-4 text-gray-400 max-w-2xl mx-auto">
-            I work with a variety of technologies to build modern, responsive, and scalable 
-            applications. Here's my tech stack that I've mastered over the years.
+            I work with a variety of technologies to build modern, responsive, and scalable applications. Here&apos;s my tech stack that I&apos;ve mastered over the years.
           </p>
         </div>
 

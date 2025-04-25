@@ -1,10 +1,48 @@
 'use client';
 
-import { useRef } from 'react';
+import { useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
+import Image from 'next/image';
 
 const githubUsername = 'cyberboyayush';
 const leetcodeUsername = 'cyberboyayush';
+
+const StatCard = ({ src, alt }: { src: string; alt: string }) => {
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  if (isError) {
+    return (
+      <div className="w-full min-h-[200px] flex items-center justify-center">
+        <div className="p-3 text-gray-400 text-center text-xs">
+          Unable to load {alt}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative w-full min-h-[200px] bg-gray-900/50">
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-6 h-6 border-2 border-purple-500/20 border-t-purple-500 rounded-full animate-spin" />
+        </div>
+      )}
+      <Image
+        src={src}
+        alt={alt}
+        width={800}
+        height={200}
+        className={`object-contain w-full h-auto rounded-lg transition-opacity duration-300 ${
+          isLoading ? 'opacity-0' : 'opacity-100'
+        }`}
+        onLoadingComplete={() => setIsLoading(false)}
+        onError={() => setIsError(true)}
+        unoptimized // Add this for dynamic stats images
+      />
+    </div>
+  );
+};
 
 const CodingStats = () => {
   const statsRef = useRef<HTMLDivElement>(null);
@@ -55,36 +93,22 @@ const CodingStats = () => {
             <div className="space-y-3">
               {/* GitHub Stats Card */}
               <div className="relative overflow-hidden rounded-xl border border-gray-800/60 hover:border-purple-500/40 transition-all duration-300">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-indigo-600/10 opacity-70"></div>
-                <div className="relative w-full flex items-center justify-center">
-                  <img
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-indigo-600/10 opacity-70" />
+                <div className="relative p-2">
+                  <StatCard
                     src={`https://github-readme-stats.vercel.app/api?username=${githubUsername}&show_icons=true&hide_border=true&theme=midnight-purple&bg_color=0D1117&title_color=A78BFA&icon_color=9F7AEA&text_color=FFFFFF&include_all_commits=true&hide=issues&count_private=true&hide_rank=true`}
-                    alt="Github stats"
-                    className="object-contain max-w-full h-auto rounded-lg w-full"
-                    loading="lazy"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      target.parentElement!.innerHTML += "<div class='p-3 text-gray-400 text-center text-xs'>Unable to load GitHub stats</div>";
-                    }}
+                    alt="GitHub stats"
                   />
                 </div>
               </div>
-              
+
               {/* GitHub Streak Stats */}
               <div className="relative overflow-hidden rounded-xl border border-gray-800/60 hover:border-purple-500/40 transition-all duration-300">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-indigo-600/10 opacity-70"></div>
-                <div className="relative w-full flex items-center justify-center">
-                  <img
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-indigo-600/10 opacity-70" />
+                <div className="relative p-2">
+                  <StatCard
                     src={`https://github-readme-streak-stats.herokuapp.com/?user=${githubUsername}&theme=highcontrast&hide_border=true&background=0D1117&ring=A78BFA&fire=9F7AEA&currStreakLabel=A78BFA`}
-                    alt="Github streak stats"
-                    className="object-contain max-w-full h-auto rounded-lg w-full"
-                    loading="lazy"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      target.parentElement!.innerHTML += "<div class='p-3 text-gray-400 text-center text-xs'>Unable to load GitHub streak stats</div>";
-                    }}
+                    alt="GitHub streak stats"
                   />
                 </div>
               </div>
@@ -108,22 +132,15 @@ const CodingStats = () => {
             <div className="space-y-3">
               {/* LeetCode Stats Card */}
               <div className="relative overflow-hidden rounded-xl border border-gray-800/60 hover:border-purple-500/40 transition-all duration-300">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-indigo-600/10 opacity-70"></div>
-                <div className="relative w-full flex items-center justify-center">
-                  <img
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-indigo-600/10 opacity-70" />
+                <div className="relative p-2">
+                  <StatCard
                     src={`https://leetcard.jacoblin.cool/${leetcodeUsername}?theme=dark&font=Nunito&ext=heatmap&animation=false&border=0`}
                     alt="LeetCode stats"
-                    className="object-contain max-w-full h-auto rounded-lg w-full"
-                    loading="lazy"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      target.parentElement!.innerHTML += "<div class='p-3 text-gray-400 text-center text-xs'>Unable to load LeetCode stats</div>";
-                    }}
                   />
                 </div>
               </div>
-              
+
               <div className="text-gray-400 text-xs px-1">
                 <div className="flex items-center space-x-4 mt-2">
                   <div className="flex-1 flex justify-between items-center">

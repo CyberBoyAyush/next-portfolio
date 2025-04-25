@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { Github, ExternalLink } from 'lucide-react';
 import Image from 'next/image';
-import { ExternalLink, Github, ArrowRight, Star, Clock, Calendar, Code, ChevronRight } from 'lucide-react';
 
 // Updated project data with simplified structure
 const projects = [
@@ -109,17 +109,6 @@ const ProjectCard = ({ project, index, isSelected, onClick }: {
     setMousePosition({ x, y });
   };
 
-  // Spring animations for smoother transitions
-  const scaleSpring = useSpring(1, { stiffness: 100, damping: 15 });
-  
-  useEffect(() => {
-    if (isHovered) {
-      scaleSpring.set(1.02);
-    } else {
-      scaleSpring.set(1);
-    }
-  }, [isHovered, scaleSpring]);
-
   // Content animation stagger
   const contentVariants = {
     hidden: { opacity: 0 },
@@ -156,7 +145,6 @@ const ProjectCard = ({ project, index, isSelected, onClick }: {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{ scale: scaleSpring }}
       className={`group relative cursor-pointer overflow-hidden rounded-2xl transition-all duration-300 ${
         isSelected ? 'md:col-span-2 md:row-span-2' : 'col-span-1'
       } h-full`}
@@ -202,7 +190,7 @@ const ProjectCard = ({ project, index, isSelected, onClick }: {
             <div className="flex flex-wrap gap-2">
               {project.featured && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-amber-400/20 border border-amber-400/30 px-2 py-0.5 text-xs font-medium text-amber-300">
-                  <Star size={10} className="fill-amber-300" />
+                  <Github size={10} className="fill-amber-300" />
                   Featured
                 </span>
               )}
@@ -210,7 +198,7 @@ const ProjectCard = ({ project, index, isSelected, onClick }: {
             
             {/* Project year */}
             <div className="flex items-center gap-1.5">
-              <Calendar size={12} className="text-gray-400" />
+              <ExternalLink size={12} className="text-gray-400" />
               <span className="text-xs text-gray-400">{project.year}</span>
             </div>
           </div>
@@ -268,7 +256,7 @@ const ProjectCard = ({ project, index, isSelected, onClick }: {
         <div>
           {/* Project duration */}
           <div className="flex items-center gap-1.5 mb-4">
-            <Clock size={12} className="text-gray-400" />
+            <Github size={12} className="text-gray-400" />
             <span className="text-xs text-gray-400">{project.duration}</span>
           </div>
 
@@ -305,7 +293,7 @@ const ProjectCard = ({ project, index, isSelected, onClick }: {
             ) : (
               <button className="group/arrow flex w-full items-center justify-between rounded-lg border border-white/10 bg-white/5 backdrop-blur-sm px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm font-medium text-white transition-all duration-300 hover:bg-white/10">
                 View Details
-                <ChevronRight size={14} className="transition-transform duration-300 group-hover/arrow:translate-x-1" />
+                <Github size={14} className="transition-transform duration-300 group-hover/arrow:translate-x-1" />
               </button>
             )}
           </motion.div>
@@ -445,7 +433,7 @@ const Portfolio = () => {
               whileTap={{ scale: 0.98 }}
             >
               <span className="relative z-10">Load More Projects</span>
-              <ArrowRight className="relative z-10 transition-transform group-hover:translate-x-1" size={16} />
+              <Github className="relative z-10 transition-transform group-hover:translate-x-1" size={16} />
               
               {/* Simplified animated background for better performance */}
               <span className="absolute inset-0 overflow-hidden">

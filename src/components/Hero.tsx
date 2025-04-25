@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useSpring } from 'framer-motion';
 import { useTypewriter } from 'react-simple-typewriter';
-import { ChevronDown, Github, Linkedin, Twitter, ExternalLink } from 'lucide-react';
+import { ChevronDown, Github, Linkedin, Twitter } from 'lucide-react'; // Removed ExternalLink
 import Image from 'next/image';
 
 const Hero = () => {
@@ -12,6 +12,8 @@ const Hero = () => {
   const mouseYSpring = useSpring(0);
   
   const [isMounted, setIsMounted] = useState(false);
+  
+  // Remove unused cursorPosition state
   
   // Set isMounted to true when component mounts
   useEffect(() => {
@@ -43,9 +45,6 @@ const Hero = () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, [mouseXSpring, mouseYSpring]);
-  
-  // cursor position for spotlight effect
-  const [cursorPosition] = useState({ x: 0, y: 0 });
   
   // Get viewport width to adapt animations
   const [isDesktop, setIsDesktop] = useState(false);

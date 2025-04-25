@@ -1,13 +1,24 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
-    domains: [
-      'images.unsplash.com',
-      'github-readme-stats.vercel.app',
-      'github-readme-streak-stats.herokuapp.com',
-      'leetcard.jacoblin.cool'
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'github-readme-stats.vercel.app',
+      },
+      {
+        protocol: 'https',
+        hostname: 'github-readme-streak-stats.herokuapp.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'leetcard.jacoblin.cool',
+      }
     ],
   },
 };

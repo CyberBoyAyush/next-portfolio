@@ -43,25 +43,19 @@ const Contact = () => {
     setStatus('submitting');
     
     try {
-      // Example form submission logic - replace with your actual implementation
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      // Success handling
       setSubmissionMessage('Your message has been sent successfully!');
       setStatus('success');
       setFormData({ name: '', email: '', message: '' });
       
-      // Reset form after 5 seconds
       setTimeout(() => {
         setStatus('idle');
         setSubmissionMessage('');
       }, 5000);
-    } catch (_) {
-      // Error handling
+    } catch (error) { // Changed from _ to error
       setSubmissionMessage('There was an error sending your message. Please try again.');
       setStatus('error');
       
-      // Reset error after 5 seconds
       setTimeout(() => {
         setStatus('idle');
         setSubmissionMessage('');
