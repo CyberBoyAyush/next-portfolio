@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import CustomCursor from "../components/CustomCursor";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,10 +26,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark !scroll-smooth">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0a0a0a] text-white min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0a0a0a] text-white min-h-screen flex flex-col overflow-x-hidden selection:bg-purple-500/30 selection:text-white`}
       >
+        <div className="hidden md:block">
+          <CustomCursor />
+        </div>
+        
+        <div className="fixed inset-0 opacity-[0.03] bg-[url('/noise.svg')] pointer-events-none z-[-1]"></div>
+        
         <Navbar />
         <main className="flex-grow">
           {children}

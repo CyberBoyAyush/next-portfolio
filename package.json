@@ -12,6 +12,9 @@
     "@react-three/drei": "^10.0.7",
     "@react-three/fiber": "^9.1.2",
     "@tabler/icons-react": "^3.31.0",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.8.1",
+    "@uidotdev/usehooks": "^2.4.1",
     "aceternity": "^1.0.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.9.2",
@@ -20,6 +23,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
+    "tailwind-gradient-mask-image": "^1.2.0",
     "tailwind-merge": "^3.2.0",
     "tailwind-variants": "^1.0.0",
     "tailwindcss-animate": "^1.0.7"
