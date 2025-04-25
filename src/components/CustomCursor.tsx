@@ -6,6 +6,7 @@ import { motion, useMotionValue, useSpring } from 'framer-motion';
 const CustomCursor = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isPointer, setIsPointer] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
@@ -15,6 +16,12 @@ const CustomCursor = () => {
   const cursorYSpring = useSpring(cursorY, springConfig);
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    
     const moveCursor = (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
@@ -45,7 +52,9 @@ const CustomCursor = () => {
       window.removeEventListener('mouseover', handlePointerEnter);
       window.removeEventListener('mouseout', () => setIsVisible(false));
     };
-  }, [cursorX, cursorY]);
+  }, [cursorX, cursorY, isMounted]);
+
+  if (!isMounted) return null;
 
   return (
     <>

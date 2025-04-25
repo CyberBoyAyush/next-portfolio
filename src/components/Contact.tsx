@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, MapPin, Phone, Send } from 'lucide-react';
+import { Mail, MapPin, Phone, Send, CheckCircle } from 'lucide-react';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +13,10 @@ const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<null | 'success' | 'error'>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  
+  // Replace with your actual Formspree endpoint
+  const FORMSPREE_ENDPOINT = "https://formspree.io/f/your-form-id";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -23,11 +27,23 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      setSubmitStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+      });
+      
+      if (response.ok) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        if (formRef.current) formRef.current.reset();
+      } else {
+        setSubmitStatus('error');
+      }
     } catch (error) {
       setSubmitStatus('error');
     } finally {
@@ -37,113 +53,118 @@ const Contact = () => {
     }
   };
 
+  const inputClasses = "w-full p-3 bg-[#0a0a0a] border border-gray-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500/40 focus:border-purple-500 transition-all duration-200";
+
   return (
-    <section id="contact" className="py-20">
-      <div className="container mx-auto px-6">
+    <section id="contact" className="py-20 relative overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute w-96 h-96 bg-purple-900/10 rounded-full blur-[120px] -bottom-10 right-0 opacity-50" />
+      <div className="absolute w-96 h-96 bg-indigo-900/10 rounded-full blur-[120px] -top-20 left-10 opacity-30" />
+      
+      <div className="container mx-auto px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl font-bold">
+          <span className="text-sm text-purple-400 block mb-1 uppercase tracking-wider">Let's Talk</span>
+          <h2 className="text-4xl font-bold mb-4">
             <span className="gradient-text">Get In Touch</span>
           </h2>
           <p className="mt-4 text-gray-400 max-w-2xl mx-auto">
-            Have a project in mind or want to collaborate? Feel free to reach out to me using the form below or through my social media channels.
+            Have a project in mind or want to collaborate? Feel free to reach out to me using the form below.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-12">
-          {/* Contact Info */}
+        <div className="grid md:grid-cols-3 gap-8">
+          {/* Contact Info Cards */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="space-y-8"
+            className="space-y-6 md:col-span-1"
           >
-            <div>
-              <h3 className="text-xl font-semibold text-white mb-4">Contact Information</h3>
-              <p className="text-gray-400 mb-8">
-                Feel free to reach out to me anytime. I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-start space-x-4">
-                <div className="p-3 bg-[#111111] rounded-lg border border-gray-800">
-                  <Phone className="text-purple-500" size={20} />
+            {/* Contact cards */}
+            <motion.div 
+              whileHover={{ y: -5 }}
+              className="p-6 rounded-xl bg-[#111111] border border-gray-800 hover:border-purple-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/5"
+            >
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                  <Phone className="text-purple-400" size={20} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-300">Phone</h4>
+                  <h4 className="text-sm font-medium text-gray-300 mb-1">Phone</h4>
                   <p className="text-white">+1 (123) 456-7890</p>
                 </div>
               </div>
+            </motion.div>
 
-              <div className="flex items-start space-x-4">
-                <div className="p-3 bg-[#111111] rounded-lg border border-gray-800">
-                  <Mail className="text-purple-500" size={20} />
+            <motion.div 
+              whileHover={{ y: -5 }}
+              className="p-6 rounded-xl bg-[#111111] border border-gray-800 hover:border-purple-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/5"
+            >
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                  <Mail className="text-purple-400" size={20} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-300">Email</h4>
+                  <h4 className="text-sm font-medium text-gray-300 mb-1">Email</h4>
                   <p className="text-white">hello@ayushsharma.dev</p>
                 </div>
               </div>
+            </motion.div>
 
-              <div className="flex items-start space-x-4">
-                <div className="p-3 bg-[#111111] rounded-lg border border-gray-800">
-                  <MapPin className="text-purple-500" size={20} />
+            <motion.div 
+              whileHover={{ y: -5 }}
+              className="p-6 rounded-xl bg-[#111111] border border-gray-800 hover:border-purple-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/5"
+            >
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                  <MapPin className="text-purple-400" size={20} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-300">Location</h4>
+                  <h4 className="text-sm font-medium text-gray-300 mb-1">Location</h4>
                   <p className="text-white">San Francisco, CA</p>
                 </div>
               </div>
-            </div>
-
-            {/* Map or Additional Content */}
-            <div className="mt-8 p-4 bg-[#111111] border border-gray-800 rounded-lg h-48 flex items-center justify-center">
-              <p className="text-gray-400 text-center">
-                Map Placeholder<br />
-                <span className="text-sm">Map Integration can be added here</span>
-              </p>
-            </div>
+            </motion.div>
           </motion.div>
 
           {/* Contact Form */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="md:col-span-2"
           >
-            <div className="bg-[#111111] p-6 rounded-xl border border-gray-800">
-              <h3 className="text-xl font-semibold text-white mb-6">Send a Message</h3>
-
+            <div className="relative bg-[#111111] p-8 rounded-2xl border border-gray-800 shadow-xl shadow-purple-900/5">
               {submitStatus === 'success' && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="p-4 mb-6 bg-green-900/30 border border-green-700 rounded-lg text-green-400"
+                  className="absolute inset-0 bg-[#111111] rounded-2xl flex flex-col items-center justify-center p-6 z-20 border border-gray-800"
                 >
-                  Your message has been sent successfully. I'll get back to you soon!
+                  <div className="bg-green-500/10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                    <CheckCircle size={32} className="text-green-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">Message Sent!</h3>
+                  <p className="text-gray-400 text-center mb-6">Thank you for reaching out. I'll get back to you as soon as possible.</p>
+                  <button 
+                    onClick={() => setSubmitStatus(null)}
+                    className="px-6 py-2 bg-[#1a1a1a] rounded-full text-white hover:bg-[#222222] transition-colors"
+                  >
+                    Send Another Message
+                  </button>
                 </motion.div>
               )}
 
-              {submitStatus === 'error' && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="p-4 mb-6 bg-red-900/30 border border-red-700 rounded-lg text-red-400"
-                >
-                  There was an error sending your message. Please try again.
-                </motion.div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
                       Your Name
@@ -155,7 +176,7 @@ const Contact = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full p-3 bg-[#0a0a0a] border border-gray-800 rounded-lg text-white focus:outline-none focus:border-purple-500 transition-colors"
+                      className={inputClasses}
                       placeholder="John Doe"
                     />
                   </div>
@@ -170,7 +191,7 @@ const Contact = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full p-3 bg-[#0a0a0a] border border-gray-800 rounded-lg text-white focus:outline-none focus:border-purple-500 transition-colors"
+                      className={inputClasses}
                       placeholder="john@example.com"
                     />
                   </div>
@@ -187,7 +208,7 @@ const Contact = () => {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full p-3 bg-[#0a0a0a] border border-gray-800 rounded-lg text-white focus:outline-none focus:border-purple-500 transition-colors"
+                    className={inputClasses}
                     placeholder="Project Inquiry"
                   />
                 </div>
@@ -203,7 +224,7 @@ const Contact = () => {
                     onChange={handleChange}
                     required
                     rows={5}
-                    className="w-full p-3 bg-[#0a0a0a] border border-gray-800 rounded-lg text-white focus:outline-none focus:border-purple-500 transition-colors resize-none"
+                    className={`${inputClasses} resize-none`}
                     placeholder="Hi Ayush, I'd like to discuss a project with you..."
                   />
                 </div>
@@ -213,10 +234,10 @@ const Contact = () => {
                   whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full py-3 px-6 rounded-lg flex items-center justify-center gap-2 text-white font-medium transition-all duration-300 ${
+                  className={`w-full py-3.5 px-6 rounded-full flex items-center justify-center gap-2 text-white font-medium transition-all duration-300 ${
                     isSubmitting
                       ? 'bg-purple-700/50 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:shadow-lg hover:shadow-purple-500/25'
+                      : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:shadow-lg hover:shadow-purple-500/20'
                   }`}
                 >
                   {isSubmitting ? (
@@ -230,6 +251,10 @@ const Contact = () => {
                     </>
                   )}
                 </motion.button>
+                
+                <div className="text-xs text-center text-gray-500 mt-4">
+                  Powered by <a href="https://formspree.io" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300 hover:underline">Formspree</a>
+                </div>
               </form>
             </div>
           </motion.div>

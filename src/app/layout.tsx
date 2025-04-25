@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark !scroll-smooth">
+    <html lang="en" className="dark !scroll-smooth" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0a0a0a] text-white min-h-screen flex flex-col overflow-x-hidden selection:bg-purple-500/30 selection:text-white`}
       >

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
 interface ParticlesBackgroundProps {
@@ -9,8 +9,16 @@ interface ParticlesBackgroundProps {
 
 const ParticlesBackground = ({ variant = 'default' }: ParticlesBackgroundProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
+  
+  // Set mounted state after initial render
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   
   useEffect(() => {
+    if (!isMounted) return; // Only run after component is mounted
+    
     const canvas = canvasRef.current;
     if (!canvas) return;
     
@@ -127,7 +135,7 @@ const ParticlesBackground = ({ variant = 'default' }: ParticlesBackgroundProps) 
     return () => {
       window.removeEventListener('resize', setCanvasDimensions);
     };
-  }, [variant]);
+  }, [variant, isMounted]);
   
   return (
     <>
@@ -137,30 +145,39 @@ const ParticlesBackground = ({ variant = 'default' }: ParticlesBackgroundProps) 
         style={{ background: 'transparent' }}
       />
       <div className="fixed inset-0 -z-20 bg-gradient-to-br from-[#0a0a0a] to-[#0f0f0f]">
-        <motion.div 
-          className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-radial from-purple-900/10 to-transparent opacity-50 blur-[150px]"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.4, 0.6, 0.4],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        <motion.div 
-          className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-radial from-indigo-900/10 to-transparent opacity-50 blur-[150px]" 
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.5, 0.7, 0.5],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
+        {isMounted ? (
+          <>
+            <motion.div 
+              className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-radial from-purple-900/10 to-transparent opacity-50 blur-[150px]"
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.4, 0.6, 0.4],
+              }}
+              transition={{
+                duration: 8,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            <motion.div 
+              className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-radial from-indigo-900/10 to-transparent opacity-50 blur-[150px]" 
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.5, 0.7, 0.5],
+              }}
+              transition={{
+                duration: 10,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-radial from-purple-900/10 to-transparent opacity-40 blur-[150px]" />
+            <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-radial from-indigo-900/10 to-transparent opacity-50 blur-[150px]" />
+          </>
+        )}
       </div>
     </>
   );

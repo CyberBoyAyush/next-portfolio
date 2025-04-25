@@ -112,12 +112,24 @@ body {
   to { transform: translateY(0); opacity: 1; }
 }
 
+@keyframes iconPulse {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.5s ease-in-out forwards;
 }
 
 .animate-slide-up {
   animation: slideUp 0.5s ease-out forwards;
+}
+
+.icon-pulse {
+  animation: iconPulse 1s ease-in-out;
 }
 
 /* Stagger children animation delays */
