@@ -64,24 +64,7 @@ const Navbar = () => {
               transition={{ type: "spring", stiffness: 260, damping: 20 }}
               className="font-bold text-2xl flex items-center"
             >
-              <div className="relative mr-1">
-                <motion.div
-                  animate={{ 
-                    rotate: [0, 10, -10, 0],
-                  }}
-                  transition={{ 
-                    repeat: Infinity, 
-                    repeatType: "mirror", 
-                    duration: 4,
-                    ease: "easeInOut" 
-                  }}
-                  className="w-8 h-8 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center"
-                >
-                  <span className="text-white font-bold">A</span>
-                </motion.div>
-              </div>
-              <span className="gradient-text">Ayush</span>
-              <span className="text-white">Sharma</span>
+              <span className="gradient-text">Ayush Sharma</span>
             </motion.div>
           ) : (
             <div className="font-bold text-2xl flex items-center">
@@ -91,7 +74,7 @@ const Navbar = () => {
                 </div>
               </div>
               <span className="gradient-text">Ayush</span>
-              <span className="text-white">.dev</span>
+              <span className="text-white">Sharma</span>
             </div>
           )}
         </Link>
