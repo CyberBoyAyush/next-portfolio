@@ -1,198 +1,135 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { motion, useInView, useAnimation } from 'framer-motion';
-import { Clock, Code, GitBranch, Star } from 'lucide-react';
+import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 
-// Sample stats data
-const stats = [
-  { 
-    label: 'Hours Coded', 
-    value: 5200, 
-    icon: Clock, 
-    suffix: '+',
-    color: 'from-purple-600 to-indigo-600'
-  },
-  { 
-    label: 'Projects Completed', 
-    value: 72, 
-    icon: Code, 
-    suffix: '',
-    color: 'from-blue-500 to-cyan-500'
-  },
-  { 
-    label: 'GitHub Stars', 
-    value: 350, 
-    icon: Star, 
-    suffix: '+',
-    color: 'from-yellow-500 to-amber-500'
-  },
-  { 
-    label: 'Repos Contributed', 
-    value: 45, 
-    icon: GitBranch, 
-    suffix: '',
-    color: 'from-green-500 to-emerald-500'
-  },
-];
-
-// Languages data
-const languages = [
-  { name: 'JavaScript', percentage: 35 },
-  { name: 'TypeScript', percentage: 25 },
-  { name: 'Python', percentage: 18 },
-  { name: 'HTML/CSS', percentage: 15 },
-  { name: 'Other', percentage: 7 },
-];
-
-// Weekly coding activity
-const weeklyActivity = [
-  { day: 'Mon', hours: 5.2 },
-  { day: 'Tue', hours: 6.5 },
-  { day: 'Wed', hours: 4.8 },
-  { day: 'Thu', hours: 7.3 },
-  { day: 'Fri', hours: 6.1 },
-  { day: 'Sat', hours: 3.5 },
-  { day: 'Sun', hours: 2.0 },
-];
-
-const maxHours = Math.max(...weeklyActivity.map(day => day.hours));
-
-// Animated counter component
-const Counter = ({ from, to, duration = 2 }: { from: number; to: number; duration?: number }) => {
-  const nodeRef = useRef<HTMLSpanElement>(null);
-  const inView = useInView(nodeRef, { once: true, margin: '-100px' });
-  const controls = useAnimation();
-
-  useEffect(() => {
-    if (inView) {
-      let startTimestamp: number | null = null;
-      const step = (timestamp: number) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / (duration * 1000), 1);
-        if (nodeRef.current) {
-          nodeRef.current.textContent = Math.floor(progress * (to - from) + from).toString();
-        }
-        if (progress < 1) {
-          window.requestAnimationFrame(step);
-        }
-      };
-      window.requestAnimationFrame(step);
-    }
-  }, [inView, from, to, duration]);
-
-  return <span ref={nodeRef}>{from}</span>;
-};
+const githubUsername = 'cyberboyayush';
+const leetcodeUsername = 'cyberboyayush';
 
 const CodingStats = () => {
+  const statsRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(statsRef, { once: true });
+
   return (
-    <section id="stats" className="py-20 bg-[#080808]">
+    <section id="coding-stats" className="py-24 relative overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-gradient-radial from-purple-900/10 to-transparent opacity-70 blur-[100px]" />
+        <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gradient-radial from-indigo-900/10 to-transparent opacity-70 blur-[100px]" />
+      </div>
+      
       <div className="container mx-auto px-6">
         <motion.div
+          ref={statsRef}
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl font-bold">
-            <span className="gradient-text">Coding Metrics</span>
+          <span className="text-sm text-purple-400 block mb-1 uppercase tracking-wider">My Progress</span>
+          <h2 className="text-4xl font-bold mb-4">
+            <span className="gradient-text bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500">
+              Coding Stats
+            </span>
           </h2>
           <p className="mt-4 text-gray-400 max-w-2xl mx-auto">
-            A breakdown of my coding activity, languages I use, and project stats that showcase my dedication and expertise.
+            A snapshot of my coding journey, showing my contributions and problem-solving skills across different platforms.
           </p>
         </motion.div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {stats.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
-                className="bg-[#111111] p-6 rounded-xl border border-gray-800 flex flex-col items-center"
-              >
-                <div className={`w-14 h-14 rounded-full bg-gradient-to-br ${stat.color} flex items-center justify-center mb-4`}>
-                  <Icon className="text-white" size={24} />
-                </div>
-                <h3 className="text-3xl font-bold text-white mb-1">
-                  <Counter from={0} to={stat.value} />
-                  {stat.suffix}
-                </h3>
-                <p className="text-gray-400">{stat.label}</p>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Languages and Activity */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          {/* Language Distribution */}
+          {/* GitHub Stats Section */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="bg-[#111111] p-6 rounded-xl border border-gray-800"
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="backdrop-blur-sm bg-[#111111]/70 p-6 rounded-xl border border-gray-800 hover:border-purple-500/50 transition-all duration-300 shadow-xl"
           >
-            <h3 className="text-xl font-semibold text-white mb-6">Language Distribution</h3>
-            <div className="space-y-5">
-              {languages.map((lang, index) => (
-                <div key={lang.name}>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-gray-300">{lang.name}</span>
-                    <span className="text-gray-400">{lang.percentage}%</span>
-                  </div>
-                  <div className="w-full bg-gray-800 rounded-full h-2.5">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${lang.percentage}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1, delay: 0.2 + index * 0.1 }}
-                      className={`h-2.5 rounded-full bg-gradient-to-r ${
-                        index % 4 === 0 ? 'from-purple-600 to-indigo-600' :
-                        index % 4 === 1 ? 'from-blue-500 to-cyan-500' :
-                        index % 4 === 2 ? 'from-green-500 to-emerald-500' :
-                        'from-yellow-500 to-amber-500'
-                      }`}
-                    />
-                  </div>
+            <h3 className="text-2xl font-semibold mb-5 text-white flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="24" width="24" className="mr-2">
+                <path fill="currentColor" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.164 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.933.359.309.678.919.678 1.852 0 1.337-.012 2.416-.012 2.744 0 .267.18.578.688.48C19.138 20.16 22 16.416 22 12c0-5.523-4.477-10-10-10z" />
+              </svg>
+              GitHub Stats
+            </h3>
+            
+            <div className="space-y-4">
+              {/* GitHub Stats Card */}
+              <div className="relative overflow-hidden rounded-lg border border-gray-800 p-1">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 blur-sm"></div>
+                <div className="relative aspect-[2/1] w-full flex items-center justify-center">
+                  <img
+                    src={`https://github-readme-stats.vercel.app/api?username=${githubUsername}&show_icons=true&hide_border=true&theme=midnight-purple&bg_color=0D1117&title_color=A78BFA&icon_color=9F7AEA&text_color=FFFFFF&include_all_commits=true`}
+                    alt="Github stats"
+                    className="object-contain max-w-full h-auto rounded-lg"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      target.parentElement!.innerHTML += "<div class='p-4 text-gray-400 text-center'>Unable to load GitHub stats. Please check your connection or try again later.</div>";
+                    }}
+                  />
                 </div>
-              ))}
+              </div>
+              
+              {/* GitHub Streak Stats */}
+              <div className="relative overflow-hidden rounded-lg border border-gray-800 p-1">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 blur-sm"></div>
+                <div className="relative aspect-[2/1] w-full flex items-center justify-center">
+                  <img
+                    src={`https://github-readme-streak-stats.herokuapp.com/?user=${githubUsername}&theme=highcontrast&hide_border=false`}
+                    alt="Github streak stats"
+                    className="object-contain max-w-full h-auto rounded-lg"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      target.parentElement!.innerHTML += "<div class='p-4 text-gray-400 text-center'>Unable to load GitHub streak stats. Please check your connection or try again later.</div>";
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </motion.div>
-
-          {/* Weekly Coding Activity */}
+          
+          {/* LeetCode Stats Section */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="bg-[#111111] p-6 rounded-xl border border-gray-800"
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="backdrop-blur-sm bg-[#111111]/70 p-6 rounded-xl border border-gray-800 hover:border-purple-500/50 transition-all duration-300 shadow-xl"
           >
-            <h3 className="text-xl font-semibold text-white mb-6">Weekly Coding Activity</h3>
-            <div className="flex h-48 items-end justify-between gap-2">
-              {weeklyActivity.map((day, index) => (
-                <div key={day.day} className="flex flex-col items-center flex-1">
-                  <motion.div
-                    initial={{ height: 0 }}
-                    whileInView={{ height: `${(day.hours / maxHours) * 100}%` }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1, delay: index * 0.1 }}
-                    className={`w-full rounded-t-md bg-gradient-to-t ${
-                      index % 3 === 0 ? 'from-purple-600 to-indigo-600' :
-                      index % 3 === 1 ? 'from-blue-500 to-cyan-500' :
-                      'from-pink-500 to-rose-500'
-                    }`}
+            <h3 className="text-2xl font-semibold mb-5 text-white flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" className="mr-2">
+                <path fill="#FFA116" d="M16.102 17.93l-2.697 2.607c-.466.467-1.111.662-1.823.662s-1.357-.195-1.824-.662l-4.332-4.363c-.467-.467-.702-1.15-.702-1.863s.235-1.357.702-1.824l4.319-4.38c.467-.467 1.125-.661 1.837-.661s1.357.195 1.823.66l2.697 2.606c.514.515 1.111.759 1.823.759.712 0 1.309-.245 1.824-.76.466-.467.702-1.086.702-1.823s-.236-1.357-.703-1.824l-2.696-2.607C15.287 3.21 13.576 2.5 11.753 2.5s-3.535.71-4.865 2.108l-4.319 4.38C1.5 10.02.5 11.934.5 14.02s1 3.986 2.069 5.019l4.319 4.38c1.33 1.398 3.041 2.108 4.865 2.108s3.534-.71 4.865-2.107l2.697-2.608c1.356-1.368 1.356-3.579 0-4.946-.514-.514-1.111-.758-1.823-.758-.713 0-1.31.245-1.824.759z" />
+              </svg>
+              LeetCode Stats
+            </h3>
+            
+            <div className="space-y-4">
+              {/* LeetCode Stats Card */}
+              <div className="relative overflow-hidden rounded-lg border border-gray-800 p-1">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 blur-sm"></div>
+                <div className="relative aspect-[2/1] w-full flex items-center justify-center">
+                  <img
+                    src={`https://leetcard.jacoblin.cool/${leetcodeUsername}?theme=dark&font=Roboto&ext=heatmap`}
+                    alt="LeetCode stats"
+                    className="object-contain max-w-full h-auto rounded-lg"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      target.parentElement!.innerHTML += "<div class='p-4 text-gray-400 text-center'>Unable to load LeetCode stats. Please check the username or try again later.</div>";
+                    }}
                   />
-                  <div className="text-gray-400 text-sm mt-2">{day.day}</div>
                 </div>
-              ))}
+              </div>
+              
+              <div className="text-gray-300 text-sm">
+                <p>LeetCode is a platform for coding interviews practice with a large collection of algorithmic problems.</p>
+                <p className="mt-2 italic">
+                  Note: I regularly practice data structures and algorithms challenges to enhance my problem-solving skills.
+                </p>
+              </div>
             </div>
           </motion.div>
         </div>
