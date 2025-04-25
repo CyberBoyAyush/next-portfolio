@@ -1,303 +1,203 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ExternalLink } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
+// Nav items
 const navItems = [
   { name: 'Home', href: '#home' },
   { name: 'Skills', href: '#skills' },
-  { name: 'Portfolio', href: '#portfolio' },
-  { name: 'Stats', href: '#coding-stats' }, 
+  { name: 'Projects', href: '#portfolio' },
+  { name: 'Coding Stats', href: '#coding-stats' },
   { name: 'Contact', href: '#contact' },
 ];
 
 const Navbar = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
-  const [isMounted, setIsMounted] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
 
-  // Only run animations after component is mounted on the client
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
+  // Handle scroll event to change navbar style
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-      
-      // Find active section based on scroll position
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+
+      // Highlight active section based on scroll position
       const sections = navItems.map(item => item.href.substring(1));
-      const currentSection = sections.find(section => {
-        const element = document.getElementById(section);
-        if (!element) return false;
-        
-        const rect = element.getBoundingClientRect();
-        return rect.top <= 100 && rect.bottom >= 100;
-      });
       
-      if (currentSection) {
-        setActiveSection(currentSection);
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          // Adjust the values as needed based on your layout
+          if (rect.top <= 100 && rect.bottom >= 100) {
+            setActiveSection(section);
+            break;
+          }
+        }
       }
     };
-    
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    handleScroll(); // Check on initial load
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
+  // Handle click event for mobile menu
+  const handleMenuClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  // Navbar animation variants
+  const navVariants = {
+    hidden: { y: -100, opacity: 0 },
+    visible: { 
+      y: 0, 
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 100,
+        damping: 20
+      }
+    }
+  };
+
+  // Mobile menu variants
+  const menuVariants = {
+    closed: { 
+      opacity: 0,
+      y: "-100%",
+      transition: {
+        type: 'spring',
+        stiffness: 300,
+        damping: 30
+      }
+    },
+    open: { 
+      opacity: 1,
+      y: "0%",
+      transition: {
+        type: 'spring',
+        stiffness: 100,
+        damping: 20
+      }
+    }
+  };
+
+  // Navbar style based on scroll position
+  const navbarClasses = `fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    isScrolled ? 'bg-[#0D1117]/80 shadow-lg backdrop-blur-lg' : 'bg-transparent'
+  }`;
+
+  // Active link style
+  const activeLinkClass = 'text-purple-400 after:w-full';
+  const inactiveLinkClass = 'text-white hover:text-purple-400 after:w-0 hover:after:w-full';
+
   return (
-    <header
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled 
-          ? 'bg-black/50 backdrop-blur-xl border-b border-gray-800/50' 
-          : 'bg-transparent'
-      }`}
+    <motion.header
+      initial="hidden"
+      animate="visible"
+      variants={navVariants}
+      className={navbarClasses}
     >
-      <nav className="container mx-auto px-6 py-3 flex items-center justify-between">
-        <Link href="#home" className="flex items-center gap-2">
-          {isMounted ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: "spring", stiffness: 260, damping: 20 }}
-              className="font-bold text-2xl flex items-center"
-            >
-              <span className="gradient-text">Ayush Sharma</span>
-            </motion.div>
-          ) : (
-            <div className="font-bold text-2xl flex items-center">
-              <div className="relative mr-1">
-                <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold">A</span>
-                </div>
-              </div>
-              <span className="gradient-text">Ayush</span>
-              <span className="text-white">Sharma</span>
-            </div>
-          )}
-        </Link>
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center">
+            <a href="#" className="text-xl font-bold text-white">
+              <span className="gradient-text bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500">
+                Ayush.dev
+              </span>
+            </a>
+          </div>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:block">
-          {isMounted ? (
-            <motion.ul
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="flex items-center gap-1"
-            >
-              {navItems.map((item, index) => {
-                const isActive = activeSection === item.href.substring(1);
-                return (
-                  <motion.li
-                    key={index}
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="relative"
-                  >
-                    <Link
-                      href={item.href}
-                      className={`relative px-4 py-2 rounded-full mx-1 text-sm font-medium transition-all duration-300 ${
-                        isActive 
-                          ? 'text-white' 
-                          : 'text-gray-400 hover:text-white'
-                      }`}
-                    >
-                      {isActive && (
-                        <motion.span
-                          layoutId="activeSection"
-                          className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 rounded-full -z-10"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ type: "spring", stiffness: 200, damping: 30 }}
-                        />
-                      )}
-                      {item.name}
-                    </Link>
-                  </motion.li>
-                );
-              })}
-              
-              <motion.li
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: navItems.length * 0.1 }}
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-6">
+            {navItems.map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                className={`relative font-medium text-sm transition-colors duration-300 after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-purple-400 after:transition-all after:duration-300 ${
+                  activeSection === item.href.substring(1) ? activeLinkClass : inactiveLinkClass
+                }`}
               >
-                <Link
-                  href="#contact"
-                  className="ml-2 inline-flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-4 py-2 rounded-full text-sm font-medium transition-all shadow-lg shadow-purple-500/20"
-                >
-                  <span>Let's Talk</span>
-                  <ExternalLink size={14} />
-                </Link>
-              </motion.li>
-            </motion.ul>
-          ) : (
-            <ul className="flex items-center gap-1">
-              {navItems.map((item, index) => {
-                const isActive = activeSection === item.href.substring(1);
-                return (
-                  <li key={index} className="relative">
-                    <Link
-                      href={item.href}
-                      className={`relative px-4 py-2 rounded-full mx-1 text-sm font-medium transition-all duration-300 ${
-                        isActive 
-                          ? 'text-white' 
-                          : 'text-gray-400 hover:text-white'
-                      }`}
-                    >
-                      {item.name}
-                    </Link>
-                  </li>
-                );
-              })}
-              
-              <li>
-                <Link
-                  href="#contact"
-                  className="ml-2 inline-flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-4 py-2 rounded-full text-sm font-medium transition-all shadow-lg shadow-purple-500/20"
-                >
-                  <span>Let's Talk</span>
-                  <ExternalLink size={14} />
-                </Link>
-              </li>
-            </ul>
-          )}
+                {item.name}
+              </a>
+            ))}
+            
+            {/* CTA Button */}
+            <a
+              href="#contact"
+              className="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20"
+            >
+              Let&apos;s Talk
+            </a>
+          </nav>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              onClick={handleMenuClick}
+              className="text-white p-2 focus:outline-none"
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
+      </div>
 
-        {/* Mobile Navigation Button */}
-        {isMounted ? (
-          <motion.button
-            className="md:hidden relative z-50 w-10 h-10 flex items-center justify-center rounded-full bg-gray-900/50 border border-gray-800"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+      {/* Mobile Navigation */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={menuVariants}
+            className="md:hidden absolute top-full left-0 right-0 bg-[#0D1117]/95 backdrop-blur-lg border-t border-gray-800 shadow-xl max-h-[calc(100vh-4rem)] overflow-auto"
           >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={isOpen ? 'close' : 'open'}
-                initial={{ opacity: 0, rotate: isOpen ? -90 : 90 }}
-                animate={{ opacity: 1, rotate: 0 }}
-                exit={{ opacity: 0, rotate: isOpen ? 90 : -90 }}
-                transition={{ duration: 0.2 }}
-              >
-                {isOpen ? <X size={20} /> : <Menu size={20} />}
-              </motion.div>
-            </AnimatePresence>
-          </motion.button>
-        ) : (
-          <button
-            className="md:hidden relative z-50 w-10 h-10 flex items-center justify-center rounded-full bg-gray-900/50 border border-gray-800"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        )}
-      </nav>
-
-      {/* Mobile Navigation Menu */}
-      {isMounted ? (
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="md:hidden bg-black/90 backdrop-blur-xl border-b border-gray-800/50 overflow-hidden"
-            >
-              <div className="container mx-auto px-6 py-5">
-                <ul className="flex flex-col gap-3">
-                  {navItems.map((item, index) => {
-                    const isActive = activeSection === item.href.substring(1);
-                    return (
-                      <motion.li
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                      >
-                        <Link
-                          href={item.href}
-                          className={`relative block py-2 px-4 rounded-lg transition-colors duration-300 ${
-                            isActive 
-                              ? 'bg-gradient-to-r from-purple-600/20 to-indigo-600/20 text-white' 
-                              : 'text-gray-400 hover:text-white'
-                          }`}
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {item.name}
-                        </Link>
-                      </motion.li>
-                    );
-                  })}
-                  
-                  <motion.li
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: navItems.length * 0.05 }}
-                    className="mt-3"
+            <div className="container mx-auto px-4 py-4">
+              <nav className="flex flex-col space-y-4">
+                {navItems.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`py-2 px-4 text-lg font-medium ${
+                      activeSection === item.href.substring(1)
+                        ? 'text-purple-400 bg-purple-900/10 rounded-lg'
+                        : 'text-white hover:text-purple-400'
+                    }`}
                   >
-                    <Link
-                      href="#contact"
-                      className="block text-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-4 py-3 rounded-lg font-medium"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Let's Talk
-                    </Link>
-                  </motion.li>
-                </ul>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      ) : (
-        isOpen && (
-          <div className="md:hidden bg-black/90 backdrop-blur-xl border-b border-gray-800/50 overflow-hidden">
-            <div className="container mx-auto px-6 py-5">
-              <ul className="flex flex-col gap-3">
-                {navItems.map((item, index) => {
-                  const isActive = activeSection === item.href.substring(1);
-                  return (
-                    <li key={index}>
-                      <Link
-                        href={item.href}
-                        className={`relative block py-2 px-4 rounded-lg transition-colors duration-300 ${
-                          isActive 
-                            ? 'bg-gradient-to-r from-purple-600/20 to-indigo-600/20 text-white' 
-                            : 'text-gray-400 hover:text-white'
-                        }`}
-                        onClick={() => setIsOpen(false)}
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  );
-                })}
+                    {item.name}
+                  </a>
+                ))}
                 
-                <li className="mt-3">
-                  <Link
+                {/* Mobile CTA Button */}
+                <div className="pt-2">
+                  <a
                     href="#contact"
                     className="block text-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-4 py-3 rounded-lg font-medium"
                     onClick={() => setIsOpen(false)}
                   >
-                    Let's Talk
-                  </Link>
-                </li>
-              </ul>
+                    Let&apos;s Talk
+                  </a>
+                </div>
+              </nav>
             </div>
-          </div>
-        )
-      )}
-    </header>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.header>
   );
 };
 
