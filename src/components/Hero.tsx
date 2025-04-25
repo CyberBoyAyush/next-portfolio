@@ -236,7 +236,7 @@ const Hero = () => {
             className="flex gap-4 pt-2"
           >
             <a 
-              href="https://github.com/" 
+              href="https://github.com/cyberboyayush" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="p-2 border border-gray-700 rounded-full hover:border-purple-500 hover:bg-purple-500/10 transition-all duration-300 flex items-center justify-center"

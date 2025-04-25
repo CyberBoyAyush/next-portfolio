@@ -30,7 +30,7 @@ const Footer = () => {
   
   // Social links with hover colors
   const socialLinks = [
-    { icon: Github, href: 'https://github.com/', label: 'GitHub', hoverColor: 'hover:text-white' },
+    { icon: Github, href: 'https://github.com/cyberboyayush', label: 'GitHub', hoverColor: 'hover:text-white' },
     { icon: Linkedin, href: 'https://linkedin.com/', label: 'LinkedIn', hoverColor: 'hover:text-blue-400' },
     { icon: Twitter, href: 'https://twitter.com/', label: 'Twitter', hoverColor: 'hover:text-sky-400' },
     { icon: Mail, href: 'mailto:hello@ayushsharma.dev', label: 'Email', hoverColor: 'hover:text-purple-400' },
