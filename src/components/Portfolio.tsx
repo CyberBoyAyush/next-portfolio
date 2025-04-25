@@ -88,14 +88,15 @@ const projects = [
 ];
 
 // Improved Project Card Component
-const ProjectCard = ({ project, index, isSelected, onClick }: { 
-  project: typeof projects[0], 
-  index: number,
-  isSelected: boolean,
-  onClick: () => void
-}) => {
+interface ProjectCardProps {
+  project: typeof projects[0];
+  index: number;
+  isSelected: boolean;
+  onClick: () => void;
+}
+
+const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   
   // For tracking mouse movement for spotlight effect
@@ -109,6 +110,19 @@ const ProjectCard = ({ project, index, isSelected, onClick }: {
     setMousePosition({ x, y });
   };
 
+  // Fix for touch devices
+  useEffect(() => {
+    const handleResize = () => {
+      // Reset mouse position when window resizes
+      setMousePosition({ x: 0, y: 0 });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   // Content animation stagger
   const contentVariants = {
     hidden: { opacity: 0 },
@@ -121,19 +135,6 @@ const ProjectCard = ({ project, index, isSelected, onClick }: {
     }),
   };
 
-  // Fix for touch devices
-  useEffect(() => {
-    const handleResize = () => {
-      // Reset hover state when window resizes
-      setIsHovered(false);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
   return (
     <motion.div
       ref={cardRef}
@@ -143,8 +144,6 @@ const ProjectCard = ({ project, index, isSelected, onClick }: {
       transition={{ duration: 0.5, delay: index * 0.1 }}
       onClick={onClick}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       className={`group relative cursor-pointer overflow-hidden rounded-2xl transition-all duration-300 ${
         isSelected ? 'md:col-span-2 md:row-span-2' : 'col-span-1'
       } h-full`}

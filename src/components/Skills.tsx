@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { Typewriter, useTypewriter } from 'react-simple-typewriter';
 import { SiHtml5, SiCss3, SiJavascript, SiTypescript, SiReact, 
   SiNextdotjs, SiNodedotjs, SiExpress, SiMongodb, SiTailwindcss, 
   SiFirebase, SiSupabase, SiTensorflow, SiAppwrite, SiClerk,
@@ -360,32 +359,22 @@ const Skills = () => {
       <div className="absolute w-96 h-96 bg-indigo-900/20 rounded-full blur-[120px] -bottom-10 -left-20 opacity-40" />
       
       <div className="container mx-auto px-6">
-        <div
+        <motion.div
           ref={titleRef}
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
           className="text-center mb-16"
         >
           <span className="text-sm text-purple-400 block mb-1 uppercase tracking-wider">My Expertise</span>
           <h2 className="text-4xl font-bold mb-4 relative inline-block">
             <span className="gradient-text bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500">
-              {isMounted ? (
-                <Typewriter
-                  words={['Technical Skills', 'Technologies I Use', 'My Tech Stack']}
-                  loop={0}
-                  cursor
-                  cursorStyle="_"
-                  typeSpeed={70}
-                  deleteSpeed={50}
-                  delaySpeed={1500}
-                />
-              ) : (
-                'Technical Skills'
-              )}
+              {isMounted ? 'Technical Skills' : 'Loading...'}
             </span>
           </h2>
           <p className="mt-4 text-gray-400 max-w-2xl mx-auto">
             I work with a variety of technologies to build modern, responsive, and scalable applications. Here&apos;s my tech stack that I&apos;ve mastered over the years.
           </p>
-        </div>
+        </motion.div>
 
         {/* Category Tabs */}
         <div className="flex flex-wrap justify-center gap-3 mb-14">
