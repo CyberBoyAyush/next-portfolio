@@ -52,7 +52,7 @@ const Contact = () => {
         setStatus('idle');
         setSubmissionMessage('');
       }, 5000);
-    } catch (_) { // Changed from error to _
+    } catch {
       setSubmissionMessage('There was an error sending your message. Please try again.');
       setStatus('error');
       
