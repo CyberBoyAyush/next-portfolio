@@ -20,6 +20,27 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Ayush Sharma | Portfolio",
   description: "Personal portfolio website of Ayush Sharma, showcasing skills, projects, and contact information",
+  manifest: "/manifest.json",
+  icons: {
+    icon: [
+      {
+        url: '/icon.png',
+        sizes: '32x32',
+        type: 'image/png',
+      },
+      {
+        url: '/favicon/favicon.png',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+    ],
+    apple: {
+      url: '/favicon/favicon.png',
+      sizes: '180x180',
+      type: 'image/png',
+    },
+    shortcut: '/icon.png',
+  },
 };
 
 export default function RootLayout({
