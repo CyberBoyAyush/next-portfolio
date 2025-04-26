@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import CustomCursor from "../components/CustomCursor";
 import ParticlesBackground from "../components/ParticlesBackground";
+import Spotlight from "../components/Spotlight";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0a0a0a] text-white min-h-screen flex flex-col overflow-x-hidden selection:bg-purple-500/30 selection:text-white`}
       >
         <CustomCursor />
+        <Spotlight />
         
         <ParticlesBackground variant="network" />
         
