@@ -153,10 +153,10 @@ const Hero = () => {
                     Let&apos;s Connect
                   </a>
                   <a 
-                    href="#portfolio" 
+                    href="/AyushSharmaResume.pdf" 
                     className="px-6 py-3 rounded-lg bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium transition-all duration-300 hover:bg-gray-700/50"
                   >
-                    View Work
+                    Download Resume
                   </a>
                 </motion.div>
                 

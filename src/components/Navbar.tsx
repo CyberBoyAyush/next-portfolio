@@ -162,10 +162,10 @@ const Navbar = () => {
             
             {/* CTA Button */}
             <a
-              href="#contact"
+              href="/AyushSharmaResume.pdf"
               className="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20"
             >
-              Let&apos;s Talk
+              Download Resume
             </a>
           </nav>
 
