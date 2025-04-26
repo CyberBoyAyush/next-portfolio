@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, ExternalLink, Code, Eye } from 'lucide-react';
 import Image from 'next/image';
+import SectionHeading from './SectionHeading';
 
 // Updated project data with local images
 const projects = [
@@ -392,24 +393,13 @@ const Portfolio = () => {
       
       {/* Content Container with simpler animations */}
       <div className="container mx-auto px-4 sm:px-6" ref={sectionRef}>
-        {/* Header with improved animations */}
-        <motion.div
-          variants={headerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="max-w-3xl mx-auto text-center mb-12 sm:mb-16"
-        >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-600">
-              My Projects
-            </span>
-          </h2>
-          
-          <p className="text-base sm:text-lg text-gray-400">
-            A collection of applications I've built with a focus on elegant UI and seamless UX
-          </p>
-        </motion.div>
+        {/* Use the SectionHeading component */}
+        <SectionHeading 
+          subtitle="Featured Work"
+          title="My Projects"
+          description="A collection of applications I've built with a focus on elegant UI and seamless UX"
+          className="mb-12 sm:mb-16"
+        />
 
         {/* Projects Grid - no initial loading animation */}
         <div 

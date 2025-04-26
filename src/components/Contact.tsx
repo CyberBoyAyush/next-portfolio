@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Terminal, Mail, Send, ArrowRight } from 'lucide-react';
 import '../styles/terminal.css'; // Import the terminal CSS
+import SectionHeading from './SectionHeading';
 
 type CommandType = {
   command: string;
@@ -346,22 +347,12 @@ Please fill in all fields before sending.`;
       </div>
       
       <div className="container mx-auto px-4 max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
-          <span className="text-xs font-medium text-purple-400 block mb-1 uppercase tracking-wider">Get In Touch</span>
-          <h2 className="text-3xl font-bold">
-            <span className="gradient-text bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500">
-              Terminal Contact
-            </span>
-          </h2>
-          <p className="mt-2 text-gray-400 text-sm max-w-2xl mx-auto">
-            Send me a message using simple terminal commands
-          </p>
-        </motion.div>
+        <SectionHeading 
+          subtitle="Get In Touch"
+          title="Terminal Contact"
+          description="Send me a message using simple terminal commands"
+          className="mb-12"
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
           <motion.div

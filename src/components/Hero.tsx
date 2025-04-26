@@ -5,6 +5,7 @@ import { motion, useSpring } from 'framer-motion';
 import { useTypewriter } from 'react-simple-typewriter';
 import { ChevronDown, Github, Linkedin, Twitter } from 'lucide-react'; 
 import Image from 'next/image';
+import SectionHeading from './SectionHeading';
 
 const Hero = () => {
   const ref = useRef<HTMLDivElement>(null);

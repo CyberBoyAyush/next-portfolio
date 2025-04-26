@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import Image from 'next/image';
+import SectionHeading from './SectionHeading';
 
 const githubUsername = 'cyberboyayush';
 const leetcodeUsername = 'cyberboyayush';
@@ -57,23 +58,14 @@ const CodingStats = () => {
       </div>
       
       <div className="container mx-auto px-4 max-w-6xl">
-        <motion.div
-          ref={statsRef}
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-10"
-        >
-          <span className="text-xs font-medium text-purple-400 block mb-1 uppercase tracking-wider">My Progress</span>
-          <h2 className="text-3xl font-bold">
-            <span className="gradient-text bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500">
-              Coding Stats
-            </span>
-          </h2>
-          <p className="mt-2 text-gray-400 text-sm max-w-2xl mx-auto">
-            A snapshot of my coding journey across different platforms.
-          </p>
-        </motion.div>
+        <div ref={statsRef}>
+          <SectionHeading 
+            subtitle="My Progress"
+            title="Coding Stats"
+            description="A snapshot of my coding journey across different platforms."
+            className="mb-10"
+          />
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* GitHub Stats Section */}

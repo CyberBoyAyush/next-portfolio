@@ -8,6 +8,7 @@ import { SiHtml5, SiCss3, SiJavascript, SiTypescript, SiReact,
   SiPython, SiDjango, SiFlask, SiAmazon, SiDocker,
   SiKubernetes, SiGit, SiGraphql, SiRedis, SiPostgresql,
   SiVercel, SiVite, SiSass, SiMui, SiFigma } from 'react-icons/si';
+import SectionHeading from './SectionHeading';
 
 // Technology cards data with proper icons
 const techStack = [
@@ -313,23 +314,13 @@ const Skills = () => {
       <div className="absolute w-96 h-96 bg-indigo-900/20 rounded-full blur-[120px] -bottom-10 -left-20 opacity-40" />
       
       <div className="container mx-auto px-6">
-        <motion.div
-          ref={titleRef}
-          initial={{ opacity: 0.95 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <span className="text-sm text-purple-400 block mb-1 uppercase tracking-wider">My Expertise</span>
-          <h2 className="text-4xl font-bold mb-4 relative inline-block">
-            <span className="gradient-text bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500">
-              Technical Skills
-            </span>
-          </h2>
-          <p className="mt-4 text-gray-400 max-w-2xl mx-auto">
-            I work with a variety of technologies to build modern, responsive, and scalable applications. Here&apos;s my tech stack that I&apos;ve mastered over the years.
-          </p>
-        </motion.div>
+        <div ref={titleRef}>
+          <SectionHeading 
+            subtitle="My Expertise"
+            title="Technical Skills"
+            description="I work with a variety of technologies to build modern, responsive, and scalable applications. Here's my tech stack that I've mastered over the years."
+          />
+        </div>
 
         {/* Category Tabs - Smoother animation */}
         <div className="flex flex-wrap justify-center gap-3 mb-14">
