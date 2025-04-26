@@ -439,10 +439,13 @@ Please fill in all fields before sending.`;
                         placeholder={inputMode ? "Type your response..." : "Type a command..."}
                         disabled={status === 'submitting' || isTyping}
                       />
-                      {/* Blinking cursor - positioned absolutely relative to input */}
+                      {/* Blinking cursor - positioned absolutely with dynamic width calculation */}
                       <span 
                         className="cursor-blink absolute top-0 left-0 h-full pointer-events-none"
-                        style={{ transform: `translateX(${command.length * 0.60}rem)` }}
+                        style={{ 
+                          transform: `translateX(${command.length * 0.54}rem)`,
+                          marginLeft: command.length > 10 ? `-${Math.floor(command.length / 20) * 0.08}rem` : '0'
+                        }}
                       >
                         ▌
                       </span>
