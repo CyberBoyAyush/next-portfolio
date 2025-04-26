@@ -5,84 +5,83 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Github, ExternalLink, Code, Eye } from 'lucide-react';
 import Image from 'next/image';
 
-// Updated project data with simplified structure
+// Updated project data with local images
 const projects = [
   {
     id: 1,
-    title: 'Finwise',
-    description: 'AI Powered Financial Advisor for personalized financial recommendations.',
-    image: 'https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1',
-    tags: ['React', 'Gemini', 'GROQ', 'Appwrite', 'TailwindCSS'],
-    demoLink: 'https://project-demo.com',
-    githubLink: 'https://github.com/yourusername/project',
+    title: 'Effisense',
+    description: 'Experience the future of productivity with AI-powered task scheduling, smart prioritization, and intelligent workload balancing.',
+    image: '/images/projects/effisense.png',
+    tags: ["React", "Google API", "GROQ", "Appwrite", "TailwindCSS", "Recharts"],
+    demoLink: 'https://effisense.ayush-sharma.in/',
     featured: true,
-    year: '2023',
+    year: '2025',
     duration: '3 months',
     color: 'from-indigo-600 to-purple-600'
   },
   {
     id: 2,
-    title: 'Fitness Tracker App',
-    description: 'Mobile application for tracking workouts, nutrition, and fitness goals with interactive charts.',
-    image: 'https://images.unsplash.com/photo-1576678927484-cc907957088c',
-    tags: ['React Native', 'Firebase', 'TypeScript'],
-    demoLink: 'https://project-demo.com',
-    githubLink: 'https://github.com/yourusername/project',
+    title: 'Finwise',
+    description: 'AI Powered Financial Advisor for personalized financial recommendations.',
+    image: '/images/projects/finwise.png',
+    tags: ["React", "Gemini", "GROQ", "Appwrite", "TailwindCSS", "Grow"],
+    demoLink: 'https://finwise.ayush-sharma.in/',
+    githubLink: 'https://github.com/glucon-d/finwise',
     featured: false,
-    year: '2023',
-    duration: '2 months',
+    year: '2025',
+    duration: '1 months',
     color: 'from-emerald-600 to-teal-600'
   },
   {
     id: 3,
-    title: 'Admin Dashboard',
-    description: 'Responsive admin dashboard with dark mode, data visualization, and user management.',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71',
-    tags: ['Vue.js', 'Tailwind CSS', 'Firebase'],
-    demoLink: 'https://project-demo.com',
-    githubLink: 'https://github.com/yourusername/project',
+    title: 'Pathgenie',
+    description: 'AI powered career guidance platform for personalized career recommendations.',
+    image: '/images/projects/pathgenie.png',
+    tags: ["React", "Gemini", "Appwrite", "TailwindCSS", "Groq", "Llama 3.3"],
+    demoLink: 'https://pathgenie.ayush-sharma.in/',
+    githubLink: 'https://github.com/glucon-d/pathgenie',
     featured: true,
-    year: '2022',
-    duration: '4 months',
+    year: '2025',
+    duration: '2 months',
     color: 'from-blue-600 to-cyan-600'
   },
   {
     id: 4,
-    title: 'API Service Platform',
-    description: 'RESTful API service with authentication, rate limiting, and comprehensive documentation.',
-    image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c',
-    tags: ['Node.js', 'Express', 'MongoDB', 'Docker'],
-    demoLink: 'https://project-demo.com',
-    githubLink: 'https://github.com/yourusername/project',
+    title: 'Intellica',
+    description: 'AI powered learning platform for personalized learning experience.',
+    image: '/images/projects/intellica.png',
+    tags: ["React", "Gemini", "Appwrite", "TailwindCSS"],
+    demoLink: 'https://intellica.ayush-sharma.in/',
+    githubLink: 'https://github.com/cyberboyayush/intellica',
     featured: false,
-    year: '2022',
-    duration: '2 months',
+    year: '2025',
+    duration: '1 months',
     color: 'from-amber-600 to-orange-600'
   },
   {
     id: 5,
-    title: 'Social Media Analytics',
-    description: 'Analytics dashboard for social media platforms with real-time data processing.',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f',
-    tags: ['React', 'D3.js', 'Firebase', 'Node.js'],
-    demoLink: 'https://project-demo.com',
-    githubLink: 'https://github.com/yourusername/project',
+    title: 'PortDev',
+    description: 'Create Devloper Portfolio in Minutes.',
+    image: '/images/projects/portdev.png',
+    tags: ["React", "Firebase", "TailwindCSS", "Framer Motion"],
+    demoLink: 'https://portdevv.vercel.app/',
+    githubLink: 'https://github.com/cyberboyayush/portdev',
     featured: true,
-    year: '2023',
-    duration: '3 months',
+    year: '2025',
+    duration: '1.5 months',
     color: 'from-rose-600 to-pink-600'
   },
   {
     id: 6,
-    title: 'Portfolio Website',
-    description: 'Modern portfolio website with animations, dark theme, and responsive design.',
-    image: 'https://images.unsplash.com/photo-1517180102446-f3ece451e9d8',
-    tags: ['Next.js', 'Framer Motion', 'Tailwind CSS'],
-    demoLink: 'https://project-demo.com',
-    githubLink: 'https://github.com/yourusername/project',
+    title: 'React Portfolio',
+    description: 'Personal Portfolio Website using React Js',
+    image: '/images/projects/react-portfolio.png',
+    tags: ["React", "TailwindCSS", "Framer Motion", "Particles.js"],
+    demoLink: 'https://cyberboyayush.in/',
+    githubLink: 'https://github.com/cyberboyayush/React-Portfolio',
     featured: true,
-    year: '2023',
-    duration: '1 month',
+    year: '2025',
+    duration: '5 days',
     color: 'from-violet-600 to-purple-600'
   },
 ];
@@ -171,15 +170,27 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
         />
       )}
 
+      {/* Featured badge */}
+      {project.featured && (
+        <div className="absolute top-0 right-0 z-20 m-3">
+          <div className="flex items-center gap-1 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 px-3 py-1 text-[10px] font-medium text-white shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 mr-1">
+              <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
+            </svg>
+            Featured
+          </div>
+        </div>
+      )}
+      
       {/* Background image with overlay */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {/* Gradient and dark overlays - unchanged */}
         <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-30 mix-blend-soft-light`} />
         <div className="absolute inset-0 bg-black/80" />
         
-        {/* Image loading - modified for immediate visibility */}
+        {/* Updated Image loading using local files */}
         <Image 
-          src={`${project.image}?w=${isTouch ? '400' : '800'}&q=${isTouch ? '70' : '80'}`}
+          src={project.image}
           alt={project.title}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -189,7 +200,7 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
           onLoad={() => setImageLoaded(true)}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Crect width='800' height='600' fill='%23111111'/%3E%3Ctext x='400' y='300' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='26' fill='%23666666'%3EProject Image%3C/text%3E%3C/svg%3E";
+            target.src = "/images/projects/placeholder.jpg";
           }}
         />
       </div>
@@ -197,14 +208,19 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
       {/* Card content - simplified animations */}
       <div className={`relative z-10 flex h-full flex-col p-5 sm:p-6 ${isSelected ? 'md:p-7' : ''}`}>
         <div className="flex-1">
-          {/* Project title - no initial animation */}
-          <div className="flex items-center mb-3">
-            <h3 className={`font-bold text-white ${
-              isSelected ? 'text-xl sm:text-2xl md:text-3xl' : 'text-lg sm:text-xl'
-            }`}>
-              {project.title}
-            </h3>
-            <div className="ml-2 h-2 w-2 rounded-full bg-purple-400"></div>
+          {/* Project title with year info */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center">
+              <h3 className={`font-bold text-white ${
+                isSelected ? 'text-xl sm:text-2xl md:text-3xl' : 'text-lg sm:text-xl'
+              }`}>
+                {project.title}
+              </h3>
+              <div className="ml-2 h-2 w-2 rounded-full bg-purple-400"></div>
+            </div>
+            <div className="text-xs text-purple-400 font-medium">
+              {project.year}
+            </div>
           </div>
           
           {/* Description - no initial animation */}
@@ -216,9 +232,12 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
             {project.description}
           </p>
 
-          {/* BUILT WITH section - no initial animation */}
+          {/* BUILT WITH section with duration info */}
           <div className="mb-5">
-            <span className="text-xs text-purple-400 font-medium mb-2 block">BUILT WITH</span>
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs text-purple-400 font-medium block">BUILT WITH</span>
+              <span className="text-xs text-gray-400">{project.duration}</span>
+            </div>
             <div className="flex flex-wrap gap-2">
               {project.tags.map((tag) => (
                 <span
@@ -228,6 +247,16 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
                   {tag}
                 </span>
               ))}
+            </div>
+          </div>
+          
+          {/* Year and Duration info - explicitly added above buttons */}
+          <div className="flex justify-between items-center mb-5 text-xs">
+            <div className="flex items-center text-gray-400">
+              <span className="font-medium text-purple-400 mr-2">Year:</span> {project.year}
+            </div>
+            <div className="flex items-center text-gray-400">
+              <span className="font-medium text-purple-400 mr-2">Duration:</span> {project.duration}
             </div>
           </div>
         </div>
@@ -243,15 +272,17 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
           >
             <Eye size={16} /> Live Demo
           </a>
-          <a 
-            href={project.githubLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-black/30 hover:bg-black/50 px-4 py-2.5 text-xs font-medium text-white transition-all duration-300 active:translate-y-0.5"
-          >
-            <Code size={16} /> View Code
-          </a>
+          {project.githubLink && (
+            <a 
+              href={project.githubLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-black/30 hover:bg-black/50 px-4 py-2.5 text-xs font-medium text-white transition-all duration-300 active:translate-y-0.5"
+            >
+              <Code size={16} /> View Code
+            </a>
+          )}
         </div>
         
         {/* Decorative gradient circle */}
