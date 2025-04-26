@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Terminal, Mail, Send, ArrowRight } from 'lucide-react';
+import '../styles/terminal.css'; // Import the terminal CSS
 
 type CommandType = {
   command: string;
@@ -22,6 +23,9 @@ type InputMode = '' | 'name' | 'email' | 'message';
 // Web3Forms API Key
 // Get your access key from https://web3forms.com/
 const WEB3FORMS_ACCESS_KEY = '0d328fdf-f462-44c9-ad9b-3b0df1fc64ad'; // Replace with your Access Key
+
+// Typing animation delay in milliseconds
+const TYPING_DELAY = 30;
 
 const Contact = () => {
   const terminalRef = useRef<HTMLDivElement>(null);
@@ -57,13 +61,15 @@ const Contact = () => {
   });
   const [status, setStatus] = useState<FormStatus>('idle');
   const [currentStep, setCurrentStep] = useState(1);
+  const [typingText, setTypingText] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   
   // This will scroll to the bottom of the terminal when new commands are added
   useEffect(() => {
     if (terminalRef.current) {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
-  }, [commandHistory]);
+  }, [commandHistory, typingText]);
 
   // This will focus the input field whenever the user clicks anywhere in the terminal container
   const focusInput = () => {
@@ -72,12 +78,52 @@ const Contact = () => {
     }
   };
 
+  // Simulate typing effect for commands
+  const simulateTyping = (text: string, callback?: () => void) => {
+    setIsTyping(true);
+    setTypingText('');
+    
+    let i = 0;
+    const interval = setInterval(() => {
+      setTypingText(text.substring(0, i + 1));
+      i++;
+      
+      if (i === text.length) {
+        clearInterval(interval);
+        setIsTyping(false);
+        if (callback) callback();
+      }
+    }, TYPING_DELAY);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       if (inputMode) {
         handleInputSubmit();
       } else {
         handleCommand();
+      }
+    } else if (e.key === 'Tab') {
+      e.preventDefault();
+      
+      // Simple tab completion
+      if (!inputMode) {
+        const suggestions = ['name', 'email', 'message', 'send', 'status', 'clear', 'help'];
+        const match = suggestions.find(cmd => cmd.startsWith(command.toLowerCase()));
+        if (match) {
+          setCommand(match);
+        }
+      }
+    } else if (e.key === 'ArrowUp') {
+      // Navigate command history (get last command)
+      e.preventDefault();
+      const lastCommand = commandHistory
+        .filter(entry => entry.command)
+        .map(entry => entry.command)
+        .pop();
+      
+      if (lastCommand && !inputMode) {
+        setCommand(lastCommand);
       }
     }
   };
@@ -128,8 +174,10 @@ const Contact = () => {
   };
 
   const executeCommand = (cmdText: string) => {
-    setCommand(cmdText);
-    handleCommand(cmdText);
+    simulateTyping(cmdText, () => {
+      setCommand(cmdText);
+      handleCommand(cmdText);
+    });
   };
   
   // Send email function using Web3Forms
@@ -172,7 +220,7 @@ const Contact = () => {
   };
 
   const handleCommand = (cmdOverride?: string) => {
-    if (inputMode) return; // Don't process commands while in input mode
+    if (inputMode || isTyping) return; // Don't process commands while in input mode or typing
     
     const cmdText = cmdOverride || command;
     if (!cmdText.trim()) return;
@@ -262,6 +310,7 @@ Please fill in all fields before sending.`;
           <p className="ml-4"><span className="text-green-400">send</span> - Send your message to Ayush</p>
           <p className="ml-4"><span className="text-green-400">status</span> - Check current input status</p>
           <p className="ml-4"><span className="text-green-400">clear</span> - Clear the terminal</p>
+          <p className="text-xs text-gray-500 mt-2">Pro tip: Use <span className="text-purple-400">Tab</span> to autocomplete commands and <span className="text-purple-400">↑</span> to recall previous commands</p>
         </div>
       );
     } else {
@@ -279,6 +328,13 @@ Please fill in all fields before sending.`;
     if (!formState.email) return 'email';
     if (!formState.message) return 'message';
     return 'send';
+  };
+
+  // Get dynamic prompt based on state
+  const getPrompt = () => {
+    if (inputMode) return inputPrompt;
+    if (status === 'submitting') return 'sending...';
+    return 'ayush@portfolio:~$';
   };
 
   return (
@@ -314,31 +370,38 @@ Please fill in all fields before sending.`;
             transition={{ duration: 0.5, delay: 0.2 }}
             className="md:col-span-2"
           >
-            <div className="bg-gray-900/70 backdrop-blur-md rounded-lg border border-gray-800 shadow-xl overflow-hidden">
+            <div className="bg-gray-900/80 backdrop-blur-md rounded-lg border border-gray-800 shadow-xl overflow-hidden">
               {/* Terminal header */}
-              <div className="bg-gray-800 p-3 flex items-center">
+              <div className="bg-gray-800/90 p-3 flex items-center">
                 <div className="flex space-x-2 mr-4">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-red-500 group-hover:cursor-not-allowed"></div>
                   <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                   <div className="w-3 h-3 rounded-full bg-green-500"></div>
                 </div>
-                <div className="flex-1 text-center text-gray-400 text-sm font-mono">ayush@portfolio ~ contact</div>
+                <div className="flex-1 text-center text-gray-400 text-sm font-mono">Terminal — contact.sh</div>
                 <Terminal size={18} className="text-gray-400" />
               </div>
               
               {/* Terminal body */}
               <div 
                 ref={terminalRef}
-                className="p-4 h-[400px] overflow-y-auto font-mono text-sm"
+                className="p-4 h-[450px] overflow-y-auto font-mono text-sm bg-gradient-to-b from-gray-900 to-black/95"
                 onClick={focusInput}
               >
+                {/* Intro animation text */}
+                <div className="text-green-400 mb-2">
+                  Last login: {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</div>
+                <div className="text-gray-300 mb-4 border-b border-gray-800 pb-2">
+                  <span className="text-green-500 font-bold">Portfolio Terminal</span> v1.0.0 - Type <span className="text-yellow-400">help</span> for available commands
+                </div>
+                
                 {/* Command history */}
                 {commandHistory.map((entry, index) => (
-                  <div key={index} className="mb-4">
+                  <div key={index} className="mb-4 terminal-fade-in">
                     {entry.command && (
-                      <div className="flex items-start">
-                        <span className="text-green-400 mr-2">$</span>
-                        <span className="text-white">{entry.command}</span>
+                      <div className="flex items-start group">
+                        <span className="text-purple-400 mr-2 font-bold">{getPrompt()}</span>
+                        <span className="text-white group-hover:text-yellow-300 transition-colors">{entry.command}</span>
                       </div>
                     )}
                     <div className={`ml-4 mt-1 ${entry.isError ? 'text-red-400' : 'text-gray-300'}`}>
@@ -347,23 +410,45 @@ Please fill in all fields before sending.`;
                   </div>
                 ))}
                 
+                {/* Typing animation */}
+                {isTyping && (
+                  <div className="flex items-start mb-4">
+                    <span className="text-purple-400 mr-2 font-bold">{getPrompt()}</span>
+                    <div className="relative">
+                      <span className="text-white">{typingText}</span>
+                      <span className="cursor-blink ml-0.5 inline-block">▌</span>
+                    </div>
+                  </div>
+                )}
+                
                 {/* Current command line */}
-                <div className="flex items-center">
-                  <span className="text-green-400 mr-2">
-                    {inputMode ? inputPrompt : '$'}
-                  </span>
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={command}
-                    onChange={(e) => setCommand(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    className="flex-1 bg-transparent outline-none text-white caret-purple-400"
-                    autoFocus
-                    placeholder={inputMode ? "Type your response..." : "Type a command..."}
-                    disabled={status === 'submitting'}
-                  />
-                </div>
+                {!isTyping && (
+                  <div className="flex items-center relative">
+                    <span className="text-purple-400 mr-2 font-bold whitespace-nowrap">
+                      {getPrompt()}
+                    </span>
+                    <div className="relative flex-1">
+                      <input
+                        ref={inputRef}
+                        type="text"
+                        value={command}
+                        onChange={(e) => setCommand(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        className="w-full bg-transparent outline-none text-white pr-2 caret-transparent"
+                        autoFocus
+                        placeholder={inputMode ? "Type your response..." : "Type a command..."}
+                        disabled={status === 'submitting' || isTyping}
+                      />
+                      {/* Blinking cursor - positioned absolutely relative to input */}
+                      <span 
+                        className="cursor-blink absolute top-0 left-0 h-full pointer-events-none"
+                        style={{ transform: `translateX(${command.length * 0.60}rem)` }}
+                      >
+                        ▌
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             
@@ -371,72 +456,90 @@ Please fill in all fields before sending.`;
             <div className="mt-4 space-y-4">
               {/* Progress indicator */}
               <div className="flex items-center justify-between">
-                <div className="flex-1">
+                <div className="flex-1 relative mt-6 mb-2"> {/* Added margin for better spacing */}
                   <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-500 ease-out"
+                      className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-500 ease-out absolute left-0 top-0"
                       style={{ width: `${Math.min(100, (currentStep - 1) * 33.33)}%` }}
                     ></div>
                   </div>
-                </div>
-                <div className="ml-3 text-xs text-gray-400">
-                  {formState.name ? '✓' : '•'} {formState.email ? '✓' : '•'} {formState.message ? '✓' : '•'} {status === 'success' ? '✓' : '•'}
+                  <div className="absolute -top-6 left-0 right-0 flex justify-between text-xs text-gray-500">
+                    <span className={formState.name ? 'text-purple-400 font-medium' : ''}>Name</span>
+                    <span className={formState.email ? 'text-purple-400 font-medium' : ''}>Email</span>
+                    <span className={formState.message ? 'text-purple-400 font-medium' : ''}>Message</span>
+                    <span className={status === 'success' ? 'text-purple-400 font-medium' : ''}>Sent</span>
+                  </div>
                 </div>
               </div>
               
-              {/* Suggested commands */}
-              {!inputMode && status === 'idle' && (
-                <div className="flex flex-wrap gap-2">
+              {/* Suggested commands - improved UI with better spacing */}
+              {!inputMode && status === 'idle' && !isTyping && (
+                <div className="flex flex-wrap gap-2 mt-2 bg-gray-900/30 p-3 rounded-lg border border-gray-800/50">
+                  <div className="w-full text-xs text-gray-500 mb-2">Available commands:</div>
                   {!formState.name && (
-                    <button 
+                    <motion.button 
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       onClick={() => executeCommand('name')}
-                      className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors"
+                      className="px-3 py-1.5 bg-gray-800/90 hover:bg-purple-900/40 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors duration-200 flex items-center gap-1"
                     >
-                      name
-                    </button>
+                      <span className="text-purple-400">$</span> name
+                    </motion.button>
                   )}
                   {!formState.email && (
-                    <button 
+                    <motion.button 
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       onClick={() => executeCommand('email')}
-                      className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors"
+                      className="px-3 py-1.5 bg-gray-800/90 hover:bg-purple-900/40 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors duration-200 flex items-center gap-1"
                     >
-                      email
-                    </button>
+                      <span className="text-purple-400">$</span> email
+                    </motion.button>
                   )}
                   {!formState.message && (
-                    <button 
+                    <motion.button 
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       onClick={() => executeCommand('message')}
-                      className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors"
+                      className="px-3 py-1.5 bg-gray-800/90 hover:bg-purple-900/40 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors duration-200 flex items-center gap-1"
                     >
-                      message
-                    </button>
+                      <span className="text-purple-400">$</span> message
+                    </motion.button>
                   )}
                   {formState.name && formState.email && formState.message && (
-                    <button 
+                    <motion.button 
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       onClick={() => executeCommand('send')}
-                      className="px-3 py-1.5 bg-purple-900/50 hover:bg-purple-800/50 text-gray-200 text-xs rounded-md border border-purple-700/50 transition-colors"
+                      className="px-3 py-1.5 bg-purple-900/50 hover:bg-purple-800/80 text-white text-xs rounded-md border border-purple-700/50 transition-colors duration-200 flex items-center gap-1"
                     >
-                      send
-                    </button>
+                      <span className="text-green-400">$</span> send
+                    </motion.button>
                   )}
-                  <button 
+                  <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => executeCommand('status')}
-                    className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors"
+                    className="px-3 py-1.5 bg-gray-800/90 hover:bg-purple-900/40 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors duration-200 flex items-center gap-1"
                   >
-                    status
-                  </button>
-                  <button 
+                    <span className="text-purple-400">$</span> status
+                  </motion.button>
+                  <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => executeCommand('help')}
-                    className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors"
+                    className="px-3 py-1.5 bg-gray-800/90 hover:bg-purple-900/40 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors duration-200 flex items-center gap-1"
                   >
-                    help
-                  </button>
-                  <button 
+                    <span className="text-purple-400">$</span> help
+                  </motion.button>
+                  <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => executeCommand('clear')}
-                    className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors"
+                    className="px-3 py-1.5 bg-gray-800/90 hover:bg-purple-900/40 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors duration-200 flex items-center gap-1"
                   >
-                    clear
-                  </button>
+                    <span className="text-purple-400">$</span> clear
+                  </motion.button>
                 </div>
               )}
             </div>
@@ -457,7 +560,7 @@ Please fill in all fields before sending.`;
               </div>
 
               <div className="space-y-4">
-                <div className="flex items-center space-x-4 p-4 rounded-lg bg-gray-900/50 border border-gray-800/70 backdrop-blur-sm">
+                <div className="flex items-center space-x-4 p-4 rounded-lg bg-gray-900/50 border border-gray-800/70 backdrop-blur-sm hover:border-purple-800/50 transition-colors duration-300">
                   <div className="w-10 h-10 rounded-full bg-purple-900/30 flex items-center justify-center">
                     <Mail className="h-5 w-5 text-purple-400" />
                   </div>
@@ -472,32 +575,36 @@ Please fill in all fields before sending.`;
             {/* Command instructions */}
             <div className="mt-10">
               <div className="bg-gradient-to-br from-purple-900/20 to-indigo-900/20 p-6 rounded-xl border border-gray-800/80 backdrop-blur-md">
-                <h3 className="text-lg font-medium text-white mb-2">How It Works</h3>
+                <h3 className="text-lg font-medium text-white mb-2">Terminal Pro Tips</h3>
                 <div className="space-y-3 text-sm text-gray-400">
                   <div className="flex items-start">
-                    <div className="w-5 h-5 flex items-center justify-center rounded-full bg-purple-900/50 text-purple-400 mr-2 text-xs flex-shrink-0 mt-0.5">1</div>
-                    <p>Type <span className="text-purple-400">name</span> and enter your name</p>
+                    <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-900/50 text-purple-400 mr-2 text-xs flex-shrink-0 mt-0.5">
+                      <span className="text-green-400">↹</span>
+                    </div>
+                    <p>Press <span className="text-purple-400">Tab</span> to autocomplete commands</p>
                   </div>
                   <div className="flex items-start">
-                    <div className="w-5 h-5 flex items-center justify-center rounded-full bg-purple-900/50 text-purple-400 mr-2 text-xs flex-shrink-0 mt-0.5">2</div>
-                    <p>Type <span className="text-purple-400">email</span> and enter your contact address</p>
+                    <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-900/50 text-purple-400 mr-2 text-xs flex-shrink-0 mt-0.5">
+                      <span className="text-green-400">↑</span>
+                    </div>
+                    <p>Press <span className="text-purple-400">Up Arrow</span> to recall previous commands</p>
                   </div>
                   <div className="flex items-start">
-                    <div className="w-5 h-5 flex items-center justify-center rounded-full bg-purple-900/50 text-purple-400 mr-2 text-xs flex-shrink-0 mt-0.5">3</div>
-                    <p>Type <span className="text-purple-400">message</span> and write your message</p>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="w-5 h-5 flex items-center justify-center rounded-full bg-purple-900/50 text-purple-400 mr-2 text-xs flex-shrink-0 mt-0.5">4</div>
-                    <p>Type <span className="text-purple-400">send</span> to deliver your message</p>
+                    <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-900/50 text-purple-400 mr-2 text-xs flex-shrink-0 mt-0.5">
+                      <span className="text-green-400">!</span>
+                    </div>
+                    <p>You can also click the command buttons below the terminal</p>
                   </div>
                 </div>
                 
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => executeCommand(getNextSuggestedCommand())}
-                  className="mt-4 w-full py-2 px-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg text-sm font-medium flex items-center justify-center transition-colors"
+                  className="mt-4 w-full py-2 px-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg text-sm font-medium flex items-center justify-center transition-colors duration-200"
                 >
                   Next step: {getNextSuggestedCommand()} <ArrowRight size={14} className="ml-1" />
-                </button>
+                </motion.button>
               </div>
             </div>
           </motion.div>

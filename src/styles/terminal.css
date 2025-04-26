@@ -1,0 +1,17 @@
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+.terminal-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+} 
