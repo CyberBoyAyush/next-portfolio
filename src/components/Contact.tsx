@@ -461,7 +461,7 @@ Please fill in all fields before sending.`;
                     <span className={formState.name ? 'text-purple-400 font-medium' : ''}>Name</span>
                     <span className={formState.email ? 'text-purple-400 font-medium' : ''}>Email</span>
                     <span className={formState.message ? 'text-purple-400 font-medium' : ''}>Message</span>
-                    <span className={status === 'success' ? 'text-purple-400 font-medium' : ''}>Sent</span>
+                    <span className={status === 'success' ? 'text-purple-400 font-medium' : ''}>Send</span>
                   </div>
                 </div>
               </div>
@@ -561,6 +561,17 @@ Please fill in all fields before sending.`;
                   <div>
                     <div className="text-sm text-gray-400">Email</div>
                     <div className="text-white">connect@ayush-sharma.in</div>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-4 p-4 rounded-lg bg-gray-900/50 border border-gray-800/70 backdrop-blur-sm hover:border-purple-800/50 transition-colors duration-300">
+                  <div className="w-10 h-10 rounded-full bg-purple-900/30 flex items-center justify-center">
+                    <Mail className="h-5 w-5 text-purple-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-400">Phone</div>
+                    <div className="text-white">+91 9990969661</div>
                   </div>
                 </div>
               </div>
