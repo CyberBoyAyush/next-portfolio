@@ -19,6 +19,10 @@ type FormState = {
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
 type InputMode = '' | 'name' | 'email' | 'message';
 
+// Web3Forms API Key
+// Get your access key from https://web3forms.com/
+const WEB3FORMS_ACCESS_KEY = '0d328fdf-f462-44c9-ad9b-3b0df1fc64ad'; // Replace with your Access Key
+
 const Contact = () => {
   const terminalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -127,6 +131,45 @@ const Contact = () => {
     setCommand(cmdText);
     handleCommand(cmdText);
   };
+  
+  // Send email function using Web3Forms
+  const sendEmail = async (data: FormState) => {
+    try {
+      const formData = new FormData();
+      
+      // Required fields
+      formData.append('access_key', WEB3FORMS_ACCESS_KEY);
+      formData.append('name', data.name);
+      formData.append('email', data.email);
+      formData.append('message', data.message);
+      
+      // Optional fields for better organization
+      formData.append('subject', `New message from ${data.name} via Terminal Contact`);
+      formData.append('from_name', 'Terminal Contact Form');
+      formData.append('replyto', data.email);
+      
+      // Additional metadata
+      formData.append('botcheck', '');
+      
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        console.log('Email sent successfully:', result);
+        return { success: true };
+      } else {
+        console.error('Error sending email:', result);
+        return { success: false, error: result.message };
+      }
+    } catch (error) {
+      console.error('Exception sending email:', error);
+      return { success: false, error };
+    }
+  };
 
   const handleCommand = (cmdOverride?: string) => {
     if (inputMode) return; // Don't process commands while in input mode
@@ -167,12 +210,9 @@ Please fill in all fields before sending.`;
         setStatus('submitting');
         newCommand.output = 'Sending your message...';
         
-        // Here you would implement your email sending logic
-        // For now, we'll simulate it with a timeout
-        setTimeout(() => {
-          const success = Math.random() > 0.1; // 90% success rate for demo
-          
-          if (success) {
+        // Actually send the email with Web3Forms
+        sendEmail(formState).then((result) => {
+          if (result.success) {
             setCommandHistory(prev => [
               ...prev,
               { 
@@ -201,7 +241,7 @@ Please fill in all fields before sending.`;
             ]);
             setStatus('error');
           }
-        }, 2000);
+        });
       }
     } else if (lowerCommand === 'status') {
       newCommand.output = (
