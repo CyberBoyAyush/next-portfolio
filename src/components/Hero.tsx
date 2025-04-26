@@ -141,8 +141,7 @@ const Hero = () => {
                 </motion.div>
                 
                 <motion.p variants={itemVariants} className="text-gray-400 leading-relaxed mb-8">
-                  Passionate about building modern web applications with cutting-edge technologies.
-                  Creating robust and scalable solutions that deliver exceptional user experiences.
+                I Write Code, I Build Things, I Solve Problems and I show people that I Love To Code(I DO).
                 </motion.p>
                 
                 <motion.div variants={itemVariants} className="flex flex-wrap gap-4">

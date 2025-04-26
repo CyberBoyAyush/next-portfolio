@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Mail, Twitter, ArrowUp, Heart, ExternalLink } from 'lucide-react';
+import { Github, Linkedin, Mail, Twitter, ArrowUp, Heart } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -19,14 +19,6 @@ const Footer = () => {
       behavior: 'smooth',
     });
   };
-
-  // Quick links for footer
-  const quickLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Projects', href: '#portfolio' },
-    { name: 'Contact', href: '#contact' },
-  ];
   
   // Social links with hover colors
   const socialLinks = [
@@ -37,7 +29,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="py-8 relative bg-[#060606] border-t border-gray-900/50">
+    <footer className="py-6 relative bg-[#060606] border-t border-gray-900/50">
       {/* Decorative patterns */}
       <div className="absolute inset-0 opacity-[0.03] bg-[url('/noise.svg')] pointer-events-none"></div>
       
@@ -66,107 +58,66 @@ const Footer = () => {
       )}
       
       <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 py-4">
-          {/* Logo & Bio */}
-          <div className="flex flex-col">
-            <Link href="#home" className="flex items-center gap-2 mb-2">
-              {isMounted ? (
-                <motion.div
-                  initial={{ scale: 0.9 }}
-                  animate={{ scale: 1 }}
-                  className="font-bold text-xl flex items-center"
-                >
-                  <div className="w-7 h-7 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-md flex items-center justify-center mr-2">
-                    <span className="text-white font-bold text-sm">A</span>
-                  </div>
-                  <span className="gradient-text">Ayush</span>
-                  <span className="text-white"> Sharma</span>
-                </motion.div>
-              ) : (
-                <div className="font-bold text-xl flex items-center">
-                  <div className="w-7 h-7 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-md flex items-center justify-center mr-2">
-                    <span className="text-white font-bold text-sm">A</span>
-                  </div>
-                  <span className="gradient-text">Ayush</span>
-                  <span className="text-white"> Sharma</span>
-                </div>
-              )}
-            </Link>
-            <p className="text-sm text-gray-400 max-w-xs">
-              Full Stack Developer specializing in creating exceptional digital experiences.
-            </p>
-          </div>
+        {/* Simplified Footer Layout */}
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+          {/* Logo - Updated to match Navbar */}
+          <Link href="#home" className="group relative flex items-center gap-2 font-bold text-white">
+            <div className="relative">
+              <span className="absolute -inset-1 rounded-full bg-gradient-to-r from-purple-600/20 to-indigo-600/20 blur-md opacity-0 group-hover:opacity-100 transition-all duration-500"></span>
+              <span className="relative text-purple-400 font-mono text-xl md:text-2xl">
+                <span className="inline-block group-hover:-translate-x-1 transition-transform duration-300">&lt;</span>
+                <span className="inline-block group-hover:scale-110 transition-transform duration-300">/</span>
+                <span className="inline-block group-hover:translate-x-1 transition-transform duration-300">&gt;</span>
+              </span>
+            </div>
+            
+            <div className="relative">
+              <span className="absolute -inset-1 bg-gradient-to-r from-purple-600/10 to-indigo-600/10 blur-md opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-lg"></span>
+              <span className="relative gradient-text bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500 font-sans tracking-tight text-lg md:text-xl font-extrabold group-hover:from-indigo-500 group-hover:to-purple-500 transition-all duration-500">
+                Ayush Sharma
+              </span>
+            </div>
+          </Link>
           
-          {/* Navigation & Social Links */}
-          <div className="flex flex-col md:flex-row gap-6 md:gap-12">
-            {/* Quick links */}
-            <div>
-              <h3 className="text-white font-medium text-sm mb-3 uppercase tracking-wide">Links</h3>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                {quickLinks.map((link, idx) => (
-                  <Link 
-                    key={idx} 
-                    href={link.href} 
-                    className="text-gray-400 hover:text-white transition-colors text-sm"
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-            
-            {/* Contact info */}
-            <div>
-              <h3 className="text-white font-medium text-sm mb-3 uppercase tracking-wide">Contact</h3>
-              <div className="space-y-2">
-                <p className="text-gray-400 text-sm">Jaipur, India</p>
-                <p className="text-gray-400 text-sm">connect@ayush-sharma.in</p>
-              </div>
-            </div>
-            
-            {/* Social links */}
-            <div>
-              <h3 className="text-white font-medium text-sm mb-3 uppercase tracking-wide">Social</h3>
-              <div className="flex gap-3">
-                {socialLinks.map((social, index) => {
-                  const Icon = social.icon;
-                  return isMounted ? (
-                    <motion.a
-                      key={index}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={social.label}
-                      className={`p-2 rounded-md text-gray-400 transition-all duration-300 ${social.hoverColor}`}
-                      whileHover={{ y: -3, scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Icon size={18} />
-                    </motion.a>
-                  ) : (
-                    <a
-                      key={index}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={social.label}
-                      className={`p-2 rounded-md text-gray-400 transition-all duration-300 ${social.hoverColor}`}
-                    >
-                      <Icon size={18} />
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
+          {/* Social links */}
+          <div className="flex gap-3">
+            {socialLinks.map((social, index) => {
+              const Icon = social.icon;
+              return isMounted ? (
+                <motion.a
+                  key={index}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className={`p-2 rounded-md text-gray-400 transition-all duration-300 ${social.hoverColor}`}
+                  whileHover={{ y: -3, scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Icon size={18} />
+                </motion.a>
+              ) : (
+                <a
+                  key={index}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className={`p-2 rounded-md text-gray-400 transition-all duration-300 ${social.hoverColor}`}
+                >
+                  <Icon size={18} />
+                </a>
+              );
+            })}
           </div>
         </div>
         
         {/* Divider */}
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-800 to-transparent my-6"></div>
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-800 to-transparent my-4"></div>
         
-        {/* Copyright & Terms */}
-        <div className="flex flex-col sm:flex-row justify-between items-center w-full">
-          <div className="flex items-center gap-1 mb-4 sm:mb-0">
+        {/* Copyright */}
+        <div className="flex justify-center items-center w-full">
+          <div className="flex items-center gap-1">
             <span className="text-xs text-gray-500">© {currentYear} Built with</span>
             {isMounted ? (
               <motion.span
@@ -188,41 +139,6 @@ const Footer = () => {
               </span>
             )}
             <span className="text-xs text-gray-500">by Ayush Sharma</span>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <Link
-              href="#"
-              className="text-xs text-gray-500 hover:text-white transition-colors"
-            >
-              Privacy
-            </Link>
-            <Link
-              href="#"
-              className="text-xs text-gray-500 hover:text-white transition-colors"
-            >
-              Terms
-            </Link>
-            {isMounted ? (
-              <motion.a
-                href="https://nextjs.org"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs flex items-center gap-1 text-purple-400 hover:text-purple-300"
-                whileHover={{ x: 2 }}
-              >
-                Next.js <ExternalLink size={10} />
-              </motion.a>
-            ) : (
-              <a
-                href="https://nextjs.org"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs flex items-center gap-1 text-purple-400 hover:text-purple-300"
-              >
-                Next.js <ExternalLink size={10} />
-              </a>
-            )}
           </div>
         </div>
       </div>

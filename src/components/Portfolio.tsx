@@ -208,8 +208,8 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
       {/* Card content - simplified animations */}
       <div className={`relative z-10 flex h-full flex-col p-5 sm:p-6 ${isSelected ? 'md:p-7' : ''}`}>
         <div className="flex-1">
-          {/* Project title with year info */}
-          <div className="flex items-center justify-between mb-3">
+          {/* Project title - removing year from header */}
+          <div className="flex items-center mb-3">
             <div className="flex items-center">
               <h3 className={`font-bold text-white ${
                 isSelected ? 'text-xl sm:text-2xl md:text-3xl' : 'text-lg sm:text-xl'
@@ -217,9 +217,6 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
                 {project.title}
               </h3>
               <div className="ml-2 h-2 w-2 rounded-full bg-purple-400"></div>
-            </div>
-            <div className="text-xs text-purple-400 font-medium">
-              {project.year}
             </div>
           </div>
           
@@ -236,7 +233,6 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
           <div className="mb-5">
             <div className="flex justify-between items-center mb-2">
               <span className="text-xs text-purple-400 font-medium block">BUILT WITH</span>
-              <span className="text-xs text-gray-400">{project.duration}</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {project.tags.map((tag) => (
@@ -250,7 +246,7 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
             </div>
           </div>
           
-          {/* Year and Duration info - explicitly added above buttons */}
+          {/* Year and Duration info - consolidated into one section */}
           <div className="flex justify-between items-center mb-5 text-xs">
             <div className="flex items-center text-gray-400">
               <span className="font-medium text-purple-400 mr-2">Year:</span> {project.year}
