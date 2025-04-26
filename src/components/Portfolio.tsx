@@ -290,8 +290,8 @@ const Portfolio = () => {
       const isSmallScreen = window.innerWidth < 768;
       setIsMobile(isTouchDevice || isSmallScreen);
       
-      // Reset project selection on mobile when resizing
-      if (isTouchDevice || isSmallScreen) {
+      // Reset project selection when switching to mobile
+      if ((isTouchDevice || isSmallScreen) && selectedProject !== null) {
         setSelectedProject(null);
       }
     };
@@ -302,14 +302,12 @@ const Portfolio = () => {
     // Update on resize
     window.addEventListener('resize', checkDevice);
     return () => window.removeEventListener('resize', checkDevice);
-  }, []);
+  }, [selectedProject]);
   
   // Handle project selection and deselection
   const toggleProjectSelection = (id: number) => {
-    // On mobile, create a more direct user experience
+    // On mobile devices, don't toggle project selection
     if (isMobile) {
-      // On mobile, show the project details instead of redirecting
-      setSelectedProject(prev => prev === id ? null : id);
       return;
     }
     
@@ -394,7 +392,7 @@ const Portfolio = () => {
               key={project.id}
               project={project}
               index={index}
-              isSelected={selectedProject === project.id}
+              isSelected={!isMobile && selectedProject === project.id}
               onClick={() => toggleProjectSelection(project.id)}
             />
           ))}
