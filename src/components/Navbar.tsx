@@ -110,12 +110,39 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
+          {/* Premium Enhanced Logo */}
           <div className="flex items-center">
-            <a href="#" className="text-xl font-bold text-white">
-              <span className="gradient-text bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500">
-                Ayush Sharma
-              </span>
+            <a href="#home" className="group relative flex items-center gap-2 font-bold text-white">
+              <div className="relative">
+                <span className="absolute -inset-1 rounded-full bg-gradient-to-r from-purple-600/20 to-indigo-600/20 blur-md opacity-0 group-hover:opacity-100 transition-all duration-500"></span>
+                <motion.span 
+                  className="relative text-purple-400 font-mono text-2xl md:text-3xl"
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ 
+                    type: "spring", 
+                    stiffness: 260, 
+                    damping: 20,
+                    delay: 0.2 
+                  }}
+                >
+                  <span className="inline-block group-hover:-translate-x-1 transition-transform duration-300">&lt;</span>
+                  <span className="inline-block group-hover:scale-110 transition-transform duration-300">/</span>
+                  <span className="inline-block group-hover:translate-x-1 transition-transform duration-300">&gt;</span>
+                </motion.span>
+              </div>
+              
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="relative"
+              >
+                <span className="absolute -inset-1 bg-gradient-to-r from-purple-600/10 to-indigo-600/10 blur-md opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-lg"></span>
+                <span className="relative gradient-text bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500 font-sans tracking-tight text-xl md:text-3xl font-extrabold group-hover:from-indigo-500 group-hover:to-purple-500 transition-all duration-500">
+                  Ayush Sharma
+                </span>
+              </motion.div>
             </a>
           </div>
 

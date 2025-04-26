@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useSpring } from 'framer-motion';
 import { useTypewriter } from 'react-simple-typewriter';
-import { ChevronDown, Github, Linkedin, Twitter } from 'lucide-react'; // Removed ExternalLink
+import { ChevronDown, Github, Linkedin, Twitter } from 'lucide-react'; 
 import Image from 'next/image';
 
 const Hero = () => {
@@ -12,8 +12,6 @@ const Hero = () => {
   const mouseYSpring = useSpring(0);
   
   const [isMounted, setIsMounted] = useState(false);
-  
-  // Remove unused cursorPosition state
   
   // Set isMounted to true when component mounts
   useEffect(() => {
@@ -130,36 +128,24 @@ const Hero = () => {
                   </span>
                 </div>
                 
-                <motion.h1 
-                  variants={itemVariants}
-                  className="text-5xl sm:text-5xl md:text-7xl font-bold mb-4"
-                >
+                <motion.h1 variants={itemVariants} className="text-5xl sm:text-5xl md:text-7xl font-bold mb-4">
                   Hi, I&apos;m <br />
                   <span className="gradient-text bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500">
                     Ayush Sharma
                   </span>
                 </motion.h1>
                 
-                <motion.div 
-                  variants={itemVariants}
-                  className="text-xl md:text-2xl font-medium text-gray-300 mb-6"
-                >
+                <motion.div variants={itemVariants} className="text-xl md:text-2xl font-medium text-gray-300 mb-6">
                   I&apos;m a <span className="text-white">{typewriterText}</span>
                   <span className="animate-blink text-white">|</span>
                 </motion.div>
                 
-                <motion.p 
-                  variants={itemVariants}
-                  className="text-gray-400 leading-relaxed mb-8"
-                >
+                <motion.p variants={itemVariants} className="text-gray-400 leading-relaxed mb-8">
                   Passionate about building modern web applications with cutting-edge technologies.
                   Creating robust and scalable solutions that deliver exceptional user experiences.
                 </motion.p>
                 
-                <motion.div 
-                  variants={itemVariants}
-                  className="flex flex-wrap gap-4"
-                >
+                <motion.div variants={itemVariants} className="flex flex-wrap gap-4">
                   <a 
                     href="#contact" 
                     className="px-6 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20 flex items-center"
@@ -174,10 +160,7 @@ const Hero = () => {
                   </a>
                 </motion.div>
                 
-                <motion.div 
-                  variants={itemVariants}
-                  className="mt-8 flex items-center gap-4"
-                >
+                <motion.div variants={itemVariants} className="mt-8 flex items-center gap-4">
                   <span className="text-sm text-gray-500">Follow me:</span>
                   <div className="flex gap-3">
                     <a 
@@ -207,41 +190,52 @@ const Hero = () => {
                   </div>
                 </motion.div>
                 
-                {/* Experience icons */}
+                {/* Improved Compact Stats Display */}
                 <motion.div 
                   variants={itemVariants}
-                  className="mt-8"
+                  className="mt-8 bg-gradient-to-br from-gray-900/80 to-gray-800/30 backdrop-blur-md border border-gray-700/30 rounded-xl p-3 inline-flex flex-wrap gap-4"
                 >
-                  <div className="flex gap-2 w-full overflow-x-auto pb-2 scrollbar-hide">
-                    <div className="flex gap-2 items-center px-3 py-2 rounded-lg bg-white/5 border border-gray-800 backdrop-blur-sm">
-                      <div className="w-6 h-6 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-400">
-                          <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
-                        </svg>
-                      </div>
-                      <span className="text-xs font-medium text-gray-300">5+ Years</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-md bg-blue-500/20 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-400">
+                        <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
+                      </svg>
                     </div>
-                    
-                    <div className="flex gap-2 items-center px-3 py-2 rounded-lg bg-white/5 border border-gray-800 backdrop-blur-sm">
-                      <div className="w-6 h-6 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-400">
-                          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                          <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                      </div>
-                      <span className="text-xs font-medium text-gray-300">28+ Projects</span>
+                    <div>
+                      <div className="font-medium text-white text-sm">5+ Years</div>
+                      <div className="text-xs text-blue-400/70">Experience</div>
                     </div>
-                    
-                    <div className="flex gap-2 items-center px-3 py-2 rounded-lg bg-white/5 border border-gray-800 backdrop-blur-sm">
-                      <div className="w-6 h-6 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-400">
-                          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                          <circle cx="9" cy="7" r="4"></circle>
-                          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                      </div>
-                      <span className="text-xs font-medium text-gray-300">10+ Clients</span>
+                  </div>
+
+                  <div className="w-px h-10 bg-gray-700/50 mx-1 hidden md:block"></div>
+                  
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-md bg-green-500/20 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-400">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-medium text-white text-sm">28+ Projects</div>
+                      <div className="text-xs text-green-400/70">Completed</div>
+                    </div>
+                  </div>
+
+                  <div className="w-px h-10 bg-gray-700/50 mx-1 hidden md:block"></div>
+                  
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-md bg-purple-500/20 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-400">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-medium text-white text-sm">10+ Clients</div>
+                      <div className="text-xs text-purple-400/70">Worldwide</div>
                     </div>
                   </div>
                 </motion.div>
