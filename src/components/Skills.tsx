@@ -233,11 +233,9 @@ const categories = [
 
 const TechCard = ({ tech, index, isMounted }: { tech: typeof techStack[0], index: number, isMounted: boolean }) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(cardRef, { once: true, amount: 0.3 });
-  
-  // Separate controls for icon animations
   const [isHovered, setIsHovered] = useState(false);
   
+  // For smoother hover state transitions
   const handleHoverStart = () => {
     setIsHovered(true);
   };
@@ -246,87 +244,48 @@ const TechCard = ({ tech, index, isMounted }: { tech: typeof techStack[0], index
     setIsHovered(false);
   };
   
-  // Card variants for entry and hover animations
+  // Optimized card variants with smoother transitions - removed initial animation
   const cardVariants = {
-    hidden: { y: 50, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1,
-      transition: { 
-        type: "spring",
-        stiffness: 100,
-        damping: 15,
-        delay: index * 0.04
-      }
-    },
     hover: { 
-      y: -15,
+      y: -8, // Reduced movement for subtlety
       boxShadow: `0 10px 25px -5px ${tech.color}33`,
       borderColor: `${tech.color}80`,
       transition: { 
         type: "spring",
-        stiffness: 400,
-        damping: 10
+        stiffness: 300,
+        damping: 15
       }
     }
   };
   
-  // Icon variants without the problematic array animation
+  // Optimized icon variants - only keeping hover effect
   const iconVariants = {
-    hidden: { scale: 0, opacity: 0 },
-    visible: { 
-      scale: 1, 
-      opacity: 1,
-      transition: { 
-        type: "spring",
-        stiffness: 260,
-        damping: 20,
-        delay: index * 0.05,
-      }
-    },
     hover: { 
-      scale: 1.2,
+      scale: 1.1, // Reduced for subtlety
       transition: { 
         type: "spring",
-        stiffness: 400,
-        damping: 10
+        stiffness: 300,
+        damping: 15
       }
     }
   };
   
   const Icon = tech.icon;
   
-  // Simple alternative for non-mounted state
-  if (!isMounted) {
-    return (
-      <div className="relative group rounded-xl">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl opacity-0 group-hover:opacity-70 blur-sm transition duration-500"></div>
-        <div className="relative bg-[#111111] p-6 rounded-xl h-full flex flex-col items-center justify-center border border-gray-800 backdrop-blur-sm transition-all duration-300">
-          <div className="text-6xl mb-4 p-4 rounded-full transition-all duration-300" style={{ color: tech.color }}>
-            <Icon />
-          </div>
-          <h3 className="text-base font-medium text-white">{tech.name}</h3>
-        </div>
-      </div>
-    );
-  }
-  
   return (
     <motion.div
       ref={cardRef}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
       whileHover="hover"
       onHoverStart={handleHoverStart}
       onHoverEnd={handleHoverEnd}
       variants={cardVariants}
-      className="relative group rounded-xl"
+      className="relative group rounded-xl will-change-transform"
     >
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl opacity-0 group-hover:opacity-70 blur-sm transition duration-500"></div>
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl opacity-0 group-hover:opacity-70 blur-sm transition duration-300"></div>
       <div className="relative bg-[#111111] p-6 rounded-xl h-full flex flex-col items-center justify-center border border-gray-800 backdrop-blur-sm transition-all duration-300">
         <motion.div 
           variants={iconVariants}
-          className={`text-6xl mb-4 p-4 rounded-full transition-all duration-300 ${isHovered ? "icon-pulse" : ""}`}
+          className="text-6xl mb-4 p-4 rounded-full transition-all duration-300 will-change-transform"
           style={{ color: tech.color }}
         >
           <Icon />
@@ -340,13 +299,8 @@ const TechCard = ({ tech, index, isMounted }: { tech: typeof techStack[0], index
 
 const Skills = () => {
   const [activeCategory, setActiveCategory] = useState('all');
-  const [isMounted, setIsMounted] = useState(false);
   const titleRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(titleRef, { once: true });
-  
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isInView = useInView(titleRef, { once: true, margin: "-100px 0px" });
   
   const filteredTech = activeCategory === 'all' 
     ? techStack 
@@ -361,14 +315,15 @@ const Skills = () => {
       <div className="container mx-auto px-6">
         <motion.div
           ref={titleRef}
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          initial={{ opacity: 0.95 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
           <span className="text-sm text-purple-400 block mb-1 uppercase tracking-wider">My Expertise</span>
           <h2 className="text-4xl font-bold mb-4 relative inline-block">
             <span className="gradient-text bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500">
-              {isMounted ? 'Technical Skills' : 'Loading...'}
+              Technical Skills
             </span>
           </h2>
           <p className="mt-4 text-gray-400 max-w-2xl mx-auto">
@@ -376,59 +331,37 @@ const Skills = () => {
           </p>
         </motion.div>
 
-        {/* Category Tabs */}
+        {/* Category Tabs - Smoother animation */}
         <div className="flex flex-wrap justify-center gap-3 mb-14">
-          {categories.map((category, index) => (
-            isMounted ? (
-              <motion.button
-                key={category.id}
-                onClick={() => setActiveCategory(category.id)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                className={`px-5 py-2 rounded-full transition-all duration-300 ${
-                  activeCategory === category.id
-                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-500/20'
-                  : 'bg-[#111111] text-gray-400 hover:text-white border border-gray-800 hover:border-purple-500/50'
-                }`}
-              >
-                {category.name}
-              </motion.button>
-            ) : (
-              <button
-                key={category.id}
-                onClick={() => setActiveCategory(category.id)}
-                className={`px-5 py-2 rounded-full transition-all duration-300 ${
-                  activeCategory === category.id
-                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-500/20'
-                  : 'bg-[#111111] text-gray-400 hover:text-white border border-gray-800 hover:border-purple-500/50'
-                }`}
-              >
-                {category.name}
-              </button>
-            )
+          {categories.map((category) => (
+            <motion.button
+              key={category.id}
+              onClick={() => setActiveCategory(category.id)}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className={`px-5 py-2 rounded-full transition-all duration-300 ${
+                activeCategory === category.id
+                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-500/20'
+                : 'bg-[#111111] text-gray-400 hover:text-white border border-gray-800 hover:border-purple-500/50'
+              }`}
+            >
+              {category.name}
+            </motion.button>
           ))}
         </div>
 
-        {/* Tech Cards Grid */}
-        <div
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
-        >
-          {isMounted ? (
-            <AnimatePresence mode="wait">
-              {filteredTech.map((tech, index) => (
-                <TechCard key={tech.id} tech={tech} index={index} isMounted={isMounted} />
-              ))}
-            </AnimatePresence>
-          ) : (
-            <>
-              {filteredTech.map((tech, index) => (
-                <TechCard key={tech.id} tech={tech} index={index} isMounted={isMounted} />
-              ))}
-            </>
-          )}
+        {/* Tech Cards Grid - No initial animation */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+          <AnimatePresence mode="wait">
+            {filteredTech.map((tech, index) => (
+              <TechCard 
+                key={tech.id} 
+                tech={tech} 
+                index={index} 
+                isMounted={true} 
+              />
+            ))}
+          </AnimatePresence>
         </div>
       </div>
     </section>

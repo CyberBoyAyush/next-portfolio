@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Github, ExternalLink, Code, Eye } from 'lucide-react';
 import Image from 'next/image';
 
@@ -87,7 +87,7 @@ const projects = [
   },
 ];
 
-// Improved Project Card Component
+// Improved Project Card Component with smoother animations
 interface ProjectCardProps {
   project: typeof projects[0];
   index: number;
@@ -99,6 +99,7 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
   const cardRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isTouch, setIsTouch] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   
   // For tracking mouse movement for spotlight effect
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -126,32 +127,55 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
     };
   }, []);
 
-  // Content animation stagger
+  // Content animation with improved timing
   const contentVariants = {
     hidden: { opacity: 0 },
     visible: (i: number) => ({
       opacity: 1,
       transition: {
-        delay: i * 0.1,
-        duration: 0.5,
+        delay: Math.min(i * 0.05, 0.3), // Cap the delay for smoother appearance
+        duration: 0.4,
+        ease: "easeOut"
       },
     }),
+  };
+  
+  // Card entry animation - smoother and less jumpy
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut",
+        delay: Math.min(index * 0.08, 0.5) // Cap the delay
+      }
+    },
+    hover: {
+      y: -4,
+      transition: { 
+        duration: 0.3,
+        ease: "easeOut" 
+      }
+    }
   };
 
   return (
     <motion.div
       ref={cardRef}
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      variants={cardVariants}
+      initial="hidden"
+      whileInView="visible"
+      whileHover="hover"
+      viewport={{ once: true, margin: "-10%" }}
       onClick={onClick}
       onMouseMove={handleMouseMove}
-      className={`group relative cursor-pointer overflow-hidden rounded-2xl transition-all duration-300 ${
+      className={`group relative cursor-pointer overflow-hidden rounded-2xl transition-all duration-300 will-change-transform ${
         isSelected ? 'md:col-span-2 md:row-span-2' : 'col-span-1'
       } h-full bg-black/20 backdrop-blur-sm border border-white/10`}
     >
-      {/* Spotlight effect on hover - only show on non-touch devices */}
+      {/* Spotlight effect - unchanged */}
       {!isTouch && (
         <div 
           className="pointer-events-none absolute inset-0 z-30 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -163,22 +187,21 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
 
       {/* Background image with overlay */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {/* Overlay gradient */}
+        {/* Gradient and dark overlays - unchanged */}
         <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-30 mix-blend-soft-light`} />
-        
-        {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/80" />
         
-        {/* Project image - adaptive loading for mobile */}
+        {/* Improved image loading */}
         <Image 
           src={`${project.image}?w=${isTouch ? '400' : '800'}&q=${isTouch ? '70' : '80'}`}
           alt={project.title}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
-          style={{ opacity: 0.2 }}
-          priority={index < 3}
-          loading={index >= 3 ? "lazy" : "eager"}
+          className={`object-cover transition-transform duration-700 group-hover:scale-105 ${imageLoaded ? 'opacity-20' : 'opacity-0'}`}
+          style={{ transition: "opacity 0.5s ease-in-out" }}
+          priority={index < 2}
+          loading={index >= 2 ? "lazy" : "eager"}
+          onLoad={() => setImageLoaded(true)}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.style.opacity = "0.2";
@@ -187,18 +210,25 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
         />
       </div>
 
-      {/* Glassmorphism card content */}
+      {/* Card content with improved animations */}
       <div className={`relative z-10 flex h-full flex-col p-5 sm:p-6 ${isSelected ? 'md:p-7' : ''}`}>
         <div className="flex-1">
-          {/* Project name with accent dot */}
-          <div className="flex items-center mb-3">
+          {/* Project title */}
+          <motion.div 
+            variants={contentVariants}
+            custom={0}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="flex items-center mb-3"
+          >
             <h3 className={`font-bold text-white ${
               isSelected ? 'text-xl sm:text-2xl md:text-3xl' : 'text-lg sm:text-xl'
             }`}>
               {project.title}
             </h3>
             <div className="ml-2 h-2 w-2 rounded-full bg-purple-400"></div>
-          </div>
+          </motion.div>
           
           {/* Description */}
           <motion.p 
@@ -283,7 +313,10 @@ const Portfolio = () => {
   const gridRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   
-  // Check if the device is mobile
+  // Add a loading state to control initial animation
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Check if the device is mobile and handle loading state
   useEffect(() => {
     const checkDevice = () => {
       const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -299,9 +332,18 @@ const Portfolio = () => {
     // Initial check
     checkDevice();
     
+    // Handle loading state
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
+    
     // Update on resize
     window.addEventListener('resize', checkDevice);
-    return () => window.removeEventListener('resize', checkDevice);
+    
+    return () => {
+      window.removeEventListener('resize', checkDevice);
+      clearTimeout(timer);
+    };
   }, [selectedProject]);
   
   // Handle project selection and deselection
@@ -349,9 +391,36 @@ const Portfolio = () => {
     return () => document.removeEventListener('touchstart', handleTouchStart);
   }, []);
 
+  // Container animation for smooth entry
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: {
+        when: "beforeChildren",
+        staggerChildren: 0.08,
+        duration: 0.4,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  // Header animation with smoother entry
+  const headerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
+  };
+
   return (
     <section id="portfolio" className="relative py-16 sm:py-20 md:py-28 overflow-hidden">
-      {/* Restored original background elements - optimized for all devices */}
+      {/* Background elements - unchanged */}
       <div className="absolute inset-0 -z-10">
         {/* Dynamic background gradients - reduced intensity for better performance on mobile */}
         <div className="absolute top-1/4 right-1/4 w-[200px] sm:w-[300px] md:w-[500px] h-[200px] sm:h-[300px] md:h-[500px] bg-purple-900/10 rounded-full blur-[80px] sm:blur-[100px] md:blur-[150px] opacity-30 sm:opacity-50 md:opacity-70" />
@@ -361,14 +430,14 @@ const Portfolio = () => {
         <div className="absolute inset-0 bg-grid-pattern bg-[length:20px_20px] sm:bg-[length:30px_30px] md:bg-[length:50px_50px] opacity-[0.015] sm:opacity-[0.02] md:opacity-[0.03]"></div>
       </div>
       
-      {/* Content Container */}
+      {/* Content Container with smoother animations */}
       <div className="container mx-auto px-4 sm:px-6" ref={sectionRef}>
-        {/* Header with animations */}
+        {/* Header with improved animations */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
+          variants={headerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-10%" }}
           className="max-w-3xl mx-auto text-center mb-12 sm:mb-16"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
@@ -382,30 +451,38 @@ const Portfolio = () => {
           </p>
         </motion.div>
 
-        {/* Projects Grid with improved responsive layout */}
-        <div 
-          ref={gridRef} 
+        {/* Projects Grid with optimized animations */}
+        <motion.div 
+          ref={gridRef}
+          variants={containerVariants}
+          initial="hidden"
+          animate={isLoading ? "hidden" : "visible"}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 auto-rows-fr"
         >
-          {projects.slice(0, visibleProjects).map((project, index) => (
-            <ProjectCard 
-              key={project.id}
-              project={project}
-              index={index}
-              isSelected={!isMobile && selectedProject === project.id}
-              onClick={() => toggleProjectSelection(project.id)}
-            />
-          ))}
-        </div>
+          <AnimatePresence>
+            {projects.slice(0, visibleProjects).map((project, index) => (
+              <ProjectCard 
+                key={project.id}
+                project={project}
+                index={index}
+                isSelected={!isMobile && selectedProject === project.id}
+                onClick={() => toggleProjectSelection(project.id)}
+              />
+            ))}
+          </AnimatePresence>
+        </motion.div>
         
-        {/* Load More Button with enhanced animation */}
+        {/* Load More Button with improved animation */}
         {visibleProjects < projects.length && (
           <motion.div 
             className="mt-10 sm:mt-12 flex justify-center"
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ 
+              duration: 0.5, 
+              delay: 0.6,
+              ease: "easeOut"
+            }}
           >
             <motion.button
               onClick={loadMoreProjects}
