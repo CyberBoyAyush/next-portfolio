@@ -4,14 +4,58 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .cursor-blink {
-  animation: blink 1s step-end infinite;
+  animation: blink 1s infinite;
+  display: inline-block;
 }
 
 .terminal-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.custom-cursor {
+  pointer-events: none;
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: rgba(168, 85, 247, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s, background-color 0.3s;
+  z-index: 9999;
+  mix-blend-mode: difference;
+}
+
+.cursor-dot {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background-color: #9333ea;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  pointer-events: none;
+  transition: width 0.2s, height 0.2s, background-color 0.2s;
+}
+
+.grow-cursor {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(168, 85, 247, 0.2);
+  mix-blend-mode: difference;
+}
+
+.cursor-dot.grow {
+  width: 8px;
+  height: 8px;
+  background-color: white;
+}
+
+::selection {
+  background-color: rgba(168, 85, 247, 0.2);
+  color: #f3f4f6;
 } 

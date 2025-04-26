@@ -1,85 +1,105 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
 
 const CustomCursor = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isPointer, setIsPointer] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-  
-  const cursorX = useMotionValue(-100);
-  const cursorY = useMotionValue(-100);
-  
-  const springConfig = { damping: 25, stiffness: 700 };
-  const cursorXSpring = useSpring(cursorX, springConfig);
-  const cursorYSpring = useSpring(cursorY, springConfig);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [clicked, setClicked] = useState(false);
+  const [linkHovered, setLinkHovered] = useState(false);
+  const [hidden, setHidden] = useState(true);
 
   useEffect(() => {
-    setIsMounted(true);
+    // Hide default cursor
+    document.body.style.cursor = 'none';
+    
+    // Show custom cursor when it moves
+    const addEventListeners = () => {
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseenter', onMouseEnter);
+      document.addEventListener('mouseleave', onMouseLeave);
+      document.addEventListener('mousedown', onMouseDown);
+      document.addEventListener('mouseup', onMouseUp);
+    };
+
+    const removeEventListeners = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseenter', onMouseEnter);
+      document.removeEventListener('mouseleave', onMouseLeave);
+      document.removeEventListener('mousedown', onMouseDown);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    const onMouseMove = (e: MouseEvent) => {
+      setPosition({ x: e.clientX, y: e.clientY });
+      setHidden(false);
+    };
+
+    const onMouseEnter = () => {
+      setHidden(false);
+    };
+
+    const onMouseLeave = () => {
+      setHidden(true);
+    };
+
+    const onMouseDown = () => {
+      setClicked(true);
+    };
+
+    const onMouseUp = () => {
+      setClicked(false);
+    };
+
+    // Track when links are hovered
+    const handleLinkHoverEvents = () => {
+      const links = document.querySelectorAll('a, button, input, textarea, [role="button"]');
+      
+      links.forEach(link => {
+        link.addEventListener('mouseenter', () => setLinkHovered(true));
+        link.addEventListener('mouseleave', () => setLinkHovered(false));
+      });
+    };
+
+    addEventListeners();
+    handleLinkHoverEvents();
+
+    return () => {
+      removeEventListeners();
+      document.body.style.cursor = 'auto';
+    };
   }, []);
 
+  // Only render custom cursor on desktop devices
+  const [isMobile, setIsMobile] = useState(false);
+  
   useEffect(() => {
-    if (!isMounted) return;
-    
-    const moveCursor = (e: MouseEvent) => {
-      cursorX.set(e.clientX);
-      cursorY.set(e.clientY);
-      setIsVisible(true);
+    const checkDevice = () => {
+      setIsMobile(window.innerWidth <= 768 || 'ontouchstart' in window);
     };
-
-    const handlePointerEnter = (e: MouseEvent) => {
-      // Check if the target is a button, link, or any interactive element
-      const target = e.target as HTMLElement;
-      const isInteractive = 
-        target.tagName.toLowerCase() === 'button' ||
-        target.tagName.toLowerCase() === 'a' ||
-        target.closest('button') !== null ||
-        target.closest('a') !== null ||
-        target.classList.contains('cursor-pointer');
-      
-      setIsPointer(isInteractive);
-    };
-
-    window.addEventListener('mousemove', moveCursor);
-    window.addEventListener('mouseover', handlePointerEnter);
     
-    // Hide cursor when leaving the window
-    window.addEventListener('mouseout', () => setIsVisible(false));
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
     
-    return () => {
-      window.removeEventListener('mousemove', moveCursor);
-      window.removeEventListener('mouseover', handlePointerEnter);
-      window.removeEventListener('mouseout', () => setIsVisible(false));
-    };
-  }, [cursorX, cursorY, isMounted]);
-
-  if (!isMounted) return null;
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
+  
+  if (isMobile) return null;
 
   return (
     <>
-      {/* Main cursor */}
-      <motion.div
-        className="fixed top-0 left-0 w-7 h-7 rounded-full border-2 border-purple-500 z-50 pointer-events-none mix-blend-difference"
+      <div
+        className={`custom-cursor ${linkHovered ? 'grow-cursor' : ''} ${hidden ? 'opacity-0' : 'opacity-100'}`}
         style={{
-          x: cursorXSpring,
-          y: cursorYSpring,
-          translateX: '-50%',
-          translateY: '-50%',
-          opacity: isVisible ? 1 : 0,
-          scale: isPointer ? 1.5 : 1,
+          left: position.x,
+          top: position.y,
+          transform: `translate(-50%, -50%) scale(${clicked ? 0.8 : 1})`,
         }}
       />
-      
-      {/* Dot cursor */}
-      <motion.div
-        className="fixed top-0 left-0 w-1 h-1 rounded-full bg-white z-50 pointer-events-none"
+      <div
+        className={`cursor-dot ${linkHovered ? 'grow' : ''} ${hidden ? 'opacity-0' : 'opacity-100'}`}
         style={{
-          x: cursorX,
-          y: cursorY,
-          translateX: '-50%',
-          translateY: '-50%',
-          opacity: isVisible ? 1 : 0,
+          left: position.x,
+          top: position.y,
         }}
       />
     </>

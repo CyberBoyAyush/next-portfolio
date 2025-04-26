@@ -31,9 +31,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0a0a0a] text-white min-h-screen flex flex-col overflow-x-hidden selection:bg-purple-500/30 selection:text-white`}
       >
-        <div className="hidden md:block">
-          <CustomCursor />
-        </div>
+        <CustomCursor />
         
         <ParticlesBackground variant="network" />
         
