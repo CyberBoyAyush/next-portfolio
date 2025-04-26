@@ -127,31 +127,8 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
     };
   }, []);
 
-  // Content animation with improved timing
-  const contentVariants = {
-    hidden: { opacity: 0 },
-    visible: (i: number) => ({
-      opacity: 1,
-      transition: {
-        delay: Math.min(i * 0.05, 0.3), // Cap the delay for smoother appearance
-        duration: 0.4,
-        ease: "easeOut"
-      },
-    }),
-  };
-  
-  // Card entry animation - smoother and less jumpy
+  // Only keeping hover animation, removing initial animations
   const cardVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut",
-        delay: Math.min(index * 0.08, 0.5) // Cap the delay
-      }
-    },
     hover: {
       y: -4,
       transition: { 
@@ -161,14 +138,23 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
     }
   };
 
+  // Content animation variants - only for hover states and internal animations
+  const contentVariants = {
+    hidden: { opacity: 0 },
+    visible: (i: number) => ({
+      opacity: 1,
+      transition: {
+        duration: 0.4,
+        ease: "easeOut"
+      },
+    }),
+  };
+
   return (
     <motion.div
       ref={cardRef}
-      variants={cardVariants}
-      initial="hidden"
-      whileInView="visible"
       whileHover="hover"
-      viewport={{ once: true, margin: "-10%" }}
+      variants={cardVariants}
       onClick={onClick}
       onMouseMove={handleMouseMove}
       className={`group relative cursor-pointer overflow-hidden rounded-2xl transition-all duration-300 will-change-transform ${
@@ -191,70 +177,47 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
         <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-30 mix-blend-soft-light`} />
         <div className="absolute inset-0 bg-black/80" />
         
-        {/* Improved image loading */}
+        {/* Image loading - modified for immediate visibility */}
         <Image 
           src={`${project.image}?w=${isTouch ? '400' : '800'}&q=${isTouch ? '70' : '80'}`}
           alt={project.title}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          className={`object-cover transition-transform duration-700 group-hover:scale-105 ${imageLoaded ? 'opacity-20' : 'opacity-0'}`}
-          style={{ transition: "opacity 0.5s ease-in-out" }}
-          priority={index < 2}
-          loading={index >= 2 ? "lazy" : "eager"}
+          className="object-cover transition-transform duration-700 group-hover:scale-105 opacity-20"
+          priority={index < 3}
+          loading={index >= 3 ? "lazy" : "eager"}
           onLoad={() => setImageLoaded(true)}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            target.style.opacity = "0.2";
             target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Crect width='800' height='600' fill='%23111111'/%3E%3Ctext x='400' y='300' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='26' fill='%23666666'%3EProject Image%3C/text%3E%3C/svg%3E";
           }}
         />
       </div>
 
-      {/* Card content with improved animations */}
+      {/* Card content - simplified animations */}
       <div className={`relative z-10 flex h-full flex-col p-5 sm:p-6 ${isSelected ? 'md:p-7' : ''}`}>
         <div className="flex-1">
-          {/* Project title */}
-          <motion.div 
-            variants={contentVariants}
-            custom={0}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="flex items-center mb-3"
-          >
+          {/* Project title - no initial animation */}
+          <div className="flex items-center mb-3">
             <h3 className={`font-bold text-white ${
               isSelected ? 'text-xl sm:text-2xl md:text-3xl' : 'text-lg sm:text-xl'
             }`}>
               {project.title}
             </h3>
             <div className="ml-2 h-2 w-2 rounded-full bg-purple-400"></div>
-          </motion.div>
+          </div>
           
-          {/* Description */}
-          <motion.p 
-            custom={1}
-            variants={contentVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className={`text-gray-300 ${
-              isSelected 
-                ? 'mb-6 text-sm sm:text-base line-clamp-none' 
-                : 'mb-5 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3'
-            }`}
-          >
+          {/* Description - no initial animation */}
+          <p className={`text-gray-300 ${
+            isSelected 
+              ? 'mb-6 text-sm sm:text-base line-clamp-none' 
+              : 'mb-5 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3'
+          }`}>
             {project.description}
-          </motion.p>
+          </p>
 
-          {/* BUILT WITH section */}
-          <motion.div 
-            custom={2}
-            variants={contentVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="mb-5"
-          >
+          {/* BUILT WITH section - no initial animation */}
+          <div className="mb-5">
             <span className="text-xs text-purple-400 font-medium mb-2 block">BUILT WITH</span>
             <div className="flex flex-wrap gap-2">
               {project.tags.map((tag) => (
@@ -266,18 +229,11 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
                 </span>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Action buttons */}
-        <motion.div 
-          custom={3}
-          variants={contentVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="flex gap-3"
-        >
+        {/* Action buttons - no initial animation */}
+        <div className="flex gap-3">
           <a 
             href={project.demoLink} 
             target="_blank"
@@ -296,7 +252,7 @@ const ProjectCard = ({ project, index, isSelected, onClick }: ProjectCardProps) 
           >
             <Code size={16} /> View Code
           </a>
-        </motion.div>
+        </div>
         
         {/* Decorative gradient circle */}
         <div className="absolute -bottom-20 -right-20 h-40 w-40 rounded-full bg-gradient-to-r from-purple-600/20 to-indigo-600/30 blur-3xl"></div>
@@ -313,10 +269,7 @@ const Portfolio = () => {
   const gridRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   
-  // Add a loading state to control initial animation
-  const [isLoading, setIsLoading] = useState(true);
-  
-  // Check if the device is mobile and handle loading state
+  // Check if the device is mobile
   useEffect(() => {
     const checkDevice = () => {
       const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -332,17 +285,11 @@ const Portfolio = () => {
     // Initial check
     checkDevice();
     
-    // Handle loading state
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 300);
-    
     // Update on resize
     window.addEventListener('resize', checkDevice);
     
     return () => {
       window.removeEventListener('resize', checkDevice);
-      clearTimeout(timer);
     };
   }, [selectedProject]);
   
@@ -391,23 +338,9 @@ const Portfolio = () => {
     return () => document.removeEventListener('touchstart', handleTouchStart);
   }, []);
 
-  // Container animation for smooth entry
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: {
-        when: "beforeChildren",
-        staggerChildren: 0.08,
-        duration: 0.4,
-        ease: "easeOut"
-      }
-    }
-  };
-
-  // Header animation with smoother entry
+  // Header animation with subtle entry
   const headerVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0.9, y: 10 },
     visible: { 
       opacity: 1, 
       y: 0,
@@ -430,14 +363,14 @@ const Portfolio = () => {
         <div className="absolute inset-0 bg-grid-pattern bg-[length:20px_20px] sm:bg-[length:30px_30px] md:bg-[length:50px_50px] opacity-[0.015] sm:opacity-[0.02] md:opacity-[0.03]"></div>
       </div>
       
-      {/* Content Container with smoother animations */}
+      {/* Content Container with simpler animations */}
       <div className="container mx-auto px-4 sm:px-6" ref={sectionRef}>
         {/* Header with improved animations */}
         <motion.div
           variants={headerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-10%" }}
+          viewport={{ once: true }}
           className="max-w-3xl mx-auto text-center mb-12 sm:mb-16"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
@@ -451,39 +384,25 @@ const Portfolio = () => {
           </p>
         </motion.div>
 
-        {/* Projects Grid with optimized animations */}
-        <motion.div 
+        {/* Projects Grid - no initial loading animation */}
+        <div 
           ref={gridRef}
-          variants={containerVariants}
-          initial="hidden"
-          animate={isLoading ? "hidden" : "visible"}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 auto-rows-fr"
         >
-          <AnimatePresence>
-            {projects.slice(0, visibleProjects).map((project, index) => (
-              <ProjectCard 
-                key={project.id}
-                project={project}
-                index={index}
-                isSelected={!isMobile && selectedProject === project.id}
-                onClick={() => toggleProjectSelection(project.id)}
-              />
-            ))}
-          </AnimatePresence>
-        </motion.div>
+          {projects.slice(0, visibleProjects).map((project, index) => (
+            <ProjectCard 
+              key={project.id}
+              project={project}
+              index={index}
+              isSelected={!isMobile && selectedProject === project.id}
+              onClick={() => toggleProjectSelection(project.id)}
+            />
+          ))}
+        </div>
         
-        {/* Load More Button with improved animation */}
+        {/* Load More Button with subtle animation */}
         {visibleProjects < projects.length && (
-          <motion.div 
-            className="mt-10 sm:mt-12 flex justify-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ 
-              duration: 0.5, 
-              delay: 0.6,
-              ease: "easeOut"
-            }}
-          >
+          <div className="mt-10 sm:mt-12 flex justify-center">
             <motion.button
               onClick={loadMoreProjects}
               className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-lg bg-purple-600 px-8 py-3 transition-all hover:bg-purple-500"
@@ -510,7 +429,7 @@ const Portfolio = () => {
                 }}
               />
             </motion.button>
-          </motion.div>
+          </div>
         )}
       </div>
     </section>
