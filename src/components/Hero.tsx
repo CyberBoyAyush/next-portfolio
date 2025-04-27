@@ -152,12 +152,64 @@ const Hero = () => {
                   >
                     Let&apos;s Connect
                   </a>
+                
+                  
                   <a 
                     href="/AyushSharmaResume.pdf" 
                     className="px-6 py-3 rounded-lg bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium transition-all duration-300 hover:bg-gray-700/50"
                   >
                     Download Resume
                   </a>
+
+                  {/* CLI Command Display - Hidden on mobile */}
+                  <div className="w-full my-3 relative group hidden md:block">
+                    <div className="flex flex-col rounded-lg bg-gray-900/90 border border-gray-700 overflow-hidden shadow-lg shadow-purple-500/10 transition-all duration-300 group-hover:shadow-purple-500/20">
+                      {/* Terminal Header */}
+                      <div className="bg-gray-800 px-3 py-1.5 flex items-center">
+                        <div className="flex space-x-1.5">
+                          <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                          <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                          <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                        </div>
+                        <span className="text-gray-400 text-[10px] md:text-xs font-medium ml-2">portfolio-cli</span>
+                      </div>
+                      
+                      {/* Command Area */}
+                      <div className="flex items-center p-2.5 md:p-3">
+                        <span className="text-green-400 mr-1.5 text-sm md:text-base">$</span>
+                        <div className="flex-1 font-mono text-xs md:text-sm text-gray-200 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                          npm install -g ayush-cli && ayush
+                        </div>
+                        <button 
+                          className="ml-2 px-2 py-1 md:px-3 md:py-1.5 rounded-md bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center text-white text-[10px] md:text-xs font-medium transition-all duration-300 hover:from-purple-700 hover:to-indigo-700 group relative after:content-['Copied!'] after:absolute after:top-[-24px] after:left-1/2 after:-translate-x-1/2 after:bg-gray-800 after:text-white after:px-1.5 after:py-0.5 after:rounded after:text-[10px] after:hidden after:transition-all"
+                          onClick={() => {
+                            navigator.clipboard.writeText("npm install -g ayush-cli && ayush");
+                            
+                            // Find the button element and show/hide tooltip
+                            const btn = document.getElementById('copy-btn');
+                            if (btn) {
+                              btn.classList.remove('after:hidden');
+                              setTimeout(() => {
+                                btn.classList.add('after:hidden');
+                              }, 2000);
+                            }
+                          }}
+                          id="copy-btn"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 hidden md:block">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                          </svg>
+                          Copy
+                        </button>
+                      </div>
+                      
+                      {/* Hint Text - Hidden on small screens */}
+                      <div className="px-3 py-1.5 bg-gray-800/50 border-t border-gray-700 hidden md:block">
+                        <p className="text-[10px] text-gray-400">Try my interactive portfolio CLI</p>
+                      </div>
+                    </div>
+                  </div>
                 </motion.div>
                 
                 <motion.div variants={itemVariants} className="mt-8 flex items-center gap-4">
