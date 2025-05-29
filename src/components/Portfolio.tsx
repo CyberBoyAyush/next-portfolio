@@ -13,7 +13,7 @@ const projects = [
     title: 'TuduAI',
     description: ' An AI-powered productivity app with natural language task creation, collaborative workspaces, and a minimalist UI for effortless planning.',
     image: '/images/projects/tuduai.png',
-    tags: ["React", "Typecript", "Browser Engine"],
+    tags: ["React", "Javascript", "TailwindCSS", "Appwrite", "OpenAi API", "Clerk"],
     demoLink: 'https://tuduai.vercel.app/',
     featured: true,
     year: '2025',
