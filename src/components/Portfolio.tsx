@@ -10,6 +10,30 @@ import SectionHeading from './SectionHeading';
 const projects = [
   {
     id: 1,
+    title: 'TuduAI',
+    description: ' An AI-powered productivity app with natural language task creation, collaborative workspaces, and a minimalist UI for effortless planning.',
+    image: '/images/projects/tuduai.png',
+    tags: ["React", "Typecript", "Browser Engine"],
+    demoLink: 'https://tuduai.vercel.app/',
+    featured: true,
+    year: '2025',
+    duration: '15 Days',
+    color: 'from-indigo-600 to-purple-600'
+  },
+  {
+    id: 2,
+    title: 'QuickBang',
+    description: 'Lightning-fast search shortcuts to enhance your workflow.',
+    image: '/images/projects/quickbang.png',
+    tags: ["React", "Typecript", "Browser Engine"],
+    demoLink: 'https://quickbang.vercel.app/',
+    featured: true,
+    year: '2025',
+    duration: '5 Days',
+    color: 'from-indigo-600 to-purple-600'
+  },
+  {
+    id: 3,
     title: 'Effisense',
     description: 'Experience the future of productivity with AI-powered task scheduling, smart prioritization, and intelligent workload balancing.',
     image: '/images/projects/effisense.png',
@@ -21,20 +45,7 @@ const projects = [
     color: 'from-indigo-600 to-purple-600'
   },
   {
-    id: 2,
-    title: 'Finwise',
-    description: 'AI Powered Financial Advisor for personalized financial recommendations.',
-    image: '/images/projects/finwise.png',
-    tags: ["React", "Gemini", "GROQ", "Appwrite", "TailwindCSS", "Grow"],
-    demoLink: 'https://finwise.ayush-sharma.in/',
-    githubLink: 'https://github.com/glucon-d/finwise',
-    featured: false,
-    year: '2025',
-    duration: '1 months',
-    color: 'from-emerald-600 to-teal-600'
-  },
-  {
-    id: 3,
+    id: 4,
     title: 'Pathgenie',
     description: 'AI powered career guidance platform for personalized career recommendations.',
     image: '/images/projects/pathgenie.png',
@@ -47,19 +58,6 @@ const projects = [
     color: 'from-blue-600 to-cyan-600'
   },
   {
-    id: 4,
-    title: 'Intellica',
-    description: 'AI powered learning platform for personalized learning experience.',
-    image: '/images/projects/intellica.png',
-    tags: ["React", "Gemini", "Appwrite", "TailwindCSS"],
-    demoLink: 'https://intellica.ayush-sharma.in/',
-    githubLink: 'https://github.com/cyberboyayush/intellica',
-    featured: false,
-    year: '2025',
-    duration: '1 months',
-    color: 'from-amber-600 to-orange-600'
-  },
-  {
     id: 5,
     title: 'PortDev',
     description: 'Create Devloper Portfolio in Minutes.',
@@ -67,7 +65,7 @@ const projects = [
     tags: ["React", "Firebase", "TailwindCSS", "Framer Motion"],
     demoLink: 'https://portdevv.vercel.app/',
     githubLink: 'https://github.com/cyberboyayush/portdev',
-    featured: true,
+    featured: false,
     year: '2025',
     duration: '1.5 months',
     color: 'from-rose-600 to-pink-600'
@@ -80,7 +78,7 @@ const projects = [
     tags: ["React", "TailwindCSS", "Framer Motion", "Particles.js"],
     demoLink: 'https://cyberboyayush.in/',
     githubLink: 'https://github.com/cyberboyayush/React-Portfolio',
-    featured: true,
+    featured: false,
     year: '2025',
     duration: '5 days',
     color: 'from-violet-600 to-purple-600'
