@@ -1,298 +1,72 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { SiHtml5, SiCss3, SiJavascript, SiTypescript, SiReact, 
-  SiNextdotjs, SiNodedotjs, SiExpress, SiMongodb, SiTailwindcss, 
-  SiFirebase, SiSupabase, SiTensorflow, SiAppwrite, SiClerk,
-  SiPython, SiDjango, SiFlask, SiAmazon, SiDocker,
-  SiKubernetes, SiGit, SiGraphql, SiRedis, SiPostgresql,
-  SiVercel, SiVite, SiSass, SiMui, SiFigma } from 'react-icons/si';
+  SiNextdotjs, SiNodedotjs, SiMongodb, SiTailwindcss, 
+  SiFirebase, SiPython, SiAmazon, SiDocker,
+  SiGit, SiPostgresql, SiVercel } from 'react-icons/si';
+import { Code, Sparkles } from 'lucide-react';
 import SectionHeading from './SectionHeading';
 
-// Technology cards data with proper icons
+// Reduced tech stack to essentials only
 const techStack = [
-  { 
-    id: 'html', 
-    name: 'HTML5', 
-    icon: SiHtml5, 
-    color: '#E34F26', 
-    category: 'frontend',
-  },
-  { 
-    id: 'css', 
-    name: 'CSS3', 
-    icon: SiCss3, 
-    color: '#1572B6', 
-    category: 'frontend',
-  },
-  { 
-    id: 'javascript', 
-    name: 'JavaScript', 
-    icon: SiJavascript, 
-    color: '#F7DF1E', 
-    category: 'frontend',
-  },
-  { 
-    id: 'typescript', 
-    name: 'TypeScript', 
-    icon: SiTypescript, 
-    color: '#3178C6', 
-    category: 'frontend',
-  },
-  { 
-    id: 'react', 
-    name: 'React', 
-    icon: SiReact, 
-    color: '#61DAFB', 
-    category: 'frontend',
-  },
-  { 
-    id: 'nextjs', 
-    name: 'Next.js', 
-    icon: SiNextdotjs, 
-    color: '#ffffff', 
-    category: 'frontend',
-  },
-  { 
-    id: 'tailwindcss', 
-    name: 'Tailwind CSS', 
-    icon: SiTailwindcss, 
-    color: '#06B6D4', 
-    category: 'frontend',
-  },
-  { 
-    id: 'sass', 
-    name: 'Sass', 
-    icon: SiSass, 
-    color: '#CC6699', 
-    category: 'frontend',
-  },
-  { 
-    id: 'mui', 
-    name: 'Material UI', 
-    icon: SiMui, 
-    color: '#007FFF', 
-    category: 'frontend',
-  },
-  { 
-    id: 'vite', 
-    name: 'Vite', 
-    icon: SiVite, 
-    color: '#646CFF', 
-    category: 'frontend',
-  },
-  { 
-    id: 'nodejs', 
-    name: 'Node.js', 
-    icon: SiNodedotjs, 
-    color: '#339933', 
-    category: 'backend',
-  },
-  { 
-    id: 'express', 
-    name: 'Express', 
-    icon: SiExpress, 
-    color: '#ffffff', 
-    category: 'backend',
-  },
-  { 
-    id: 'python', 
-    name: 'Python', 
-    icon: SiPython, 
-    color: '#3776AB', 
-    category: 'backend',
-  },
-  { 
-    id: 'django', 
-    name: 'Django', 
-    icon: SiDjango, 
-    color: '#092E20', 
-    category: 'backend',
-  },
-  { 
-    id: 'flask', 
-    name: 'Flask', 
-    icon: SiFlask, 
-    color: '#000000', 
-    category: 'backend',
-  },
-  { 
-    id: 'graphql', 
-    name: 'GraphQL', 
-    icon: SiGraphql, 
-    color: '#E10098', 
-    category: 'backend',
-  },
-  { 
-    id: 'mongodb', 
-    name: 'MongoDB', 
-    icon: SiMongodb, 
-    color: '#47A248', 
-    category: 'backend',
-  },
-  { 
-    id: 'postgresql', 
-    name: 'PostgreSQL', 
-    icon: SiPostgresql, 
-    color: '#4169E1', 
-    category: 'backend',
-  },
-  { 
-    id: 'redis', 
-    name: 'Redis', 
-    icon: SiRedis, 
-    color: '#DC382D', 
-    category: 'backend',
-  },
-  { 
-    id: 'firebase', 
-    name: 'Firebase', 
-    icon: SiFirebase, 
-    color: '#FFCA28', 
-    category: 'backend',
-  },
-  { 
-    id: 'supabase', 
-    name: 'Supabase', 
-    icon: SiSupabase, 
-    color: '#3ECF8E', 
-    category: 'backend',
-  },
-  { 
-    id: 'appwrite', 
-    name: 'Appwrite', 
-    icon: SiAppwrite, 
-    color: '#FD366E', 
-    category: 'backend',
-  },
-  { 
-    id: 'aws', 
-    name: 'AWS', 
-    icon: SiAmazon, 
-    color: '#FF9900', 
-    category: 'devops',
-  },
-  { 
-    id: 'docker', 
-    name: 'Docker', 
-    icon: SiDocker, 
-    color: '#2496ED', 
-    category: 'devops',
-  },
-  { 
-    id: 'kubernetes', 
-    name: 'Kubernetes', 
-    icon: SiKubernetes, 
-    color: '#326CE5', 
-    category: 'devops',
-  },
-  { 
-    id: 'git', 
-    name: 'Git', 
-    icon: SiGit, 
-    color: '#F05032', 
-    category: 'tools',
-  },
-  { 
-    id: 'vercel', 
-    name: 'Vercel', 
-    icon: SiVercel, 
-    color: '#ffffff', 
-    category: 'tools',
-  },
-  { 
-    id: 'figma', 
-    name: 'Figma', 
-    icon: SiFigma, 
-    color: '#F24E1E', 
-    category: 'tools',
-  },
-  { 
-    id: 'tensorflow', 
-    name: 'TensorFlow', 
-    icon: SiTensorflow, 
-    color: '#FF6F00', 
-    category: 'tools',
-  },
-  { 
-    id: 'clerk', 
-    name: 'Clerk', 
-    icon: SiClerk, 
-    color: '#6C47FF', 
-    category: 'tools',
-  },
+  { id: 'react', name: 'React', icon: SiReact, category: 'frontend' },
+  { id: 'nextjs', name: 'Next.js', icon: SiNextdotjs, category: 'frontend' },
+  { id: 'typescript', name: 'TypeScript', icon: SiTypescript, category: 'frontend' },
+  { id: 'tailwindcss', name: 'Tailwind', icon: SiTailwindcss, category: 'frontend' },
+  { id: 'nodejs', name: 'Node.js', icon: SiNodedotjs, category: 'backend' },
+  { id: 'python', name: 'Python', icon: SiPython, category: 'backend' },
+  { id: 'mongodb', name: 'MongoDB', icon: SiMongodb, category: 'backend' },
+  { id: 'postgresql', name: 'PostgreSQL', icon: SiPostgresql, category: 'backend' },
+  { id: 'firebase', name: 'Firebase', icon: SiFirebase, category: 'backend' },
+  { id: 'aws', name: 'AWS', icon: SiAmazon, category: 'devops' },
+  { id: 'docker', name: 'Docker', icon: SiDocker, category: 'devops' },
+  { id: 'git', name: 'Git', icon: SiGit, category: 'tools' },
 ];
 
 const categories = [
-  { id: 'all', name: 'All Technologies' },
+  { id: 'all', name: 'All' },
   { id: 'frontend', name: 'Frontend' },
   { id: 'backend', name: 'Backend' },
   { id: 'devops', name: 'DevOps' },
-  { id: 'tools', name: 'Tools & Others' },
 ];
 
-const TechCard = ({ tech, index, isMounted }: { tech: typeof techStack[0], index: number, isMounted: boolean }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  
-  // For smoother hover state transitions
-  const handleHoverStart = () => {
-    setIsHovered(true);
-  };
-  
-  const handleHoverEnd = () => {
-    setIsHovered(false);
-  };
-  
-  // Optimized card variants with smoother transitions - removed initial animation
-  const cardVariants = {
-    hover: { 
-      y: -8, // Reduced movement for subtlety
-      boxShadow: `0 10px 25px -5px ${tech.color}33`,
-      borderColor: `${tech.color}80`,
-      transition: { 
-        type: "spring",
-        stiffness: 300,
-        damping: 15
-      }
-    }
-  };
-  
-  // Optimized icon variants - only keeping hover effect
-  const iconVariants = {
-    hover: { 
-      scale: 1.1, // Reduced for subtlety
-      transition: { 
-        type: "spring",
-        stiffness: 300,
-        damping: 15
-      }
-    }
-  };
-  
+const TechCard = ({ tech, index }: { tech: typeof techStack[0], index: number }) => {
   const Icon = tech.icon;
   
   return (
     <motion.div
-      ref={cardRef}
-      whileHover="hover"
-      onHoverStart={handleHoverStart}
-      onHoverEnd={handleHoverEnd}
-      variants={cardVariants}
-      className="relative group rounded-xl will-change-transform"
+      initial={{ opacity: 0, y: 20, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ 
+        duration: 0.5, 
+        delay: index * 0.05,
+        type: "spring",
+        stiffness: 100
+      }}
+      whileHover={{ y: -4, scale: 1.03 }}
+      className="group relative"
     >
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl opacity-0 group-hover:opacity-70 blur-sm transition duration-300"></div>
-      <div className="relative bg-[#111111] p-6 rounded-xl h-full flex flex-col items-center justify-center border border-gray-800 backdrop-blur-sm transition-all duration-300">
-        <motion.div 
-          variants={iconVariants}
-          className="text-6xl mb-4 p-4 rounded-full transition-all duration-300 will-change-transform"
-          style={{ color: tech.color }}
-        >
-          <Icon />
-        </motion.div>
+      {/* Card with Glassmorphism - Mobile Responsive */}
+      <div className="relative bg-gradient-to-br from-gray-900/60 via-gray-800/40 to-gray-900/60 backdrop-blur-xl rounded-xl md:rounded-2xl border border-gray-700/50 overflow-hidden hover:border-gray-600/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 p-4 md:p-6">
         
-        <h3 className="text-base font-medium text-white">{tech.name}</h3>
+        {/* Glow Effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        
+        {/* Icon Container - Mobile Responsive */}
+        <div className="relative flex flex-col items-center text-center">
+          <div className="relative mb-3 md:mb-4">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl md:rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="relative p-2 md:p-4 bg-gradient-to-br from-gray-800/50 to-gray-700/50 rounded-xl md:rounded-2xl border border-gray-600/30 group-hover:border-gray-500/50 transition-all duration-300">
+              <Icon className="text-2xl md:text-4xl text-gray-300 group-hover:text-white transition-colors duration-300" />
+            </div>
+          </div>
+          
+          <span className="text-xs md:text-sm font-semibold text-white group-hover:text-blue-100 transition-colors duration-300">
+            {tech.name}
+          </span>
+        </div>
       </div>
     </motion.div>
   );
@@ -308,52 +82,81 @@ const Skills = () => {
     : techStack.filter(tech => tech.category === activeCategory);
 
   return (
-    <section id="skills" className="py-24 relative overflow-hidden">
-      {/* Background elements */}
-      <div className="absolute w-96 h-96 bg-purple-900/20 rounded-full blur-[120px] -top-10 -right-20 opacity-40" />
-      <div className="absolute w-96 h-96 bg-indigo-900/20 rounded-full blur-[120px] -bottom-10 -left-20 opacity-40" />
+    <section id="skills" className="py-12 md:py-20 relative overflow-hidden">
+      {/* Enhanced Background */}
+      <div className="absolute inset-0 -z-10 bg-[#0D1117]">
+        <div className="absolute top-1/4 left-1/4 w-1/2 h-1/2 bg-gradient-radial from-blue-500/10 via-purple-500/5 to-transparent opacity-70 blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-1/3 h-1/3 bg-gradient-radial from-cyan-500/10 to-transparent opacity-50 blur-[100px]" />
+      </div>
       
-      <div className="container mx-auto px-6">
-        <div ref={titleRef}>
+      {/* Enhanced Grid background - Mobile Responsive */}
+      <div className="absolute inset-0 -z-10 bg-[length:40px_40px] md:bg-[length:60px_60px] [background-image:linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)]" />
+      
+      <div className="container mx-auto px-4 md:px-6 max-w-6xl">
+        <div ref={titleRef} className="mb-12 md:mb-16">
           <SectionHeading 
-            subtitle="My Expertise"
-            title="Technical Skills"
-            description="I work with a variety of technologies to build modern, responsive, and scalable applications. Here's my tech stack that I've mastered over the years."
+            subtitle="Tech Stack"
+            title="Skills & Technologies"
+            description="Cutting-edge technologies I use to craft exceptional digital experiences."
           />
         </div>
 
-        {/* Category Tabs - Smoother animation */}
-        <div className="flex flex-wrap justify-center gap-3 mb-14">
+        {/* Enhanced Category Tabs - Mobile Responsive */}
+        <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 md:mb-12 px-2">
           {categories.map((category) => (
             <motion.button
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className={`px-5 py-2 rounded-full transition-all duration-300 ${
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`relative px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm font-medium transition-all duration-300 ${
                 activeCategory === category.id
-                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-500/20'
-                : 'bg-[#111111] text-gray-400 hover:text-white border border-gray-800 hover:border-purple-500/50'
+                ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/25'
+                : 'bg-gradient-to-br from-gray-800/60 to-gray-700/60 text-gray-300 hover:text-white border border-gray-600/30 hover:border-gray-500/50 backdrop-blur-sm'
               }`}
             >
-              {category.name}
+              {activeCategory === category.id && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl md:rounded-2xl"
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-1 md:gap-2">
+                <Code size={14} className="md:hidden" />
+                <Code size={16} className="hidden md:block" />
+                {category.name}
+              </span>
             </motion.button>
           ))}
         </div>
 
-        {/* Tech Cards Grid - No initial animation */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-          <AnimatePresence mode="wait">
+        {/* Enhanced Tech Grid - Mobile Responsive */}
+        <motion.div 
+          layout
+          className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 md:gap-4 max-w-5xl mx-auto"
+        >
+          <AnimatePresence>
             {filteredTech.map((tech, index) => (
-              <TechCard 
-                key={tech.id} 
-                tech={tech} 
-                index={index} 
-                isMounted={true} 
-              />
+              <TechCard key={tech.id} tech={tech} index={index} />
             ))}
           </AnimatePresence>
-        </div>
+        </motion.div>
+
+        {/* Tech Stats - Mobile Responsive */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="text-center mt-12 md:mt-16"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 bg-gradient-to-r from-gray-800/60 to-gray-700/60 rounded-xl md:rounded-2xl border border-gray-600/30 backdrop-blur-sm">
+            <Sparkles className="text-blue-400" size={16} />
+            <span className="text-gray-300 font-medium text-sm md:text-base">
+              {techStack.length}+ Technologies Mastered
+            </span>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

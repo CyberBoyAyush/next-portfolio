@@ -4,8 +4,8 @@ import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import CustomCursor from "../components/CustomCursor";
-import ParticlesBackground from "../components/ParticlesBackground";
 import Spotlight from "../components/Spotlight";
+import OnekoCat from "@/components/OnekoCat";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,19 +51,18 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark !scroll-smooth" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0a0a0a] text-white min-h-screen flex flex-col overflow-x-hidden selection:bg-purple-500/30 selection:text-white`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0D1117] text-white min-h-screen flex flex-col overflow-x-hidden selection:bg-gray-600/30 selection:text-white`}
       >
         <CustomCursor />
         <Spotlight />
         
-        <ParticlesBackground variant="network" />
-        
         <div className="fixed inset-0 opacity-[0.03] bg-[url('/noise.svg')] pointer-events-none z-[-1]"></div>
         
         <Navbar />
-        <main className="flex-grow">
+        <main className="flex-grow relative">
           {children}
         </main>
+        <OnekoCat />
         <Footer />
       </body>
     </html>

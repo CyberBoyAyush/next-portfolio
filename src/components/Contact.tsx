@@ -39,7 +39,7 @@ const Contact = () => {
       command: '', 
       output: (
         <div className="space-y-2 text-gray-300">
-          <p className="text-purple-400 font-semibold">Welcome to Ayush's Terminal Contact!</p>
+          <p className="text-gray-300 font-semibold">Welcome to Ayush's Terminal Contact!</p>
           <p>Follow these steps to send me a message:</p>
           <p className="ml-4">1. <span className="text-green-400">name</span> - Set your name</p>
           <p className="ml-4">2. <span className="text-green-400">email</span> - Set your email</p>
@@ -64,6 +64,7 @@ const Contact = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [typingText, setTypingText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [time, setTime] = useState('');
   
   // This will scroll to the bottom of the terminal when new commands are added
   useEffect(() => {
@@ -311,7 +312,7 @@ Please fill in all fields before sending.`;
           <p className="ml-4"><span className="text-green-400">send</span> - Send your message to Ayush</p>
           <p className="ml-4"><span className="text-green-400">status</span> - Check current input status</p>
           <p className="ml-4"><span className="text-green-400">clear</span> - Clear the terminal</p>
-          <p className="text-xs text-gray-500 mt-2">Pro tip: Use <span className="text-purple-400">Tab</span> to autocomplete commands and <span className="text-purple-400">↑</span> to recall previous commands</p>
+          <p className="text-xs text-gray-500 mt-2">Pro tip: Use <span className="text-gray-400">Tab</span> to autocomplete commands and <span className="text-gray-400">↑</span> to recall previous commands</p>
         </div>
       );
     } else {
@@ -338,13 +339,29 @@ Please fill in all fields before sending.`;
     return 'ayush@portfolio:~$';
   };
 
+  useEffect(() => {
+    // Set initial time on client side to prevent hydration mismatch
+    const updateTime = () => {
+      setTime(new Date().toLocaleTimeString());
+    };
+    
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <section id="contact" ref={sectionRef} className="py-16 relative overflow-hidden">
-      {/* Background elements */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-radial from-purple-900/10 to-transparent opacity-70 blur-[100px]" />
-        <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-radial from-indigo-900/10 to-transparent opacity-70 blur-[100px]" />
+    <section id="contact" ref={sectionRef} className="py-20 relative overflow-hidden">
+      {/* Simplified background - consistent with Hero */}
+      <div className="absolute inset-0 -z-10 bg-[#0D1117]">
+        <div className="absolute top-1/4 right-1/4 w-1/2 h-1/2 bg-gradient-radial from-gray-800/20 to-transparent opacity-50 blur-[100px]" />
       </div>
+      
+      {/* Simplified grid background - consistent with Hero */}
+      <div
+        className="absolute inset-0 -z-10 bg-[length:40px_40px] md:bg-[length:50px_50px] [background-image:linear-gradient(rgba(255,255,255,.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.01)_1px,transparent_1px)]"
+      ></div>
       
       <div className="container mx-auto px-4 max-w-6xl">
         <SectionHeading 
@@ -361,22 +378,25 @@ Please fill in all fields before sending.`;
             transition={{ duration: 0.5, delay: 0.2 }}
             className="md:col-span-2"
           >
-            <div className="bg-gray-900/80 backdrop-blur-md rounded-lg border border-gray-800 shadow-xl overflow-hidden">
+            <div className="bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800/50 shadow-xl overflow-hidden">
               {/* Terminal header */}
-              <div className="bg-gray-800/90 p-3 flex items-center">
+              <div className="bg-gray-800/60 p-3 flex items-center justify-between">
                 <div className="flex space-x-2 mr-4">
                   <div className="w-3 h-3 rounded-full bg-red-500 group-hover:cursor-not-allowed"></div>
                   <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                   <div className="w-3 h-3 rounded-full bg-green-500"></div>
                 </div>
                 <div className="flex-1 text-center text-gray-400 text-sm font-mono">Terminal — contact.sh</div>
+                <div className="text-green-400 text-sm font-mono">
+                  {time || '--:--:-- --'}
+                </div>
                 <Terminal size={18} className="text-gray-400" />
               </div>
               
               {/* Terminal body */}
               <div 
                 ref={terminalRef}
-                className="p-4 h-[450px] overflow-y-auto font-mono text-sm bg-gradient-to-b from-gray-900 to-black/95"
+                className="p-4 h-[450px] overflow-y-auto font-mono text-sm bg-gray-900/80"
                 onClick={focusInput}
               >
                 {/* Intro animation text */}
@@ -391,8 +411,8 @@ Please fill in all fields before sending.`;
                   <div key={index} className="mb-4 terminal-fade-in">
                     {entry.command && (
                       <div className="flex items-start group">
-                        <span className="text-purple-400 mr-2 font-bold">{getPrompt()}</span>
-                        <span className="text-white group-hover:text-yellow-300 transition-colors">{entry.command}</span>
+                        <span className="text-gray-400 mr-2 font-bold">{getPrompt()}</span>
+                        <span className="text-white group-hover:text-gray-300 transition-colors">{entry.command}</span>
                       </div>
                     )}
                     <div className={`ml-4 mt-1 ${entry.isError ? 'text-red-400' : 'text-gray-300'}`}>
@@ -404,7 +424,7 @@ Please fill in all fields before sending.`;
                 {/* Typing animation */}
                 {isTyping && (
                   <div className="flex items-start mb-4">
-                    <span className="text-purple-400 mr-2 font-bold">{getPrompt()}</span>
+                    <span className="text-gray-400 mr-2 font-bold">{getPrompt()}</span>
                     <div className="relative">
                       <span className="text-white">{typingText}</span>
                       <span className="cursor-blink ml-0.5 inline-block">▌</span>
@@ -415,7 +435,7 @@ Please fill in all fields before sending.`;
                 {/* Current command line */}
                 {!isTyping && (
                   <div className="flex items-center relative">
-                    <span className="text-purple-400 mr-2 font-bold whitespace-nowrap">
+                    <span className="text-gray-400 mr-2 font-bold whitespace-nowrap">
                       {getPrompt()}
                     </span>
                     <div className="relative flex-1">
@@ -446,27 +466,27 @@ Please fill in all fields before sending.`;
               </div>
             </div>
             
-            {/* Command suggestions and progress */}
+            {/* Command suggestions and progress - simplified styling */}
             <div className="mt-4 space-y-4">
               {/* Progress indicator */}
               <div className="flex items-center justify-between">
-                <div className="flex-1 relative mt-6 mb-2"> {/* Added margin for better spacing */}
-                  <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                <div className="flex-1 relative mt-6 mb-2">
+                  <div className="h-2 bg-gray-800/50 rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-500 ease-out absolute left-0 top-0"
+                      className="h-full bg-gradient-to-r from-gray-500 to-gray-400 transition-all duration-500 ease-out absolute left-0 top-0"
                       style={{ width: `${Math.min(100, (currentStep - 1) * 33.33)}%` }}
                     ></div>
                   </div>
                   <div className="absolute -top-6 left-0 right-0 flex justify-between text-xs text-gray-500">
-                    <span className={formState.name ? 'text-purple-400 font-medium' : ''}>Name</span>
-                    <span className={formState.email ? 'text-purple-400 font-medium' : ''}>Email</span>
-                    <span className={formState.message ? 'text-purple-400 font-medium' : ''}>Message</span>
-                    <span className={status === 'success' ? 'text-purple-400 font-medium' : ''}>Send</span>
+                    <span className={formState.name ? 'text-gray-300 font-medium' : ''}>Name</span>
+                    <span className={formState.email ? 'text-gray-300 font-medium' : ''}>Email</span>
+                    <span className={formState.message ? 'text-gray-300 font-medium' : ''}>Message</span>
+                    <span className={status === 'success' ? 'text-gray-300 font-medium' : ''}>Send</span>
                   </div>
                 </div>
               </div>
               
-              {/* Suggested commands - improved UI with better spacing */}
+              {/* Suggested commands - simplified styling */}
               {!inputMode && status === 'idle' && !isTyping && (
                 <div className="flex flex-wrap gap-2 mt-2 bg-gray-900/30 p-3 rounded-lg border border-gray-800/50">
                   <div className="w-full text-xs text-gray-500 mb-2">Available commands:</div>
@@ -475,9 +495,9 @@ Please fill in all fields before sending.`;
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => executeCommand('name')}
-                      className="px-3 py-1.5 bg-gray-800/90 hover:bg-purple-900/40 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors duration-200 flex items-center gap-1"
+                      className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
                     >
-                      <span className="text-purple-400">$</span> name
+                      <span className="text-gray-400">$</span> name
                     </motion.button>
                   )}
                   {!formState.email && (
@@ -485,9 +505,9 @@ Please fill in all fields before sending.`;
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => executeCommand('email')}
-                      className="px-3 py-1.5 bg-gray-800/90 hover:bg-purple-900/40 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors duration-200 flex items-center gap-1"
+                      className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
                     >
-                      <span className="text-purple-400">$</span> email
+                      <span className="text-gray-400">$</span> email
                     </motion.button>
                   )}
                   {!formState.message && (
@@ -495,9 +515,9 @@ Please fill in all fields before sending.`;
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => executeCommand('message')}
-                      className="px-3 py-1.5 bg-gray-800/90 hover:bg-purple-900/40 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors duration-200 flex items-center gap-1"
+                      className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
                     >
-                      <span className="text-purple-400">$</span> message
+                      <span className="text-gray-400">$</span> message
                     </motion.button>
                   )}
                   {formState.name && formState.email && formState.message && (
@@ -505,7 +525,7 @@ Please fill in all fields before sending.`;
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => executeCommand('send')}
-                      className="px-3 py-1.5 bg-purple-900/50 hover:bg-purple-800/80 text-white text-xs rounded-md border border-purple-700/50 transition-colors duration-200 flex items-center gap-1"
+                      className="px-3 py-1.5 bg-gray-700/50 hover:bg-gray-600/80 text-white text-xs rounded-md border border-gray-600/50 transition-colors duration-200 flex items-center gap-1"
                     >
                       <span className="text-green-400">$</span> send
                     </motion.button>
@@ -514,25 +534,25 @@ Please fill in all fields before sending.`;
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => executeCommand('status')}
-                    className="px-3 py-1.5 bg-gray-800/90 hover:bg-purple-900/40 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors duration-200 flex items-center gap-1"
+                    className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
                   >
-                    <span className="text-purple-400">$</span> status
+                    <span className="text-gray-400">$</span> status
                   </motion.button>
                   <motion.button 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => executeCommand('help')}
-                    className="px-3 py-1.5 bg-gray-800/90 hover:bg-purple-900/40 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors duration-200 flex items-center gap-1"
+                    className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
                   >
-                    <span className="text-purple-400">$</span> help
+                    <span className="text-gray-400">$</span> help
                   </motion.button>
                   <motion.button 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => executeCommand('clear')}
-                    className="px-3 py-1.5 bg-gray-800/90 hover:bg-purple-900/40 text-gray-300 text-xs rounded-md border border-gray-700 transition-colors duration-200 flex items-center gap-1"
+                    className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
                   >
-                    <span className="text-purple-400">$</span> clear
+                    <span className="text-gray-400">$</span> clear
                   </motion.button>
                 </div>
               )}
@@ -554,9 +574,9 @@ Please fill in all fields before sending.`;
               </div>
 
               <div className="space-y-4">
-                <div className="flex items-center space-x-4 p-4 rounded-lg bg-gray-900/50 border border-gray-800/70 backdrop-blur-sm hover:border-purple-800/50 transition-colors duration-300">
-                  <div className="w-10 h-10 rounded-full bg-purple-900/30 flex items-center justify-center">
-                    <Mail className="h-5 w-5 text-purple-400" />
+                <div className="flex items-center space-x-4 p-4 rounded-lg bg-gray-900/30 border border-gray-800/50 backdrop-blur-sm hover:border-gray-700/50 transition-colors duration-300">
+                  <div className="w-10 h-10 rounded-full bg-gray-800/50 flex items-center justify-center">
+                    <Mail className="h-5 w-5 text-gray-400" />
                   </div>
                   <div>
                     <div className="text-sm text-gray-400">Email</div>
@@ -565,9 +585,9 @@ Please fill in all fields before sending.`;
                 </div>
               </div>
               <div className="space-y-4">
-                <div className="flex items-center space-x-4 p-4 rounded-lg bg-gray-900/50 border border-gray-800/70 backdrop-blur-sm hover:border-purple-800/50 transition-colors duration-300">
-                  <div className="w-10 h-10 rounded-full bg-purple-900/30 flex items-center justify-center">
-                    <Mail className="h-5 w-5 text-purple-400" />
+                <div className="flex items-center space-x-4 p-4 rounded-lg bg-gray-900/30 border border-gray-800/50 backdrop-blur-sm hover:border-gray-700/50 transition-colors duration-300">
+                  <div className="w-10 h-10 rounded-full bg-gray-800/50 flex items-center justify-center">
+                    <Mail className="h-5 w-5 text-gray-400" />
                   </div>
                   <div>
                     <div className="text-sm text-gray-400">Phone</div>
@@ -579,23 +599,23 @@ Please fill in all fields before sending.`;
 
             {/* Command instructions */}
             <div className="mt-10">
-              <div className="bg-gradient-to-br from-purple-900/20 to-indigo-900/20 p-6 rounded-xl border border-gray-800/80 backdrop-blur-md">
+              <div className="bg-gray-900/30 p-6 rounded-xl border border-gray-800/50 backdrop-blur-sm">
                 <h3 className="text-lg font-medium text-white mb-2">Terminal Pro Tips</h3>
                 <div className="space-y-3 text-sm text-gray-400">
                   <div className="flex items-start">
-                    <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-900/50 text-purple-400 mr-2 text-xs flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-800/50 text-gray-400 mr-2 text-xs flex-shrink-0 mt-0.5">
                       <span className="text-green-400">↹</span>
                     </div>
-                    <p>Press <span className="text-purple-400">Tab</span> to autocomplete commands</p>
+                    <p>Press <span className="text-gray-300">Tab</span> to autocomplete commands</p>
                   </div>
                   <div className="flex items-start">
-                    <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-900/50 text-purple-400 mr-2 text-xs flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-800/50 text-gray-400 mr-2 text-xs flex-shrink-0 mt-0.5">
                       <span className="text-green-400">↑</span>
                     </div>
-                    <p>Press <span className="text-purple-400">Up Arrow</span> to recall previous commands</p>
+                    <p>Press <span className="text-gray-300">Up Arrow</span> to recall previous commands</p>
                   </div>
                   <div className="flex items-start">
-                    <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-900/50 text-purple-400 mr-2 text-xs flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-800/50 text-gray-400 mr-2 text-xs flex-shrink-0 mt-0.5">
                       <span className="text-green-400">!</span>
                     </div>
                     <p>You can also click the command buttons below the terminal</p>
@@ -606,7 +626,7 @@ Please fill in all fields before sending.`;
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => executeCommand(getNextSuggestedCommand())}
-                  className="mt-4 w-full py-2 px-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg text-sm font-medium flex items-center justify-center transition-colors duration-200"
+                  className="mt-4 w-full py-2 px-4 bg-white text-gray-900 hover:bg-gray-100 rounded-lg text-sm font-medium flex items-center justify-center transition-colors duration-200"
                 >
                   Next step: {getNextSuggestedCommand()} <ArrowRight size={14} className="ml-1" />
                 </motion.button>
