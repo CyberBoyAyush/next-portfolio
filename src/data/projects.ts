@@ -10,6 +10,7 @@ export interface Project {
   year: string;
   duration: string;
   color: string;
+  isHackathonProject?: boolean;
 }
 
 export const projects: Project[] = [
@@ -49,10 +50,24 @@ export const projects: Project[] = [
     featured: true,
     year: '2025',
     duration: '3 months',
-    color: 'from-indigo-600 to-purple-600'
+    color: 'from-indigo-600 to-purple-600',
   },
   {
     id: 4,
+    title: 'SkillCompass',
+    description: 'Unlock your potential with AI-powered personalized learning paths, interactive content, and real-time progress tracking.',
+    image: '/images/projects/skillcompass.png',
+    tags: ["React", "Gemini", "Appwrite", "TailwindCSS", "Groq", "Llama 3.3"],
+    demoLink: 'https://skillcompass.ayush-sharma.in/',
+    githubLink: 'https://github.com/glucon-d/skillcompass',
+    featured: true,
+    year: '2025',
+    duration: '72 Hours',
+    color: 'from-indigo-600 to-purple-600',
+    isHackathonProject: true
+  },
+  {
+    id: 5,
     title: 'Pathgenie',
     description: 'AI powered career guidance platform for personalized career recommendations.',
     image: '/images/projects/pathgenie.png',
@@ -62,10 +77,11 @@ export const projects: Project[] = [
     featured: true,
     year: '2025',
     duration: '2 months',
-    color: 'from-blue-600 to-cyan-600'
+    color: 'from-blue-600 to-cyan-600',
+    isHackathonProject: true
   },
   {
-    id: 5,
+    id: 6,
     title: 'PortDev',
     description: 'Create Devloper Portfolio in Minutes.',
     image: '/images/projects/portdev.png',
@@ -78,7 +94,7 @@ export const projects: Project[] = [
     color: 'from-rose-600 to-pink-600'
   },
   {
-    id: 6,
+    id: 7,
     title: 'React Portfolio',
     description: 'Personal Portfolio Website using React Js',
     image: '/images/projects/react-portfolio.png',

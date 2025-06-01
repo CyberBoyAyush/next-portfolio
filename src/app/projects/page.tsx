@@ -43,7 +43,11 @@ export default function ProjectsPage() {
             {allProjects.map((project, index) => (
               <ProjectCard
                 key={project.id}
-                project={{...project, id: String(project.id)}}
+                project={{
+                  ...project, 
+                  id: String(project.id),
+                  isHackathonProject: project.isHackathonProject
+                }}
                 index={index}
                 isInView={isInView}
                 showFeaturedBadge={project.featured}
