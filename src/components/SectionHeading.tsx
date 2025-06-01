@@ -53,7 +53,7 @@ const SectionHeading = ({
     >
       <motion.span 
         variants={itemVariants}
-        className="text-sm text-purple-400 block mb-2 uppercase tracking-wider font-medium"
+        className="text-sm text-gray-500 block mb-2 uppercase tracking-wider font-medium"
       >
         {subtitle}
       </motion.span>
@@ -62,7 +62,12 @@ const SectionHeading = ({
         variants={itemVariants}
         className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4"
       >
-        <span className="gradient-text bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500">
+        <span style={{ 
+          background: 'linear-gradient(to right, #f3f4f6, #d1d5db)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text'
+        }}>
           {title}
         </span>
       </motion.h2>
@@ -79,4 +84,4 @@ const SectionHeading = ({
   );
 };
 
-export default SectionHeading; 
+export default SectionHeading;
