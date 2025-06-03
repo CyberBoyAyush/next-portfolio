@@ -38,10 +38,15 @@ const Portfolio = () => {
           {featuredProjects.map((project, index) => (
             <ProjectCard
               key={project.id}
-              project={{ ...project, id: String(project.id), featured: true }}
+              project={{ 
+                ...project, 
+                id: String(project.id), 
+                featured: true,
+                isHackathonProject: project.isHackathonProject 
+              }}
               index={index}
               isInView={isInView}
-              showFeaturedBadge={true }
+              showFeaturedBadge={true}
               variant="default"
             />
           ))}

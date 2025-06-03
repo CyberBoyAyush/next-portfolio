@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useTypewriter } from 'react-simple-typewriter';
 import { ChevronDown, Github, Linkedin } from 'lucide-react'; 
@@ -23,6 +23,9 @@ const XIcon = ({ size = 18, className = "" }) => (
 const Hero = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [imageAttempted, setImageAttempted] = useState(false);
   
   // Set isMounted to true when component mounts
   useEffect(() => {
@@ -65,6 +68,44 @@ const Hero = () => {
     deleteSpeed: 50,
     delaySpeed: 1500,
   });
+
+  // Memoized image handlers to prevent recreation on every render
+  const handleImageLoad = useCallback(() => {
+    if (!imageLoaded) {
+      setImageLoaded(true);
+      setImageError(false);
+    }
+  }, [imageLoaded]);
+
+  const handleImageError = useCallback(() => {
+    if (!imageError && !imageAttempted) {
+      setImageError(true);
+      setImageLoaded(false);
+      setImageAttempted(true);
+    }
+  }, [imageError, imageAttempted]);
+
+  // Memoized image component to prevent re-creation
+  const ProfileImage = useMemo(() => {
+    if (imageError || imageAttempted) return null;
+    
+    return (
+      <Image
+        src="/profile-comp.png"
+        alt="Ayush Sharma"
+        fill
+        sizes="(max-width: 768px) 18rem, 24rem"
+        className={`object-contain p-2 transition-opacity duration-300 ${
+          imageLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
+        priority
+        onLoad={handleImageLoad}
+        onError={handleImageError}
+        unoptimized={false}
+        quality={90}
+      />
+    );
+  }, [imageLoaded, imageError, imageAttempted, handleImageLoad, handleImageError]);
   
   return (
     <section id="home" className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-16" ref={ref}>
@@ -213,27 +254,34 @@ const Hero = () => {
               </motion.div>
             </motion.div>
             
-            {/* Image column - simplified */}
+            {/* Image column - optimized with single load */}
             <div className="relative flex justify-center lg:justify-end">
               <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] flex items-center justify-center">
                 {/* Simplified background ring */}
                 <div className="absolute inset-0 rounded-full bg-gray-800/20 blur-md"></div>
                 
-                {/* Profile image */}
+                {/* Profile image container */}
                 <div className="relative w-[240px] h-[240px] md:w-[350px] md:h-[350px] rounded-full overflow-hidden border-2 border-gray-800/50 bg-gray-900 shadow-2xl">
-                  <Image
-                    src="/profile-comp.png"
-                    alt="Ayush Sharma"
-                    fill
-                    sizes="(max-width: 768px) 18rem, 24rem"
-                    className="object-contain p-2"
-                    priority
-                    onError={(e) => {
-                      // Fallback for missing image
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                    }}
-                  />
+                  {ProfileImage}
+                  
+                  {/* Loading placeholder - only show when not loaded and no error */}
+                  {!imageLoaded && !imageError && !imageAttempted && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-16 h-16 border-2 border-gray-600 border-t-white rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                  
+                  {/* Error fallback - only show after error occurred */}
+                  {(imageError || imageAttempted) && !imageLoaded && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center text-gray-400">
+                        <div className="w-20 h-20 mx-auto mb-2 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center border border-gray-600">
+                          <span className="text-2xl font-bold text-white">AS</span>
+                        </div>
+                        <span className="text-xs text-gray-500">Ayush Sharma</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

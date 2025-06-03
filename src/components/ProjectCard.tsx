@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, Calendar, Star } from 'lucide-react';
+import { ExternalLink, Github, Calendar, Star, Zap } from 'lucide-react';
 import Image from 'next/image';
 
 interface Project {
@@ -15,6 +15,7 @@ interface Project {
   demoLink?: string;
   githubLink?: string;
   featured?: boolean;
+  isHackathonProject?: boolean;
 }
 
 interface ProjectCardProps {
@@ -48,13 +49,28 @@ const ProjectCard = ({
       {/* Glow effect on hover */}
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-gray-600/5 to-gray-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
       
-      {/* Featured Badge */}
-      {showFeaturedBadge && project.featured && (
-        <div className="absolute top-4 left-4 z-20 px-3 py-1.5 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 text-emerald-300 text-xs font-bold rounded-full border border-emerald-400/40 backdrop-blur-md flex items-center gap-1.5">
-          <Star size={12} className="fill-current" />
-          <span>Featured</span>
+      {/* Badges Container - Positioned on opposite sides */}
+      <div className="absolute top-4 left-4 right-4 z-20 flex justify-between items-start">
+        {/* Featured Badge - Left side */}
+        <div className="flex">
+          {showFeaturedBadge && project.featured && (
+            <div className="px-3 py-1.5 bg-gradient-to-r from-black/70 to-gray-900/70 backdrop-blur-xl border border-yellow-500/30 text-yellow-100 text-xs font-semibold rounded-full flex items-center gap-1.5 shadow-xl shadow-black/40">
+              <Star size={11} className="text-yellow-400 fill-yellow-400" />
+              <span>Top Project</span>
+            </div>
+          )}
         </div>
-      )}
+        
+        {/* Hackathon Badge - Right side */}
+        <div className="flex">
+          {project.isHackathonProject && (
+            <div className="px-3 py-1.5 bg-gradient-to-r from-black/70 to-gray-900/70 backdrop-blur-xl border border-orange-500/30 text-orange-100 text-xs font-semibold rounded-full flex items-center gap-1.5 shadow-xl shadow-black/40">
+              <Zap size={11} className="text-orange-400 fill-orange-400" />
+              <span>Built in 48hrs</span>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Card Layout - Always Vertical for Consistency */}
       <div className="flex flex-col w-full">
