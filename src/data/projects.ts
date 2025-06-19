@@ -16,6 +16,18 @@ export interface Project {
 export const projects: Project[] = [
   {
     id: 1,
+    title: 'AVChat',
+    description: 'Fastest LLM chat on the planet right now. Supports real time sync too.',
+    image: '/images/projects/AV.png',
+    tags: ['NextJS', 'Appwrite', 'OpenRouter', 'Realtime API', 'Convex', 'Vercel'],
+    demoLink: 'https://avchat.ayush-sharma.in/',
+    featured: true,
+    year: '2025',
+    duration: '15 Days',
+    color: 'from-indigo-600 to-purple-600'
+  },
+  {
+    id: 2,
     title: 'TuduAI',
     description: ' An AI-powered productivity app with natural language task creation, collaborative workspaces, and a minimalist UI for effortless planning.',
     image: '/images/projects/tuduai.png',
@@ -27,7 +39,7 @@ export const projects: Project[] = [
     color: 'from-indigo-600 to-purple-600'
   },
   {
-    id: 2,
+    id: 3,
     title: 'QuickBang',
     description: 'Lightning-fast search shortcuts to enhance your workflow.',
     image: '/images/projects/quickbang.png',
@@ -40,7 +52,7 @@ export const projects: Project[] = [
     color: 'from-indigo-600 to-purple-600'
   },
   {
-    id: 3,
+    id: 4,
     title: 'Effisense',
     description: 'Experience the future of productivity with AI-powered task scheduling, smart prioritization, and intelligent workload balancing.',
     image: '/images/projects/effisense.png',
@@ -53,7 +65,7 @@ export const projects: Project[] = [
     color: 'from-indigo-600 to-purple-600',
   },
   {
-    id: 4,
+    id: 5,
     title: 'SkillCompass',
     description: 'Unlock your potential with AI-powered personalized learning paths, interactive content, and real-time progress tracking.',
     image: '/images/projects/skillcompass.png',
@@ -67,7 +79,7 @@ export const projects: Project[] = [
     isHackathonProject: true
   },
   {
-    id: 5,
+    id: 6,
     title: 'Pathgenie',
     description: 'AI powered career guidance platform for personalized career recommendations.',
     image: '/images/projects/pathgenie.png',
@@ -81,7 +93,7 @@ export const projects: Project[] = [
     isHackathonProject: true
   },
   {
-    id: 6,
+    id: 7,
     title: 'PortDev',
     description: 'Create Devloper Portfolio in Minutes.',
     image: '/images/projects/portdev.png',
@@ -94,7 +106,7 @@ export const projects: Project[] = [
     color: 'from-rose-600 to-pink-600'
   },
   {
-    id: 7,
+    id: 8,
     title: 'React Portfolio',
     description: 'Personal Portfolio Website using React Js',
     image: '/images/projects/react-portfolio.png',
