@@ -74,7 +74,7 @@ export const projects: Project[] = [
     tags: ["React", "Gemini", "Appwrite", "TailwindCSS", "Groq", "Llama 3.3"],
     demoLink: 'https://skillcompass.ayush-sharma.in/',
     githubLink: 'https://github.com/glucon-d/skillcompass',
-    featured: true,
+    featured: false,
     year: '2025',
     duration: '72 Hours',
     color: 'from-indigo-600 to-purple-600',
