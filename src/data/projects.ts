@@ -58,7 +58,7 @@ export const projects: Project[] = [
     title: 'Effisense',
     description: 'Experience the future of productivity with AI-powered task scheduling, smart prioritization, and intelligent workload balancing.',
     image: '/images/projects/effisense.png',
-    tags: ["React", "Google API", "GROQ", "Appwrite", "TailwindCSS", "Recharts"],
+    tags: ["React", "Google API", "GROQ", "Appwrite", "TailwindCSS", "Recharts", "Google Calendar API"],
     demoLink: 'https://effisense.ayush-sharma.in/',
     githubLink: 'https://github.com/cyberboyayush/effisense',
     featured: true,
