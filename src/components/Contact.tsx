@@ -747,7 +747,7 @@ Please fill in all fields before sending.`;
                   </div>
                   <div>
                     <div className="text-sm text-gray-400 font-medium">Email</div>
-                    <div className="text-white font-semibold">connect@ayush-sharma.in</div>
+                    <div className="text-white font-semibold">hi@aysh.me</div>
                   </div>
                 </div>
 
