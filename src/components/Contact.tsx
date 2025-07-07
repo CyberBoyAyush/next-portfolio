@@ -23,7 +23,7 @@ type InputMode = '' | 'name' | 'email' | 'message';
 
 // Web3Forms API Key
 // Get your access key from https://web3forms.com/
-const WEB3FORMS_ACCESS_KEY = '0d328fdf-f462-44c9-ad9b-3b0df1fc64ad'; // Replace with your Access Key
+const WEB3FORMS_ACCESS_KEY = 'fc64c658-77a1-4a02-91b1-f03f7ff772c0'; // Replace with your Access Key
 
 // Typing animation delay in milliseconds
 const TYPING_DELAY = 30;
