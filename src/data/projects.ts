@@ -17,7 +17,7 @@ export const projects: Project[] = [
   {
     id: 1,
     title: 'AVChat',
-    description: 'Fastest LLM chat on the planet right now, Multi Model and Realtime Sync',
+    description: 'Fastest LLM chat on the planet right now, Multi Model and Realtime Sync too',
     image: '/images/projects/AV.png',
     tags: ['NextJS', 'Appwrite', 'OpenRouter', 'Realtime API', 'Convex', 'Vercel'],
     demoLink: 'https://avchat.xyz/',
