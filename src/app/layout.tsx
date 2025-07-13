@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Spotlight from "../components/Spotlight";
 import OnekoCat from "@/components/OnekoCat";
+import Script  from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -62,6 +63,7 @@ export default function RootLayout({
         </main>
         <OnekoCat />
         <Footer />
+        <Script defer src="https://stats.ayush-sharma.in/script.js" data-website-id="da6760a3-fa2d-4b1f-85f6-14ed18ebdf92" />
       </body>
     </html>
   );
