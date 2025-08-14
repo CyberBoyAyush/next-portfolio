@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useTypewriter } from 'react-simple-typewriter';
-import { ChevronDown, Github, Linkedin } from 'lucide-react'; 
+import { ChevronDown, Github, Linkedin, Calendar } from 'lucide-react';
 import Image from 'next/image';
 import SectionHeading from './SectionHeading';
 
@@ -156,20 +156,37 @@ const Hero = () => {
                   I Write Code, I Build Things, I Solve Problems and I show people that I Love To Code(I DO).
                 </motion.p>
                 
-                <motion.div variants={itemVariants} className="flex flex-wrap gap-4">
-                  <a 
-                    href="#contact" 
-                    className="px-6 py-3 rounded-lg bg-white text-gray-900 font-medium transition-all duration-300 hover:bg-gray-100"
+                <motion.div variants={itemVariants} className="flex flex-wrap gap-3 sm:gap-4 items-center">
+                  <a
+                    href="#contact"
+                    className="px-4 py-3 sm:px-6 rounded-lg bg-white text-gray-900 font-medium transition-all duration-300 hover:bg-gray-100 text-sm sm:text-base"
                   >
                     Let&apos;s Connect
                   </a>
-                
-                  <a 
-                    href="/Resume.pdf" 
-                    className="px-6 py-3 rounded-lg bg-transparent border border-gray-700 text-white font-medium transition-all duration-300 hover:bg-white/5"
+
+                  <a
+                    href="/Resume.pdf"
+                    className="px-4 py-3 sm:px-6 rounded-lg bg-transparent border border-gray-700 text-white font-medium transition-all duration-300 hover:bg-white/5 text-sm sm:text-base"
                   >
                     Download Resume
                   </a>
+
+                  <div className="relative group">
+                    <a
+                      href="https://zcal.co/ayush/30min"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center w-12 h-12 rounded-lg bg-gray-900/90 border border-orange-500/30 text-orange-400 transition-all duration-300 hover:bg-orange-500/10 hover:border-orange-400/50 hover:text-orange-300 hover:shadow-lg hover:shadow-orange-500/20 backdrop-blur-sm"
+                    >
+                      <Calendar size={18} />
+                    </a>
+
+                    {/* Tooltip */}
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900/95 border border-orange-500/30 rounded-lg text-orange-300 text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none backdrop-blur-sm z-10">
+                      Schedule 1:1
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-orange-500/30"></div>
+                    </div>
+                  </div>
                 </motion.div>
                 
                 <motion.div variants={itemVariants} className="mt-8 flex items-center gap-4">

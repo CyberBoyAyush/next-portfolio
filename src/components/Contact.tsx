@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Terminal, Mail, Send, ArrowRight, User, MessageSquare, RotateCcw, Phone } from 'lucide-react';
+import { Terminal, Mail, Send, ArrowRight, User, MessageSquare, RotateCcw, Phone, Calendar } from 'lucide-react';
 import '../styles/terminal.css';
 import SectionHeading from './SectionHeading';
 
@@ -760,6 +760,21 @@ Please fill in all fields before sending.`;
                     <div className="text-white font-semibold">+91 9990969661</div>
                   </div>
                 </div>
+
+                <a
+                  href="https://zcal.co/ayush/30min"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-4 p-4 rounded-xl bg-gradient-to-br from-gray-900/60 to-gray-800/40 border border-gray-700/50 backdrop-blur-sm hover:border-orange-500/30 transition-all duration-300 group cursor-pointer"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center border border-orange-400/20 group-hover:border-orange-400/40 transition-all duration-300">
+                    <Calendar className="h-6 w-6 text-orange-400 group-hover:text-orange-300 transition-colors duration-300" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-400 font-medium group-hover:text-gray-300 transition-colors duration-300">Schedule</div>
+                    <div className="text-white font-semibold group-hover:text-orange-100 transition-colors duration-300">Schedule 1:1</div>
+                  </div>
+                </a>
               </div>
             </div>
 
