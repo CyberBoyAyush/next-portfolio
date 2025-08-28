@@ -6,9 +6,14 @@ const Spotlight = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isActive, setIsActive] = useState(false);
   const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(null);
-  const [isMobile] = useState(() => 'ontouchstart' in window || navigator.maxTouchPoints > 0);
+  const [isMobile, setIsMobile] = useState(true);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const rafRef = useRef<number | null>(null);
+  
+  // Check for mobile on client side
+  useEffect(() => {
+    setIsMobile(typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0));
+  }, []);
   
   const handleMouseMove = useCallback((e: MouseEvent) => {
     // Cancel previous RAF if pending

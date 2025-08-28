@@ -43,8 +43,10 @@ const Experience = () => {
               <div className="group relative bg-gray-900/40 backdrop-blur-sm rounded-xl border border-gray-800/50 p-6 md:p-8 hover:border-gray-700/70 hover:bg-gray-900/60 transition-all duration-300 overflow-hidden">
                 
                 {/* Animated border on hover */}
-                <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute inset-[-1px] rounded-xl bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-[shimmer_3s_linear_infinite] bg-[length:200%_100%]" />
+                <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                  <div className="absolute inset-[-1px] rounded-xl overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-500/30 to-transparent -skew-x-12 animate-[shimmer_4s_linear_infinite]" />
+                  </div>
                 </div>
                 
                 {/* Active indicator */}
