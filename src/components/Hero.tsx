@@ -299,8 +299,8 @@ const Hero = () => {
           
           {/* Scroll down indicator */}
           <div className="flex justify-center mt-8 md:mt-4">
-            <a 
-              href="#about" 
+            <a
+              href="#skills"
               className="animate-bounce rounded-full p-1 text-gray-400 hover:text-white transition-colors duration-300"
             >
               <ChevronDown size={24} />
