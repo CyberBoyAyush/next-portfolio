@@ -1,74 +1,72 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 
 const Spotlight = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isActive, setIsActive] = useState(false);
   const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(null);
-  const spotlightRef = useRef<HTMLDivElement>(null);
+  const [isMobile] = useState(() => 'ontouchstart' in window || navigator.maxTouchPoints > 0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const rafRef = useRef<number | null>(null);
   
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      // Smooth mouse position updates with requestAnimationFrame for better performance
-      requestAnimationFrame(() => {
-        setMousePosition({ x: e.clientX, y: e.clientY });
-      });
-      
-      // Activate spotlight and reset timeout
-      setIsActive(true);
-      
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      
-      // Deactivate spotlight after 2 seconds of inactivity (longer duration)
-      timeoutRef.current = setTimeout(() => {
-        setIsActive(false);
-      }, 2000);
-    };
-    
-    const handleMouseOver = (e: MouseEvent) => {
-      // Check if hovering over interactive element
-      const target = e.target as HTMLElement;
-      const interactiveElement = 
-        target.closest('a') || 
-        target.closest('button') || 
-        target.closest('[role="button"]') ||
-        target.closest('.hover-glow') ||
-        target.closest('.card') ||
-        target.closest('.project-card');
-      
-      if (interactiveElement) {
-        setHoveredElement(interactiveElement);
-      } else {
-        setHoveredElement(null);
-      }
-    };
-    
-    // Check if we're on a mobile device
-    const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    
-    if (!isMobile) {
-      window.addEventListener('mousemove', handleMouseMove, { passive: true });
-      window.addEventListener('mouseover', handleMouseOver, { passive: true });
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    // Cancel previous RAF if pending
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
     }
     
+    // Use RAF for smooth position updates
+    rafRef.current = requestAnimationFrame(() => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    });
+    
+    setIsActive(true);
+    
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    
+    timeoutRef.current = setTimeout(() => {
+      setIsActive(false);
+    }, 2000);
+  }, []);
+  
+  const handleMouseOver = useCallback((e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const interactiveElement = 
+      target.closest('a') || 
+      target.closest('button') || 
+      target.closest('[role="button"]') ||
+      target.closest('.hover-glow') ||
+      target.closest('.card') ||
+      target.closest('.project-card');
+    
+    setHoveredElement(interactiveElement as HTMLElement | null);
+  }, []);
+  
+  useEffect(() => {
+    if (isMobile) return;
+    
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('mouseover', handleMouseOver, { passive: true });
+    
     return () => {
-      if (!isMobile) {
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('mouseover', handleMouseOver);
-      }
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseover', handleMouseOver);
       
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
     };
-  }, []);
+  }, [isMobile, handleMouseMove, handleMouseOver]);
   
-  // Apply hover-glow class to interactive elements
   useEffect(() => {
+    if (isMobile) return;
+    
     const interactiveElements = document.querySelectorAll(
       'a, button, [role="button"], .card, .project-card, .skill-card, .tech-card'
     );
@@ -82,14 +80,15 @@ const Spotlight = () => {
         element.classList.remove('hover-glow');
       });
     };
-  }, []);
+  }, [isMobile]);
   
-  // Determine if spotlight should be larger based on hovering over interactive element
+  // Skip rendering on mobile devices
+  if (isMobile) return null;
+  
   const spotlightSize = hoveredElement ? 'scale(1.3)' : 'scale(1)';
   
   return (
     <div 
-      ref={spotlightRef}
       className={`spotlight ${isActive ? 'spotlight-active' : ''}`}
     >
       <div 

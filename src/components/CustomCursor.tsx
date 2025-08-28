@@ -1,87 +1,62 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 const CustomCursor = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [clicked, setClicked] = useState(false);
   const [linkHovered, setLinkHovered] = useState(false);
   const [hidden, setHidden] = useState(true);
+  const [isMobile] = useState(() => 
+    typeof window !== 'undefined' && 
+    (window.innerWidth <= 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0)
+  );
+
+  const onMouseMove = useCallback((e: MouseEvent) => {
+    setPosition({ x: e.clientX, y: e.clientY });
+    setHidden(false);
+  }, []);
+
+  const onMouseEnter = useCallback(() => setHidden(false), []);
+  const onMouseLeave = useCallback(() => setHidden(true), []);
+  const onMouseDown = useCallback(() => setClicked(true), []);
+  const onMouseUp = useCallback(() => setClicked(false), []);
 
   useEffect(() => {
-    // Hide default cursor
+    if (isMobile) return;
+
     document.body.style.cursor = 'none';
     
-    // Show custom cursor when it moves
-    const addEventListeners = () => {
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseenter', onMouseEnter);
-      document.addEventListener('mouseleave', onMouseLeave);
-      document.addEventListener('mousedown', onMouseDown);
-      document.addEventListener('mouseup', onMouseUp);
-    };
+    document.addEventListener('mousemove', onMouseMove, { passive: true });
+    document.addEventListener('mouseenter', onMouseEnter);
+    document.addEventListener('mouseleave', onMouseLeave);
+    document.addEventListener('mousedown', onMouseDown);
+    document.addEventListener('mouseup', onMouseUp);
 
-    const removeEventListeners = () => {
+    const links = document.querySelectorAll('a, button, input, textarea, [role="button"]');
+    const handleMouseEnter = () => setLinkHovered(true);
+    const handleMouseLeave = () => setLinkHovered(false);
+    
+    links.forEach(link => {
+      link.addEventListener('mouseenter', handleMouseEnter);
+      link.addEventListener('mouseleave', handleMouseLeave);
+    });
+
+    return () => {
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseenter', onMouseEnter);
       document.removeEventListener('mouseleave', onMouseLeave);
       document.removeEventListener('mousedown', onMouseDown);
       document.removeEventListener('mouseup', onMouseUp);
-    };
-
-    const onMouseMove = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-      setHidden(false);
-    };
-
-    const onMouseEnter = () => {
-      setHidden(false);
-    };
-
-    const onMouseLeave = () => {
-      setHidden(true);
-    };
-
-    const onMouseDown = () => {
-      setClicked(true);
-    };
-
-    const onMouseUp = () => {
-      setClicked(false);
-    };
-
-    // Track when links are hovered
-    const handleLinkHoverEvents = () => {
-      const links = document.querySelectorAll('a, button, input, textarea, [role="button"]');
       
       links.forEach(link => {
-        link.addEventListener('mouseenter', () => setLinkHovered(true));
-        link.addEventListener('mouseleave', () => setLinkHovered(false));
+        link.removeEventListener('mouseenter', handleMouseEnter);
+        link.removeEventListener('mouseleave', handleMouseLeave);
       });
-    };
-
-    addEventListeners();
-    handleLinkHoverEvents();
-
-    return () => {
-      removeEventListeners();
+      
       document.body.style.cursor = 'auto';
     };
-  }, []);
-
-  // Only render custom cursor on desktop devices
-  const [isMobile, setIsMobile] = useState(false);
-  
-  useEffect(() => {
-    const checkDevice = () => {
-      setIsMobile(window.innerWidth <= 768 || 'ontouchstart' in window);
-    };
-    
-    checkDevice();
-    window.addEventListener('resize', checkDevice);
-    
-    return () => window.removeEventListener('resize', checkDevice);
-  }, []);
+  }, [isMobile, onMouseMove, onMouseEnter, onMouseLeave, onMouseDown, onMouseUp]);
   
   if (isMobile) return null;
 

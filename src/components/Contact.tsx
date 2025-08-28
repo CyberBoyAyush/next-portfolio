@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Terminal, Mail, Send, ArrowRight, User, MessageSquare, RotateCcw, Phone, Calendar } from 'lucide-react';
+import { Terminal, Mail, Send, ArrowRight, MessageSquare, RotateCcw, Phone, Calendar } from 'lucide-react';
 import '../styles/terminal.css';
 import SectionHeading from './SectionHeading';
 
@@ -100,9 +100,11 @@ const Contact = () => {
       if (i === text.length) {
         clearInterval(interval);
         setIsTyping(false);
-        if (callback) callback();
+        callback?.();
       }
     }, TYPING_DELAY);
+    
+    return () => clearInterval(interval);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -368,7 +370,6 @@ Please fill in all fields before sending.`;
   };
 
   useEffect(() => {
-    // Set initial time on client side to prevent hydration mismatch
     const updateTime = () => {
       setTime(new Date().toLocaleTimeString());
     };
@@ -611,7 +612,6 @@ Please fill in all fields before sending.`;
                           onChange={(e) => setCommand(e.target.value)}
                           onKeyDown={handleKeyDown}
                           className="w-full bg-transparent outline-none text-white pr-2 caret-transparent"
-                          autoFocus
                           placeholder={inputMode ? "Type your response..." : "Type a command..."}
                           disabled={status === 'submitting' || isTyping}
                         />

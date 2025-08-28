@@ -61,7 +61,7 @@ export const projects: Project[] = [
     tags: ["React", "Typecript", "Browser Engine"],
     demoLink: 'https://quickbang.aysh.me/',
     githubLink: 'https://github.com/cyberboyayush/quickbang',
-    featured: true,
+    featured: false,
     year: '2025',
     duration: '5 Days',
     color: 'from-indigo-600 to-purple-600'
