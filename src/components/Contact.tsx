@@ -611,7 +611,6 @@ Please fill in all fields before sending.`;
                           onChange={(e) => setCommand(e.target.value)}
                           onKeyDown={handleKeyDown}
                           className="w-full bg-transparent outline-none text-white pr-2 caret-transparent"
-                          autoFocus
                           placeholder={inputMode ? "Type your response..." : "Type a command..."}
                           disabled={status === 'submitting' || isTyping}
                         />
