@@ -19,7 +19,6 @@ const XIcon = ({ size = 18, className = "" }) => (
 );
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
   const [isMounted, setIsMounted] = useState(false);
   
   useEffect(() => {

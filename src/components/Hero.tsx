@@ -1,11 +1,10 @@
 'use client';
 
-import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import { useRef, useState, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useTypewriter } from 'react-simple-typewriter';
 import { ChevronDown, Github, Linkedin, Calendar } from 'lucide-react';
 import Image from 'next/image';
-import SectionHeading from './SectionHeading';
 
 // Custom X (Twitter) Icon Component
 const XIcon = ({ size = 18, className = "" }) => (
@@ -22,15 +21,9 @@ const XIcon = ({ size = 18, className = "" }) => (
 
 const Hero = () => {
   const ref = useRef<HTMLDivElement>(null);
-  const [isMounted, setIsMounted] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [imageAttempted, setImageAttempted] = useState(false);
-  
-  // Set isMounted to true when component mounts
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
   
   // Animation variants - simplified
   const containerVariants = {

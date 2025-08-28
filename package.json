@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "scan": "next dev & npx react-scan@latest localhost:3000",
     "lint": "next lint"
   },
   "dependencies": {
