@@ -194,39 +194,72 @@ const Contact = () => {
   // Send email function using Web3Forms
   const sendEmail = async (data: FormState) => {
     try {
+      // Validate required fields
+      if (!data.name || !data.email || !data.message) {
+        console.error('Missing required fields:', { name: !!data.name, email: !!data.email, message: !!data.message });
+        return { success: false, error: 'Missing required fields' };
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(data.email)) {
+        console.error('Invalid email format:', data.email);
+        return { success: false, error: 'Invalid email format' };
+      }
+
       const formData = new FormData();
-      
+
       // Required fields
       formData.append('access_key', WEB3FORMS_ACCESS_KEY);
-      formData.append('name', data.name);
-      formData.append('email', data.email);
-      formData.append('message', data.message);
-      
+      formData.append('name', data.name.trim());
+      formData.append('email', data.email.trim());
+      formData.append('message', data.message.trim());
+
       // Optional fields for better organization
-      formData.append('subject', `New message from ${data.name} via Terminal Contact`);
+      formData.append('subject', `New message from ${data.name.trim()} via Terminal Contact`);
       formData.append('from_name', 'Terminal Contact Form');
-      formData.append('replyto', data.email);
-      
-      // Additional metadata
+      formData.append('replyto', data.email.trim());
+
+      // Spam protection - botcheck should be empty for humans
       formData.append('botcheck', '');
-      
+
+      console.log('Sending form data to Web3Forms...');
+
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         body: formData
       });
-      
+
+      console.log('Response status:', response.status, response.statusText);
+
+      // Check if response is ok before parsing JSON
+      if (!response.ok) {
+        console.error('HTTP Error:', response.status, response.statusText);
+        return {
+          success: false,
+          error: `Server error: ${response.status} ${response.statusText}`
+        };
+      }
+
       const result = await response.json();
-      
+      console.log('Web3Forms response:', result);
+
       if (result.success) {
-        console.log('Email sent successfully:', result);
+        console.log('Email sent successfully!');
         return { success: true };
       } else {
-        console.error('Error sending email:', result);
-        return { success: false, error: result.message };
+        console.error('Web3Forms error:', result);
+        return {
+          success: false,
+          error: result.message || result.error || 'Unknown error from Web3Forms'
+        };
       }
     } catch (error) {
       console.error('Exception sending email:', error);
-      return { success: false, error };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Network error occurred'
+      };
     }
   };
 
@@ -274,11 +307,11 @@ Please fill in all fields before sending.`;
           if (result.success) {
             setCommandHistory(prev => [
               ...prev,
-              { 
-                command: '', 
+              {
+                command: '',
                 output: (
                   <div className="space-y-2">
-                    <p className="text-green-400">Message sent successfully!</p>
+                    <p className="text-green-400">✓ Message sent successfully!</p>
                     <p>Ayush will get back to you soon at {formState.email}.</p>
                     <p className="text-xs text-gray-500 mt-2">Type 'clear' to start a new conversation.</p>
                   </div>
@@ -290,16 +323,40 @@ Please fill in all fields before sending.`;
             setFormState({ name: '', email: '', message: '' });
             setCurrentStep(1);
           } else {
+            const errorMessage = result.error || 'Could not deliver your message. Please try again later.';
             setCommandHistory(prev => [
               ...prev,
-              { 
-                command: '', 
-                output: 'Error: Could not deliver your message. Please try again later.', 
-                isError: true 
+              {
+                command: '',
+                output: (
+                  <div className="space-y-2">
+                    <p className="text-red-400">✗ Error sending message:</p>
+                    <p className="text-red-300 text-sm">{errorMessage}</p>
+                    <p className="text-xs text-gray-500 mt-2">Please check your connection and try again, or contact Ayush directly at hi@aysh.me</p>
+                  </div>
+                ),
+                isError: true
               }
             ]);
             setStatus('error');
           }
+        }).catch((error) => {
+          console.error('Unexpected error in sendEmail:', error);
+          setCommandHistory(prev => [
+            ...prev,
+            {
+              command: '',
+              output: (
+                <div className="space-y-2">
+                  <p className="text-red-400">✗ Unexpected error occurred:</p>
+                  <p className="text-red-300 text-sm">Network connection failed</p>
+                  <p className="text-xs text-gray-500 mt-2">Please check your internet connection and try again.</p>
+                </div>
+              ),
+              isError: true
+            }
+          ]);
+          setStatus('error');
         });
       }
     } else if (lowerCommand === 'status') {
@@ -351,21 +408,29 @@ Please fill in all fields before sending.`;
   // Handle simple form submission
   const handleSimpleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!simpleForm.name || !simpleForm.email || !simpleForm.message) {
       setSimpleFormStatus('error');
+      console.error('Simple form validation failed: missing required fields');
       return;
     }
 
     setSimpleFormStatus('submitting');
-    
-    const result = await sendEmail(simpleForm);
-    
-    if (result.success) {
-      setSimpleFormStatus('success');
-      setSimpleForm({ name: '', email: '', message: '' });
-    } else {
+
+    try {
+      const result = await sendEmail(simpleForm);
+
+      if (result.success) {
+        setSimpleFormStatus('success');
+        setSimpleForm({ name: '', email: '', message: '' });
+        console.log('Simple form submitted successfully');
+      } else {
+        setSimpleFormStatus('error');
+        console.error('Simple form submission failed:', result.error);
+      }
+    } catch (error) {
       setSimpleFormStatus('error');
+      console.error('Simple form submission error:', error);
     }
   };
 
