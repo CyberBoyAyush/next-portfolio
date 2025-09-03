@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'leetcard.jacoblin.cool',
+      },
+      {
+        protocol: 'https',
+        hostname: '1kf0b6y5pd.ufs.sh',
       }
     ],
     // Add image optimization settings
