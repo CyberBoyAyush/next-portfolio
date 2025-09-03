@@ -84,7 +84,7 @@ const Hero = () => {
     
     return (
       <Image
-        src="/profile-comp.png"
+        src="https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPhWVT9F8tcdLGNp9S0ETXmuk4jy87UFaBIrYw"
         alt="Ayush Sharma"
         fill
         sizes="(max-width: 768px) 18rem, 24rem"
