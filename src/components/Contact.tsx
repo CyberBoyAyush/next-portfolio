@@ -805,24 +805,24 @@ Please fill in all fields before sending.`;
                 </p>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex items-center space-x-4 p-4 rounded-xl bg-gradient-to-br from-gray-900/60 to-gray-800/40 border border-gray-700/50 backdrop-blur-sm hover:border-gray-600/50 transition-all duration-300 group">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center border border-blue-400/20">
-                    <Mail className="h-6 w-6 text-blue-400" />
+              <div className="space-y-3">
+                <div className="flex items-center space-x-3 p-4 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-800">
+                  <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center border border-gray-700">
+                    <Mail className="h-5 w-5 text-blue-400" />
                   </div>
                   <div>
-                    <div className="text-sm text-gray-400 font-medium">Email</div>
-                    <div className="text-white font-semibold">hi@aysh.me</div>
+                    <div className="text-xs text-gray-400">Email</div>
+                    <div className="text-white font-medium">hi@aysh.me</div>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-4 p-4 rounded-xl bg-gradient-to-br from-gray-900/60 to-gray-800/40 border border-gray-700/50 backdrop-blur-sm hover:border-gray-600/50 transition-all duration-300 group">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center border border-green-400/20">
-                    <Phone className="h-6 w-6 text-green-400" />
+                <div className="flex items-center space-x-3 p-4 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-800">
+                  <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center border border-gray-700">
+                    <Phone className="h-5 w-5 text-green-400" />
                   </div>
                   <div>
-                    <div className="text-sm text-gray-400 font-medium">Phone</div>
-                    <div className="text-white font-semibold">+91 9990969661</div>
+                    <div className="text-xs text-gray-400">Phone</div>
+                    <div className="text-white font-medium">+91 9990969661</div>
                   </div>
                 </div>
 
@@ -830,14 +830,14 @@ Please fill in all fields before sending.`;
                   href="https://zcal.co/ayush/30min"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center space-x-4 p-4 rounded-xl bg-gradient-to-br from-gray-900/60 to-gray-800/40 border border-gray-700/50 backdrop-blur-sm hover:border-orange-500/30 transition-all duration-300 group cursor-pointer"
+                  className="flex items-center space-x-3 p-4 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:border-gray-700 transition-colors cursor-pointer"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center border border-orange-400/20 group-hover:border-orange-400/40 transition-all duration-300">
-                    <Calendar className="h-6 w-6 text-orange-400 group-hover:text-orange-300 transition-colors duration-300" />
+                  <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center border border-gray-700">
+                    <Calendar className="h-5 w-5 text-orange-400" />
                   </div>
                   <div>
-                    <div className="text-sm text-gray-400 font-medium group-hover:text-gray-300 transition-colors duration-300">Schedule</div>
-                    <div className="text-white font-semibold group-hover:text-orange-100 transition-colors duration-300">Schedule 1:1</div>
+                    <div className="text-xs text-gray-400">Schedule</div>
+                    <div className="text-white font-medium">Schedule 1:1</div>
                   </div>
                 </a>
               </div>
@@ -846,25 +846,19 @@ Please fill in all fields before sending.`;
             {/* Terminal Pro Tips */}
             {!isSimpleMode && (
               <div className="mt-10">
-                <div className="bg-gradient-to-br from-gray-900/60 to-gray-800/40 p-6 rounded-xl border border-gray-700/50 backdrop-blur-sm">
-                  <h3 className="text-lg font-medium text-white mb-4">Terminal Pro Tips</h3>
-                  <div className="space-y-3 text-sm text-gray-400">
-                    <div className="flex items-start">
-                      <div className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-800/50 text-gray-400 mr-3 text-xs flex-shrink-0 mt-0.5">
-                        <span className="text-green-400">↹</span>
-                      </div>
+                <div className="bg-gray-900/50 backdrop-blur-sm p-5 rounded-xl border border-gray-800">
+                  <h3 className="text-base font-semibold text-white mb-4">Terminal Pro Tips</h3>
+                  <div className="space-y-2.5 text-sm text-gray-400">
+                    <div className="flex items-start gap-2">
+                      <span className="text-green-400 mt-0.5 flex-shrink-0">↹</span>
                       <p>Press <span className="text-gray-300">Tab</span> to autocomplete commands</p>
                     </div>
-                    <div className="flex items-start">
-                      <div className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-800/50 text-gray-400 mr-3 text-xs flex-shrink-0 mt-0.5">
-                        <span className="text-green-400">↑</span>
-                      </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-green-400 mt-0.5 flex-shrink-0">↑</span>
                       <p>Press <span className="text-gray-300">Up Arrow</span> to recall previous commands</p>
                     </div>
-                    <div className="flex items-start">
-                      <div className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-800/50 text-gray-400 mr-3 text-xs flex-shrink-0 mt-0.5">
-                        <span className="text-green-400">!</span>
-                      </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-green-400 mt-0.5 flex-shrink-0">!</span>
                       <p>You can also click the command buttons below the terminal</p>
                     </div>
                   </div>
@@ -873,7 +867,7 @@ Please fill in all fields before sending.`;
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => executeCommand(getNextSuggestedCommand())}
-                    className="mt-4 w-full py-3 px-4 bg-white text-gray-900 hover:bg-gray-100 rounded-lg text-sm font-medium flex items-center justify-center transition-colors duration-200"
+                    className="mt-4 w-full py-2.5 px-4 bg-white text-gray-900 hover:bg-gray-100 rounded-lg text-sm font-medium flex items-center justify-center transition-colors"
                   >
                     Next step: {getNextSuggestedCommand()} <ArrowRight size={14} className="ml-2" />
                   </motion.button>

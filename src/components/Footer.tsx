@@ -36,7 +36,7 @@ const Footer = () => {
   const socialLinks = [
     { icon: Github, href: 'https://github.com/cyberboyayush', label: 'GitHub', hoverColor: 'hover:text-white' },
     { icon: Linkedin, href: 'https://linkedin.com/in/cyberboyayush', label: 'LinkedIn', hoverColor: 'hover:text-blue-400' },
-    { icon: XIcon, href: 'https://twitter.com/cyberboyayush', label: 'X (Twitter)', hoverColor: 'hover:text-gray-200' },
+    { icon: XIcon, href: 'https://x.com/cyberboyayush', label: 'X (Twitter)', hoverColor: 'hover:text-gray-200' },
     { icon: Mail, href: 'mailto:hi@aysh.me', label: 'Email', hoverColor: 'hover:text-gray-300' },
   ];
 

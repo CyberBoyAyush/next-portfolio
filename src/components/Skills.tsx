@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { SiHtml5, SiCss3, SiJavascript, SiTypescript, SiReact, 
   SiNextdotjs, SiNodedotjs, SiMongodb, SiTailwindcss, 
   SiFirebase, SiPython, SiAmazon, SiDocker,
@@ -47,32 +47,23 @@ const TechCard = ({ tech, index }: { tech: typeof techStack[0], index: number })
   
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.9 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ 
-        duration: 0.4, 
-        delay: index * 0.03,
-        type: "spring",
-        stiffness: 120
+        duration: 0.3, 
+        delay: index * 0.02,
       }}
-      whileHover={{ y: -2, scale: 1.02 }}
-      className="group relative"
+      className="group"
     >
-      {/* Compact Card */}
-      <div className="relative bg-gradient-to-br from-gray-900/60 via-gray-800/40 to-gray-900/60 backdrop-blur-xl rounded-lg border border-gray-700/50 overflow-hidden hover:border-gray-600/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/5 p-3">
-        
-        {/* Subtle Glow Effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/3 via-transparent to-purple-500/3 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        
-        {/* Compact Icon Container */}
-        <div className="relative flex flex-col items-center text-center">
-          <div className="relative mb-2">
-            <div className="relative p-2 bg-gradient-to-br from-gray-800/50 to-gray-700/50 rounded-lg border border-gray-600/30 group-hover:border-gray-500/50 transition-all duration-300">
-              <Icon className="text-xl text-gray-300 group-hover:text-white transition-colors duration-300" />
-            </div>
+      {/* Simple Card */}
+      <div className="bg-gray-900/50 rounded-lg border border-gray-800 hover:border-gray-700 transition-colors p-3">
+        {/* Icon Container */}
+        <div className="flex flex-col items-center text-center gap-2">
+          <div className="p-2 bg-gray-800 rounded-lg border border-gray-700">
+            <Icon className="text-xl text-gray-300 group-hover:text-white transition-colors" />
           </div>
           
-          <span className="text-xs font-medium text-white group-hover:text-blue-100 transition-colors duration-300">
+          <span className="text-xs font-medium text-gray-300">
             {tech.name}
           </span>
         </div>
@@ -91,14 +82,12 @@ const Skills = () => {
     : techStack.filter(tech => tech.category === activeCategory);
 
   return (
-    <section id="skills" className="py-12 relative overflow-hidden">
-      {/* Simplified Background */}
-      <div className="absolute inset-0 -z-10 bg-[#0D1117]">
-        <div className="absolute top-1/4 left-1/4 w-1/2 h-1/2 bg-gradient-radial from-blue-500/8 via-purple-500/4 to-transparent opacity-50 blur-[80px]" />
-      </div>
+    <section id="skills" className="py-20 relative overflow-hidden">
+      {/* Simple Background */}
+      <div className="absolute inset-0 -z-10 bg-[#0D1117]" />
       
-      {/* Compact Grid background */}
-      <div className="absolute inset-0 -z-10 bg-[length:30px_30px] md:bg-[length:40px_40px] [background-image:linear-gradient(rgba(255,255,255,.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.015)_1px,transparent_1px)]" />
+      {/* Grid background */}
+      <div className="absolute inset-0 -z-10 bg-[length:40px_40px] [background-image:linear-gradient(rgba(255,255,255,.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.015)_1px,transparent_1px)]" />
       
       <div className="container mx-auto px-4 max-w-5xl">
         <div ref={titleRef} className="mb-8">
@@ -109,56 +98,42 @@ const Skills = () => {
           />
         </div>
 
-        {/* Compact Category Tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-6 px-2">
+        {/* Category Tabs */}
+        <div className="flex flex-wrap justify-center gap-2 mb-8 px-2">
           {categories.map((category) => (
-            <motion.button
+            <button
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className={`relative px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300 ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeCategory === category.id
-                ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md shadow-blue-500/20'
-                : 'bg-gradient-to-br from-gray-800/60 to-gray-700/60 text-gray-300 hover:text-white border border-gray-600/30 hover:border-gray-500/50 backdrop-blur-sm'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white border border-gray-700'
               }`}
             >
-              {activeCategory === category.id && (
-                <motion.div
-                  layoutId="activeTab"
-                  className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg"
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                />
-              )}
-              <span className="relative z-10 flex items-center gap-1">
-                <Code size={12} />
+              <span className="flex items-center gap-1.5">
+                <Code size={14} />
                 {category.name}
               </span>
-            </motion.button>
+            </button>
           ))}
         </div>
 
-        {/* Compact Tech Grid */}
-        <motion.div 
-          layout
-          className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 gap-3 max-w-4xl mx-auto"
-        >
-          <AnimatePresence>
-            {filteredTech.map((tech, index) => (
-              <TechCard key={tech.id} tech={tech} index={index} />
-            ))}
-          </AnimatePresence>
-        </motion.div>
+        {/* Tech Grid */}
+        <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 gap-3 max-w-4xl mx-auto">
+          {filteredTech.map((tech, index) => (
+            <TechCard key={tech.id} tech={tech} index={index} />
+          ))}
+        </div>
 
-        {/* Compact Tech Stats */}
+        {/* Tech Stats */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.3 }}
           className="text-center mt-8"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-gray-800/60 to-gray-700/60 rounded-lg border border-gray-600/30 backdrop-blur-sm">
-            <Sparkles className="text-blue-400" size={14} />
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900/50 rounded-lg border border-gray-800">
+            <Sparkles className="text-blue-400" size={16} />
             <span className="text-gray-300 font-medium text-sm">
               {techStack.length}+ Technologies
             </span>

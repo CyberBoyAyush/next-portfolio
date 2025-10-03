@@ -44,6 +44,7 @@ export const experiences: Experience[] = [
     ],
     location: 'Remote',
     color: 'from-blue-600 to-indigo-600',
+    logo: '/images/kakiyo.png',
     current: true
   }
 ];

@@ -61,7 +61,7 @@ export const projects: Project[] = [
     tags: ["React", "Typecript", "Browser Engine"],
     demoLink: 'https://quickbang.aysh.me/',
     githubLink: 'https://github.com/cyberboyayush/quickbang',
-    featured: false,
+    featured: true,
     year: '2025',
     duration: '5 Days',
     color: 'from-indigo-600 to-purple-600'
@@ -87,7 +87,7 @@ export const projects: Project[] = [
     tags: ["React", "Gemini", "Appwrite", "TailwindCSS", "Groq", "Llama 3.3"],
     demoLink: 'https://skillcompass.ayush-sharma.in/',
     githubLink: 'https://github.com/glucon-d/skillcompass',
-    featured: false,
+    featured: true,
     year: '2025',
     duration: '72 Hours',
     color: 'from-indigo-600 to-purple-600',
