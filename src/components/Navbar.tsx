@@ -91,7 +91,7 @@ const Navbar = () => {
               </motion.a>
               
               <motion.a
-                href="https://twitter.com/cyberboyayush"
+                href="https://x.com/cyberboyayush"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 px-3 py-2 text-gray-400 hover:text-white transition-all duration-300 rounded-lg hover:bg-white/5 group"
@@ -113,13 +113,13 @@ const Navbar = () => {
         animate={{ opacity: 1, y: 0 }}
         style={{ y: headerY, opacity: headerOpacity }}
         transition={{ duration: 0.6 }}
-        className="md:hidden sticky top-4 left-0 right-0 z-50 px-4"
+        className="md:hidden fixed top-4 left-0 right-0 z-50 px-4"
       >
         <motion.div 
-          className="bg-black/25 backdrop-blur-2xl border border-white/10 rounded-2xl px-3 py-2 shadow-lg shadow-black/20"
+          className="bg-[#0D1117]/80 backdrop-blur-xl border border-gray-800 rounded-2xl px-3 py-2 shadow-lg"
           whileHover={{ 
-            borderColor: 'rgba(255, 255, 255, 0.2)',
-            backgroundColor: 'rgba(0, 0, 0, 0.35)',
+            borderColor: 'rgba(107, 114, 128, 0.5)',
+            backgroundColor: 'rgba(13, 17, 23, 0.9)',
           }}
           transition={{ duration: 0.3 }}
         >
@@ -221,7 +221,7 @@ const Navbar = () => {
               className="flex-1"
             >
               <a
-                href="https://twitter.com/cyberboyayush"
+                href="https://x.com/cyberboyayush"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 rounded-xl hover:bg-white/10 group"

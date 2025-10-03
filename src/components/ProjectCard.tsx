@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, Calendar, Star, Zap } from 'lucide-react';
+import { ExternalLink, Github, Globe2, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 
 interface Project {
@@ -33,137 +33,120 @@ const ProjectCard = ({
   showFeaturedBadge = false,
   variant = 'default'
 }: ProjectCardProps) => {
-  const isCompact = variant === 'compact';
-
-  // For compact variant, use vertical layout on all screens
-  // For default variant, use vertical on mobile, horizontal on desktop
-  const shouldUseVerticalLayout = isCompact || true; // Force vertical for now, can be made responsive
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="group relative bg-gradient-to-br from-gray-900/90 to-gray-800/60 backdrop-blur-xl rounded-2xl border border-gray-700/40 overflow-hidden hover:border-gray-500/60 transition-all duration-700 hover:shadow-2xl hover:shadow-black/50 hover:-translate-y-2 hover:scale-[1.02]"
+      transition={{ duration: 0.5, delay: index * 0.08 }}
+      className="group relative rounded-2xl overflow-hidden flex flex-col h-full hover:-translate-y-1 transition-all duration-300"
     >
-      {/* Glow effect on hover */}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-gray-600/5 to-gray-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      {/* Dark themed background with subtle gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900" />
       
-      {/* Badges Container - Positioned on opposite sides */}
-      <div className="absolute top-4 left-4 right-4 z-20 flex justify-between items-start">
-        {/* Featured Badge - Left side */}
-        <div className="flex">
-          {showFeaturedBadge && project.featured && (
-            <div className="px-3 py-1.5 bg-gradient-to-r from-black/70 to-gray-900/70 backdrop-blur-xl border border-yellow-500/30 text-yellow-100 text-xs font-semibold rounded-full flex items-center gap-1.5 shadow-xl shadow-black/40">
-              <Star size={11} className="text-yellow-400 fill-yellow-400" />
-              <span>Top Project</span>
-            </div>
-          )}
-        </div>
-        
-        {/* Hackathon Badge - Right side */}
-        <div className="flex">
-          {project.isHackathonProject && (
-            <div className="px-3 py-1.5 bg-gradient-to-r from-black/70 to-gray-900/70 backdrop-blur-xl border border-orange-500/30 text-orange-100 text-xs font-semibold rounded-full flex items-center gap-1.5 shadow-xl shadow-black/40">
-              <Zap size={11} className="text-orange-400 fill-orange-400" />
-              <span>Built in 48hrs</span>
-            </div>
-          )}
-        </div>
+      {/* Subtle colored accent on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      {/* Animated border gradient */}
+      <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-gray-700 via-gray-600 to-gray-700 group-hover:from-blue-500/50 group-hover:via-purple-500/50 group-hover:to-pink-500/50 transition-all duration-300">
+        <div className="h-full w-full rounded-2xl bg-gray-900" />
       </div>
-
-      {/* Card Layout - Always Vertical for Consistency */}
-      <div className="flex flex-col w-full">
-        {/* Project Image */}
-        <div className={`relative ${isCompact ? 'h-48' : 'h-56'} overflow-hidden flex-shrink-0`}>
+      
+      {/* Content Container */}
+      <div className="relative z-10 flex flex-col h-full p-6">
+        {/* Featured Badge */}
+        {showFeaturedBadge && project.featured && (
+          <div className="absolute top-6 right-6 px-3 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-md text-blue-300 text-xs font-semibold rounded-full border border-blue-500/30">
+            Featured
+          </div>
+        )}
+        
+        {/* Image Container */}
+        <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 mb-4 group-hover:border-gray-600/50 transition-colors">
           <Image
             src={project.image}
             alt={project.title}
             fill
-            className="object-cover transition-all duration-700 group-hover:scale-110 group-hover:brightness-110"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
-          {/* Dynamic color overlay */}
-          <div className={`absolute inset-0 bg-gradient-to-t ${project.color} opacity-5 group-hover:opacity-15 transition-opacity duration-700`} />
-          {/* Improved gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent" />
-          
-          {/* Enhanced overlay on hover */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
-          
-          {/* Subtle shine effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/8 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />
         </div>
-
-        {/* Project Content */}
-        <div className={`${isCompact ? 'p-5' : 'p-6'} flex flex-col space-y-4`}>
-          {/* Header */}
-          <div className="space-y-3">
-            <div className="flex items-start justify-between gap-3">
-              <h3 className={`${isCompact ? 'text-lg' : 'text-xl'} font-bold text-white group-hover:text-gray-50 transition-colors duration-300 leading-tight flex-1`}>
-                {project.title}
-              </h3>
-              <div className="flex items-center text-xs text-gray-400 bg-gray-800/60 px-2 py-1 rounded-lg border border-gray-600/30 backdrop-blur-sm flex-shrink-0">
-                <Calendar size={12} className="mr-1.5" />
-                {project.year}
-              </div>
+        
+        {/* Text Content */}
+        <div className="flex flex-col flex-1">
+          {/* Title and Links */}
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <h3 className="text-xl font-bold text-white leading-tight flex-1 group-hover:text-blue-300 transition-colors">
+              {project.title}
+            </h3>
+            <div className="flex items-center gap-2">
+              {project.demoLink && (
+                <a
+                  href={project.demoLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white border border-gray-700 hover:border-gray-600 transition-all"
+                  aria-label="Live demo"
+                >
+                  <Globe2 size={16} />
+                </a>
+              )}
+              {project.githubLink && (
+                <a
+                  href={project.githubLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white border border-gray-700 hover:border-gray-600 transition-all"
+                  aria-label="Source code"
+                >
+                  <Github size={16} />
+                </a>
+              )}
             </div>
-
-            <p className={`text-gray-300 ${isCompact ? 'text-sm' : 'text-sm'} leading-relaxed group-hover:text-gray-200 transition-colors duration-300 line-clamp-3`}>
-              {project.description}
-            </p>
           </div>
-
-          {/* Technologies */}
-          <div className="flex flex-wrap gap-2">
-            {project.tags.slice(0, isCompact ? 4 : 5).map((tech, idx) => (
-              <span
-                key={tech}
-                className={`${isCompact ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-xs'} bg-gray-800/70 text-gray-200 font-medium rounded-lg border border-gray-600/40 hover:bg-gray-700/80 hover:border-gray-500/60 transition-all duration-300 backdrop-blur-sm`}
-                style={{ animationDelay: `${idx * 0.1}s` }}
-              >
-                {tech}
-              </span>
-            ))}
-            {project.tags.length > (isCompact ? 4 : 5) && (
-              <span className={`${isCompact ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-xs'} bg-gray-800/50 text-gray-400 font-medium rounded-lg border border-gray-600/30`}>
-                +{project.tags.length - (isCompact ? 4 : 5)}
-              </span>
-            )}
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex gap-3">
-            {project.demoLink && (
-              <motion.a
-                href={project.demoLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`flex-1 ${isCompact ? 'py-2.5 px-4 text-sm' : 'py-3 px-5 text-sm'} bg-gradient-to-r from-gray-700/80 to-gray-600/80 hover:from-gray-600 hover:to-gray-500 text-white font-semibold rounded-xl border border-gray-500/30 hover:border-gray-400/60 transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-sm hover:shadow-lg hover:shadow-gray-800/30`}
-                whileHover={{ scale: 1.02, y: -1 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <ExternalLink size={16} />
-                <span>Live Demo</span>
-              </motion.a>
-            )}
-            {project.githubLink && (
-              <motion.a
-                href={project.githubLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${isCompact ? 'py-2.5 px-4' : 'py-3 px-5'} bg-gray-800/70 hover:bg-gray-700/90 text-gray-300 hover:text-white rounded-xl border border-gray-600/40 hover:border-gray-500/60 transition-all duration-300 flex items-center justify-center backdrop-blur-sm hover:shadow-lg hover:shadow-gray-800/30`}
-                whileHover={{ scale: 1.05, y: -1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Github size={18} />
-              </motion.a>
-            )}
+          
+          {/* Description */}
+          <p className="text-gray-400 text-sm leading-relaxed mb-4 line-clamp-2">
+            {project.description}
+          </p>
+          
+          {/* Technologies Section */}
+          <div className="mt-auto">
+            <div className="text-xs text-gray-500 font-semibold mb-2 uppercase tracking-wide">
+              Technologies
+            </div>
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {project.tags.slice(0, 6).map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="px-2.5 py-1 bg-gray-800/80 backdrop-blur-sm text-gray-300 text-xs font-medium rounded-md border border-gray-700/50 hover:border-gray-600 hover:bg-gray-800 transition-colors"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            
+            {/* Status Indicator */}
+            <div className="flex items-center justify-between pt-3 border-t border-gray-800">
+              <div className="flex items-center gap-2 text-xs text-gray-400">
+                <div className="w-2 h-2 rounded-full bg-green-400" />
+                <span className="font-medium">All Systems Operational</span>
+              </div>
+              {project.demoLink && (
+                <a
+                  href={project.demoLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-blue-400 transition-colors group/link"
+                >
+                  <span>View Details</span>
+                  <ChevronRight size={14} className="group-hover/link:translate-x-0.5 transition-transform" />
+                </a>
+              )}
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Bottom accent line */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-600/50 via-gray-500/50 to-gray-600/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </motion.div>
   );
 };

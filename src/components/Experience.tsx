@@ -2,9 +2,27 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Calendar, MapPin, ChevronRight } from 'lucide-react';
+import { Calendar, MapPin, Briefcase } from 'lucide-react';
+import Image from 'next/image';
 import SectionHeading from './SectionHeading';
 import { getAllExperiences } from '../data/experience';
+import {
+  SiTypescript, SiReact, SiNextdotjs, SiNodedotjs,
+  SiPostgresql, SiAmazon, SiDocker, SiTailwindcss, SiPrisma, SiGraphql
+} from 'react-icons/si';
+
+const techIconMap: { [key: string]: any } = {
+  'React': SiReact,
+  'Next.js': SiNextdotjs,
+  'TypeScript': SiTypescript,
+  'Node.js': SiNodedotjs,
+  'PostgreSQL': SiPostgresql,
+  'AWS': SiAmazon,
+  'Docker': SiDocker,
+  'TailwindCSS': SiTailwindcss,
+  'Prisma': SiPrisma,
+  'GraphQL': SiGraphql,
+};
 
 const Experience = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -13,111 +31,102 @@ const Experience = () => {
   const experiences = getAllExperiences();
 
   return (
-    <section ref={sectionRef} className="py-16 relative overflow-hidden">
-      {/* Keep original background */}
-      <div className="absolute inset-0 -z-10 bg-[#0D1117]">
-        <div className="absolute top-1/4 left-1/4 w-1/2 h-1/2 bg-gradient-radial from-gray-800/20 to-transparent opacity-50 blur-[100px]" />
-      </div>
+    <section ref={sectionRef} className="py-20 relative overflow-hidden">
+      <div className="absolute inset-0 -z-10 bg-[#0D1117]" />
+      <div className="absolute inset-0 -z-10 bg-[length:40px_40px] [background-image:linear-gradient(rgba(255,255,255,.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.015)_1px,transparent_1px)]" />
 
-      {/* Grid background */}
-      <div className="absolute inset-0 -z-10 bg-[length:40px_40px] md:bg-[length:50px_50px] [background-image:linear-gradient(rgba(255,255,255,.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.01)_1px,transparent_1px)]" />
-
-      <div className="container mx-auto px-4 max-w-7xl">
+      <div className="container mx-auto px-4 max-w-4xl">
         <SectionHeading
           subtitle="Experience"
           title="Work"
           description="Building scalable solutions and leading development teams"
-          className="mb-16"
+          className="mb-12"
         />
 
         {/* Experience Cards */}
-        <div className="max-w-5xl mx-auto">
+        <div className="space-y-8">
           {experiences.map((experience, index) => (
             <motion.div
               key={experience.id}
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative mb-6 last:mb-0"
+              className="space-y-4"
             >
-              <div className="group relative bg-gray-900/40 backdrop-blur-sm rounded-xl border border-gray-800/50 p-6 md:p-8 hover:border-gray-700/70 hover:bg-gray-900/60 transition-all duration-300 overflow-hidden">
-                
-                {/* Animated border on hover */}
-                <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                  <div className="absolute inset-[-1px] rounded-xl overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-500/30 to-transparent -skew-x-12 animate-[shimmer_4s_linear_infinite]" />
+              {/* Header - Company and Date */}
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gray-800/50 flex items-center justify-center flex-shrink-0 border border-gray-700 overflow-hidden p-1">
+                    {experience.logo ? (
+                      <Image
+                        src={experience.logo}
+                        alt={`${experience.company} logo`}
+                        width={48}
+                        height={48}
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <Briefcase size={20} className="text-gray-500" />
+                    )}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-lg sm:text-xl font-bold text-white">
+                        {experience.company}
+                      </h3>
+                      {experience.current && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-500/10 text-green-400 text-xs font-semibold rounded border border-green-500/20">
+                          <span className="w-1 h-1 rounded-full bg-green-400" />
+                          Current
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-base text-gray-300 font-medium">
+                      {experience.position}
+                    </p>
                   </div>
                 </div>
-                
-                {/* Active indicator */}
-                {experience.current && (
-                  <div className="absolute -left-px top-8 bottom-8 w-[2px] bg-gradient-to-b from-blue-500/50 via-blue-400/30 to-transparent" />
-                )}
-
-                <div className="grid md:grid-cols-[1fr_auto] gap-6">
-                  {/* Main content */}
-                  <div className="space-y-4">
-                    {/* Header */}
-                    <div>
-                      <div className="flex items-start justify-between mb-2">
-                        <h3 className="text-xl md:text-2xl font-semibold text-white">
-                          {experience.position}
-                        </h3>
-                        {experience.current && (
-                          <span className="inline-flex items-center px-3 py-1 bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-300 text-xs font-semibold rounded-full border border-blue-500/20 backdrop-blur-sm">
-                            <span className="relative flex h-2 w-2 mr-2">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-400"></span>
-                            </span>
-                            Current
-                          </span>
-                        )}
-                      </div>
-                      
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-                        <span className="text-blue-400 font-medium">{experience.company}</span>
-                        <div className="flex items-center gap-4 text-gray-400">
-                          <span className="flex items-center gap-1">
-                            <Calendar size={14} className="opacity-60" />
-                            {experience.duration}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <MapPin size={14} className="opacity-60" />
-                            {experience.location}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-gray-300 text-sm md:text-base leading-relaxed">
-                      {experience.description}
-                    </p>
-
-                    {/* Key Points */}
-                    <div className="space-y-2.5">
-                      {experience.responsibilities.slice(0, 3).map((item, idx) => (
-                        <div key={idx} className="flex items-start gap-2 text-sm text-gray-300">
-                          <ChevronRight size={16} className="text-gray-500 mt-0.5 flex-shrink-0" />
-                          <span className="leading-relaxed">{item}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Technologies */}
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      {experience.technologies.map((tech, idx) => (
-                        <span
-                          key={idx}
-                          className="px-2.5 py-1 bg-gray-800/40 text-gray-300 text-xs font-medium rounded-md border border-gray-700/40 hover:border-gray-600/60 hover:bg-gray-800/60 transition-colors"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                <div className="text-sm text-gray-400 sm:text-right flex-shrink-0 ml-[52px] sm:ml-0">
+                  <div>{experience.duration}</div>
+                  <div className="text-gray-500">{experience.location}</div>
                 </div>
               </div>
+
+              {/* Technologies & Tools */}
+              <div>
+                <div className="text-xs text-gray-500 font-semibold mb-2 uppercase tracking-wide">
+                  Technologies & Tools
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {experience.technologies.map((tech, idx) => {
+                    const Icon = techIconMap[tech];
+                    return (
+                      <span
+                        key={idx}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-800/60 text-gray-300 text-xs font-medium rounded-md border border-gray-700/50"
+                      >
+                        {Icon && <Icon className="text-sm" />}
+                        {tech}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Responsibilities */}
+              <div className="space-y-2">
+                {experience.responsibilities.slice(0, 4).map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-2 text-sm text-gray-300">
+                    <span className="text-gray-500 mt-1 flex-shrink-0">•</span>
+                    <span className="leading-relaxed">{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Divider */}
+              {index < experiences.length - 1 && (
+                <div className="pt-8 border-b border-gray-800" />
+              )}
             </motion.div>
           ))}
         </div>

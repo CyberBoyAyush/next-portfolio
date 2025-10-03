@@ -2,9 +2,12 @@
 
 import { useRef, useState, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { useTypewriter } from 'react-simple-typewriter';
-import { ChevronDown, Github, Linkedin, Calendar } from 'lucide-react';
+import { ChevronDown, Github, Linkedin, Mail, FileText, Calendar, Network, TrendingUp } from 'lucide-react';
 import Image from 'next/image';
+import { 
+  SiTypescript, SiReact, SiNextdotjs, SiPrisma, 
+  SiPostgresql, SiAppwrite 
+} from 'react-icons/si';
 
 // Custom X (Twitter) Icon Component
 const XIcon = ({ size = 18, className = "" }) => (
@@ -25,44 +28,29 @@ const Hero = () => {
   const [imageError, setImageError] = useState(false);
   const [imageAttempted, setImageAttempted] = useState(false);
   
-  // Animation variants - simplified
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
+        staggerChildren: 0.08,
+        delayChildren: 0.1,
       },
     },
   };
   
   const itemVariants = {
-    hidden: { y: 10, opacity: 0 },
+    hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.4,
+        duration: 0.5,
+        ease: "easeOut",
       },
     },
   };
-  
-  // Typewriter effect for roles
-  const [typewriterText] = useTypewriter({
-    words: [
-      'Web Developer',
-      'Backend Engineer',
-      'Full Stack Developer',
-      'Open Source Contributor',
-    ],
-    loop: true,
-    typeSpeed: 70,
-    deleteSpeed: 50,
-    delaySpeed: 1500,
-  });
 
-  // Memoized image handlers to prevent recreation on every render
   const handleImageLoad = useCallback(() => {
     if (!imageLoaded) {
       setImageLoaded(true);
@@ -78,7 +66,6 @@ const Hero = () => {
     }
   }, [imageError, imageAttempted]);
 
-  // Memoized image component to prevent re-creation
   const ProfileImage = useMemo(() => {
     if (imageError || imageAttempted) return null;
     
@@ -87,221 +74,183 @@ const Hero = () => {
         src="https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPhWVT9F8tcdLGNp9S0ETXmuk4jy87UFaBIrYw"
         alt="Ayush Sharma"
         fill
-        sizes="(max-width: 768px) 18rem, 24rem"
-        className={`object-contain p-2 transition-opacity duration-300 ${
+        sizes="(max-width: 768px) 10rem, 12rem"
+        className={`object-cover transition-opacity duration-300 ${
           imageLoaded ? 'opacity-100' : 'opacity-0'
         }`}
         priority
         onLoad={handleImageLoad}
         onError={handleImageError}
         unoptimized={false}
-        quality={90}
+        quality={95}
       />
     );
   }, [imageLoaded, imageError, imageAttempted, handleImageLoad, handleImageError]);
   
   return (
-    <section id="home" className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-16" ref={ref}>
-      {/* Simplified background */}
-      <div className="absolute inset-0 -z-10 bg-[#0D1117]">
-        <div className="absolute top-0 left-1/4 w-1/2 h-1/2 bg-gradient-radial from-gray-800/20 to-transparent opacity-50 blur-[100px]" />
-      </div>
+    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden" ref={ref}>
+      <div className="absolute inset-0 -z-10 bg-[#0D1117]" />
+      <div className="absolute inset-0 -z-10 bg-[length:40px_40px] [background-image:linear-gradient(rgba(255,255,255,.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.015)_1px,transparent_1px)]" />
       
-      {/* Simplified grid background */}
-      <div
-        className="absolute inset-0 -z-10 bg-[length:40px_40px] md:bg-[length:50px_50px] [background-image:linear-gradient(rgba(255,255,255,.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.01)_1px,transparent_1px)]"
-      ></div>
-      
-      <div className="container mx-auto px-4 flex-1 flex flex-col justify-center">
-        <div className="max-w-6xl mx-auto w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center pt-8 md:pt-0">
-            {/* Text content column */}
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="flex flex-col lg:pr-10"
-            >
-              <motion.div
-                variants={itemVariants}
-                className="text-white"
-              >
-                <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-white/5 border border-gray-800/90 backdrop-blur-sm mb-6">
-                  <div className="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse"></div>
-                  <span className="text-xs font-medium text-gray-300">
-                    Available for new projects
-                  </span>
-                </div>
-                
-                <motion.h1 variants={itemVariants} className="text-5xl sm:text-5xl md:text-7xl font-bold mb-4">
-                  Hi, I&apos;m <br />
-                  <span className="text-white">
-                    Ayush Sharma
-                  </span>
-                </motion.h1>
-                
-                <motion.div variants={itemVariants} className="text-xl md:text-2xl font-medium text-gray-300 mb-6">
-                  I&apos;m a <span className="text-white">{typewriterText}</span>
-                  <span className="animate-blink text-white">|</span>
-                </motion.div>
-                
-                <motion.p variants={itemVariants} className="text-gray-400 leading-relaxed mb-8">
-                  I Write Code, I Build Things, I Solve Problems and I show people that I Love To Code(I DO).
-                </motion.p>
-                
-                <motion.div variants={itemVariants} className="flex flex-wrap gap-3 sm:gap-4 items-center">
-                  <a
-                    href="#contact"
-                    className="px-4 py-3 sm:px-6 rounded-lg bg-white text-gray-900 font-medium transition-all duration-300 hover:bg-gray-100 text-sm sm:text-base"
-                  >
-                    Let&apos;s Connect
-                  </a>
-
-                  <a
-                    href="/Resume.pdf"
-                    className="px-4 py-3 sm:px-6 rounded-lg bg-transparent border border-gray-700 text-white font-medium transition-all duration-300 hover:bg-white/5 text-sm sm:text-base"
-                  >
-                    Download Resume
-                  </a>
-
-                  <div className="relative group">
-                    <a
-                      href="https://zcal.co/ayush/30min"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center w-12 h-12 rounded-lg bg-gray-900/90 border border-orange-500/30 text-orange-400 transition-all duration-300 hover:bg-orange-500/10 hover:border-orange-400/50 hover:text-orange-300 hover:shadow-lg hover:shadow-orange-500/20 backdrop-blur-sm"
-                    >
-                      <Calendar size={18} />
-                    </a>
-
-                    {/* Tooltip */}
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900/95 border border-orange-500/30 rounded-lg text-orange-300 text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none backdrop-blur-sm z-10">
-                      Schedule 1:1
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-orange-500/30"></div>
-                    </div>
+      <div className="container mx-auto px-4 pt-6 pb-2 sm:py-16 md:py-20 w-full">
+        <div className="max-w-4xl mx-auto w-full">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-3 sm:space-y-5 md:space-y-8"
+          >
+            {/* Profile Image */}
+            <motion.div variants={itemVariants} className="flex items-center justify-center gap-4 sm:mt-4 md:mt-8">
+              <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full overflow-hidden ring-2 ring-gray-800 bg-gray-900">
+                {ProfileImage}
+                {!imageLoaded && !imageError && !imageAttempted && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-12 h-12 border-2 border-gray-600 border-t-white rounded-full animate-spin"></div>
                   </div>
-                </motion.div>
-                
-                <motion.div variants={itemVariants} className="mt-8 flex items-center gap-4">
-                  <span className="text-sm text-gray-500">Follow me:</span>
-                  <div className="flex gap-3">
-                    <a 
-                      href="https://github.com/cyberboyayush" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="w-9 h-9 rounded-full bg-gray-800/80 flex items-center justify-center transition-colors duration-300 hover:bg-gray-700/80"
-                    >
-                      <Github size={18} className="text-gray-400 hover:text-white transition-colors duration-300"/>
-                    </a>
-                    <a 
-                      href="https://linkedin.com/in/cyberboyayush" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="w-9 h-9 rounded-full bg-gray-800/80 flex items-center justify-center transition-colors duration-300 hover:bg-gray-700/80"
-                    >
-                      <Linkedin size={18} className="text-gray-400 hover:text-white transition-colors duration-300"/>
-                    </a>
-                    <a 
-                      href="https://twitter.com/cyberboyayush" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="w-9 h-9 rounded-full bg-gray-800/80 flex items-center justify-center transition-colors duration-300 hover:bg-gray-700/80"
-                    >
-                      <XIcon size={18} className="text-gray-400 hover:text-white transition-colors duration-300"/>
-                    </a>
+                )}
+                {(imageError || imageAttempted) && !imageLoaded && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
+                    <span className="text-2xl font-bold text-white">AS</span>
                   </div>
-                </motion.div>
-                
-                {/* Simplified Stats Display */}
-                <motion.div 
-                  variants={itemVariants}
-                  className="mt-8 bg-gray-900/80 backdrop-blur-md border border-gray-800/30 rounded-xl p-3 inline-flex flex-wrap gap-4"
-                >
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-md bg-gray-800 flex items-center justify-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
-                        <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="font-medium text-white text-sm">5+ Years</div>
-                      <div className="text-xs text-gray-400">Experience</div>
-                    </div>
-                  </div>
-
-                  <div className="w-px h-10 bg-gray-700/50 mx-1 hidden md:block"></div>
-                  
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-md bg-gray-800 flex items-center justify-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="font-medium text-white text-sm">28+ Projects</div>
-                      <div className="text-xs text-gray-400">Completed</div>
-                    </div>
-                  </div>
-
-                  <div className="w-px h-10 bg-gray-700/50 mx-1 hidden md:block"></div>
-                  
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-md bg-gray-800 flex items-center justify-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="font-medium text-white text-sm">10+ Clients</div>
-                      <div className="text-xs text-gray-400">Worldwide</div>
-                    </div>
-                  </div>
-                </motion.div>
-              </motion.div>
-            </motion.div>
-            
-            {/* Image column - optimized with single load */}
-            <div className="relative flex justify-center lg:justify-end">
-              <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] flex items-center justify-center">
-                {/* Simplified background ring */}
-                <div className="absolute inset-0 rounded-full bg-gray-800/20 blur-md"></div>
-                
-                {/* Profile image container */}
-                <div className="relative w-[240px] h-[240px] md:w-[350px] md:h-[350px] rounded-full overflow-hidden border-2 border-gray-800/50 bg-gray-900 shadow-2xl">
-                  {ProfileImage}
-                  
-                  {/* Loading placeholder - only show when not loaded and no error */}
-                  {!imageLoaded && !imageError && !imageAttempted && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-16 h-16 border-2 border-gray-600 border-t-white rounded-full animate-spin"></div>
-                    </div>
-                  )}
-                  
-                  {/* Error fallback - only show after error occurred */}
-                  {(imageError || imageAttempted) && !imageLoaded && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center text-gray-400">
-                        <div className="w-20 h-20 mx-auto mb-2 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center border border-gray-600">
-                          <span className="text-2xl font-bold text-white">AS</span>
-                        </div>
-                        <span className="text-xs text-gray-500">Ayush Sharma</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                )}
               </div>
-            </div>
-          </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-sm text-gray-400">Available for work</span>
+              </div>
+            </motion.div>
+
+            {/* Main Heading */}
+            <motion.div variants={itemVariants} className="mt-3 sm:mt-4 md:mt-16">
+              <h1 className="text-4xl sm:text-4xl md:text-6xl font-bold leading-tight text-center">
+                <span className="text-white">Hi, I&apos;m</span>
+                <br />
+                <span className="text-white">Ayush Sharma</span>
+                <br />
+                <span className="text-gray-400 text-3xl sm:text-3xl md:text-5xl">I&apos;m a Full Stack Developer</span>
+              </h1>
+            </motion.div>
+
+            {/* Description with Tech Stack */}
+            <motion.div variants={itemVariants} className="space-y-4 text-center">
+              <p className="text-base sm:text-base md:text-xl text-gray-300 leading-loose max-w-3xl mx-auto">
+                I make{' '}
+                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-green-500/10 text-green-400 rounded-lg border border-green-500/30 font-medium text-xs sm:text-sm mr-1">
+                  <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
+                  Scalable
+                </span>
+                {' '}beautiful looking web apps using{' '}
+                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/30 font-medium text-xs sm:text-sm mr-1">
+                  <SiTypescript className="w-3 h-3 sm:w-4 sm:h-4" />
+                  Typescript
+                </span>
+                , 
+                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-cyan-500/10 text-cyan-400 rounded-lg border border-cyan-500/30 font-medium text-xs sm:text-sm mr-1">
+                  <SiReact className="w-3 h-3 sm:w-4 sm:h-4" />
+                  React
+                </span>
+                , 
+                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-gray-500/10 text-gray-300 rounded-lg border border-gray-500/30 font-medium text-xs sm:text-sm mr-1">
+                  <SiNextdotjs className="w-3 h-3 sm:w-4 sm:h-4" />
+                  NextJS
+                </span>
+                , 
+                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-teal-500/10 text-teal-400 rounded-lg border border-teal-500/30 font-medium text-xs sm:text-sm mr-1">
+                  <SiPrisma className="w-3 h-3 sm:w-4 sm:h-4" />
+                  Prisma ORM
+                </span>
+                , 
+                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/30 font-medium text-xs sm:text-sm mr-1">
+                  <SiPostgresql className="w-3 h-3 sm:w-4 sm:h-4" />
+                  Postgres
+                </span>
+                , 
+                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-pink-500/10 text-pink-400 rounded-lg border border-pink-500/30 font-medium text-xs sm:text-sm mr-1">
+                  <SiAppwrite className="w-3 h-3 sm:w-4 sm:h-4" />
+                  Appwrite
+                </span>
+                , with focusing on security and good{' '}
+                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-purple-500/10 text-purple-400 rounded-lg border border-purple-500/30 font-medium text-xs sm:text-sm">
+                  <Network className="w-3 h-3 sm:w-4 sm:h-4" />
+                  System design
+                </span>
+                .
+              </p>
+            </motion.div>
+
+            {/* Action Buttons */}
+            <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+              <a
+                href="/Resume.pdf"
+                className="inline-flex items-center gap-1.5 sm:gap-2 px-4 py-2.5 sm:px-5 sm:py-2.5 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition-all text-base sm:text-base"
+              >
+                <FileText size={16} className="sm:w-4 sm:h-4" />
+                Resume / CV
+              </a>
+              <a
+                href="#contact"
+                className="inline-flex items-center gap-1.5 sm:gap-2 px-4 py-2.5 sm:px-5 sm:py-2.5 bg-transparent text-gray-300 rounded-lg font-medium hover:bg-gray-800/50 hover:text-white transition-all border border-gray-700 text-base sm:text-base"
+              >
+                <Mail size={16} className="sm:w-4 sm:h-4" />
+                Get in touch
+              </a>
+              <a
+                href="https://zcal.co/ayush/30min"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 sm:gap-2 px-4 py-2.5 sm:px-5 sm:py-2.5 bg-orange-500/10 text-orange-400 rounded-lg font-medium hover:bg-orange-500/20 transition-all border border-orange-500/30 hover:border-orange-500/50 shadow-[0_0_15px_rgba(251,146,60,0.15)] hover:shadow-[0_0_25px_rgba(251,146,60,0.3)] text-base sm:text-base"
+              >
+                <Calendar size={16} className="sm:w-4 sm:h-4" />
+                Schedule 1:1 Call
+              </a>
+            </motion.div>
+
+            {/* Social Links */}
+            <motion.div variants={itemVariants} className="flex items-center justify-center gap-3 pt-1 sm:pt-2 md:pt-3">
+              <a 
+                href="https://x.com/cyberboyayush" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+                aria-label="Twitter"
+              >
+                <XIcon size={20} />
+              </a>
+              <a 
+                href="https://linkedin.com/in/cyberboyayush" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+                aria-label="LinkedIn"
+              >
+                <Linkedin size={20} />
+              </a>
+              <a 
+                href="https://github.com/cyberboyayush" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+                aria-label="GitHub"
+              >
+                <Github size={20} />
+              </a>
+              <a 
+                href="mailto:hi@ayush-sharma.in" 
+                className="text-gray-400 hover:text-white transition-colors"
+                aria-label="Email"
+              >
+                <Mail size={20} />
+              </a>
+            </motion.div>
+          </motion.div>
           
-          {/* Scroll down indicator */}
-          <div className="flex justify-center mt-8 md:mt-4">
+          {/* Scroll Indicator */}
+          <div className="flex justify-center mt-1 sm:mt-4 md:mt-10">
             <a
               href="#skills"
-              className="animate-bounce rounded-full p-1 text-gray-400 hover:text-white transition-colors duration-300"
+              className="animate-bounce rounded-full p-2 text-gray-500 hover:text-gray-300 transition-colors"
+              aria-label="Scroll down"
             >
               <ChevronDown size={24} />
             </a>
