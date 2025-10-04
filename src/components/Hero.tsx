@@ -101,28 +101,37 @@ const Hero = () => {
             className="space-y-3 sm:space-y-5 md:space-y-8"
           >
             {/* Profile Image */}
-            <motion.div variants={itemVariants} className="flex items-center justify-center gap-4 sm:mt-4 md:mt-8">
-              <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full overflow-hidden ring-2 ring-gray-800 bg-gray-900">
-                {ProfileImage}
-                {!imageLoaded && !imageError && !imageAttempted && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 h-12 border-2 border-gray-600 border-t-white rounded-full animate-spin"></div>
+            <motion.div variants={itemVariants} className="flex justify-center sm:mt-4 md:mt-8">
+              <div className="relative inline-block group">
+                <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full overflow-hidden ring-2 ring-gray-800 bg-gray-900 cursor-pointer">
+                  {ProfileImage}
+                  {!imageLoaded && !imageError && !imageAttempted && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-12 h-12 border-2 border-gray-600 border-t-white rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                  {(imageError || imageAttempted) && !imageLoaded && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
+                      <span className="text-2xl font-bold text-white">AS</span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Green Status Dot */}
+                <div className="absolute bottom-2 right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-green-400 border-[3px] border-[#0D1117]" />
+                
+                {/* Hover Card with connecting line - originates from green dot */}
+                <div className="absolute bottom-[0.625rem] sm:bottom-[0.75rem] right-2 translate-x-full opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 z-10 flex items-center">
+                  <div className="w-3 sm:w-4 h-px bg-gray-600 ml-1" />
+                  <div className="bg-gray-900/95 border border-gray-700 rounded-2xl px-4 py-2.5 shadow-2xl ml-1">
+                    <span className="text-sm text-white font-medium whitespace-nowrap">Available For Work</span>
                   </div>
-                )}
-                {(imageError || imageAttempted) && !imageLoaded && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
-                    <span className="text-2xl font-bold text-white">AS</span>
-                  </div>
-                )}
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-sm text-gray-400">Available for work</span>
+                </div>
               </div>
             </motion.div>
 
             {/* Main Heading */}
-            <motion.div variants={itemVariants} className="mt-3 sm:mt-4 md:mt-16">
+            <motion.div variants={itemVariants} className="mt-4 sm:mt-5 md:mt-8">
               <h1 className="text-4xl sm:text-4xl md:text-6xl font-bold leading-tight text-center">
                 <span className="text-white">Hi, I&apos;m</span>
                 <br />
