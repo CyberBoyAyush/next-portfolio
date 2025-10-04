@@ -52,6 +52,7 @@ export default function RootLayout({
     <html lang="en" className="dark !scroll-smooth" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0D1117] text-white min-h-screen flex flex-col overflow-x-hidden selection:bg-gray-600/30 selection:text-white`}
+        suppressHydrationWarning
       >
         <Spotlight />
         

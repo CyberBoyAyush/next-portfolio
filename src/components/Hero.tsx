@@ -236,7 +236,7 @@ const Hero = () => {
                 <Github size={20} />
               </a>
               <a 
-                href="mailto:hi@ayush-sharma.in" 
+                href="mailto:hi@aysh.me" 
                 className="text-gray-400 hover:text-white transition-colors"
                 aria-label="Email"
               >

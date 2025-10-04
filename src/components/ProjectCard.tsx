@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { ExternalLink, Github, Globe2, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 
@@ -34,10 +33,7 @@ const ProjectCard = ({
   variant = 'default'
 }: ProjectCardProps) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.08 }}
+    <div
       className="group relative rounded-2xl overflow-hidden flex flex-col h-full hover:-translate-y-1 transition-all duration-300"
     >
       {/* Dark themed background with subtle gradient */}
@@ -147,7 +143,7 @@ const ProjectCard = ({
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
