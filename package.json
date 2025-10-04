@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@lobehub/icons": "^2.36.0",
     "@react-three/drei": "^10.0.7",
     "@react-three/fiber": "^9.1.2",
     "@tabler/icons-react": "^3.31.0",
