@@ -1,7 +1,25 @@
 'use client';
 
-import { ExternalLink, Github, Globe2, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
+import { ExternalLink, Github, Globe2, ChevronRight, Server, Chrome, Calendar, Bot, Database } from 'lucide-react';
+import { 
+  SiNextdotjs, 
+  SiPrisma, 
+  SiPostgresql, 
+  SiTailwindcss, 
+  SiReact, 
+  SiTypescript, 
+  SiAppwrite,
+  SiVercel,
+  SiJavascript,
+  SiOpenai,
+  SiAmazon,
+  SiGooglegemini,
+  SiGoogle,
+  SiMeta
+} from 'react-icons/si';
 import Image from 'next/image';
+import { OpenRouter, Groq as GroqIcon } from '@lobehub/icons';
 
 interface Project {
   id: string;
@@ -15,6 +33,8 @@ interface Project {
   githubLink?: string;
   featured?: boolean;
   isHackathonProject?: boolean;
+  slug: string;
+  videoUrl?: string;
 }
 
 interface ProjectCardProps {
@@ -24,6 +44,39 @@ interface ProjectCardProps {
   showFeaturedBadge?: boolean;
   variant?: 'default' | 'compact';
 }
+
+// Tech icon mapping
+const getTechIcon = (tech: string) => {
+  const techLower = tech.toLowerCase();
+  const iconSize = 14; // 3.5 * 4 = 14px (w-3.5 h-3.5 in Tailwind)
+  const iconClass = "w-3.5 h-3.5";
+  
+  if (techLower.includes('next')) return <SiNextdotjs className={iconClass} />;
+  if (techLower.includes('prisma')) return <SiPrisma className={iconClass} />;
+  if (techLower.includes('postgres')) return <SiPostgresql className={iconClass} />;
+  if (techLower.includes('tailwind')) return <SiTailwindcss className={iconClass} />;
+  if (techLower.includes('react')) return <SiReact className={iconClass} />;
+  if (techLower.includes('typescript')) return <SiTypescript className={iconClass} />;
+  if (techLower.includes('appwrite')) return <SiAppwrite className={iconClass} />;
+  if (techLower.includes('vercel')) return <SiVercel className={iconClass} />;
+  if (techLower.includes('javascript')) return <SiJavascript className={iconClass} />;
+  if (techLower.includes('openai')) return <SiOpenai className={iconClass} />;
+  if (techLower.includes('aws')) return <SiAmazon className={iconClass} />;
+  if (techLower.includes('vps') || techLower.includes('server')) return <Server className={iconClass} />;
+  if (techLower.includes('gemini')) return <SiGooglegemini className={iconClass} />;
+  if (techLower.includes('convex')) return <Database className={iconClass} />;
+  if (techLower.includes('google') && techLower.includes('calendar')) return <Calendar className={iconClass} />;
+  if (techLower.includes('google')) return <SiGoogle className={iconClass} />;
+  if (techLower.includes('openrouter')) return <OpenRouter size={iconSize} />;
+  if (techLower.includes('groq')) return <GroqIcon size={iconSize} />;
+  if (techLower.includes('llama')) return <SiMeta className={iconClass} />;
+  if (techLower.includes('browser') || techLower.includes('chrome')) return <Chrome className={iconClass} />;
+  if (techLower.includes('clerk')) return <Bot className={iconClass} />;
+  if (techLower.includes('realtime')) return <Bot className={iconClass} />;
+  if (techLower.includes('recharts') || techLower.includes('chart')) return <Bot className={iconClass} />;
+  
+  return null;
+};
 
 const ProjectCard = ({ 
   project, 
@@ -112,14 +165,18 @@ const ProjectCard = ({
               Technologies
             </div>
             <div className="flex flex-wrap gap-1.5 mb-4">
-              {project.tags.slice(0, 6).map((tag, idx) => (
-                <span
-                  key={idx}
-                  className="px-2.5 py-1 bg-gray-800/80 backdrop-blur-sm text-gray-300 text-xs font-medium rounded-md border border-gray-700/50 hover:border-gray-600 hover:bg-gray-800 transition-colors"
-                >
-                  {tag}
-                </span>
-              ))}
+              {project.tags.slice(0, 6).map((tag, idx) => {
+                const icon = getTechIcon(tag);
+                return (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-800/80 backdrop-blur-sm text-gray-300 text-xs font-medium rounded-md border border-gray-700/50 hover:border-gray-600 hover:bg-gray-800 transition-colors"
+                  >
+                    {icon}
+                    {tag}
+                  </span>
+                );
+              })}
             </div>
             
             {/* Status Indicator */}
@@ -128,17 +185,13 @@ const ProjectCard = ({
                 <div className="w-2 h-2 rounded-full bg-green-400" />
                 <span className="font-medium">All Systems Operational</span>
               </div>
-              {project.demoLink && (
-                <a
-                  href={project.demoLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-blue-400 transition-colors group/link"
-                >
-                  <span>View Details</span>
-                  <ChevronRight size={14} className="group-hover/link:translate-x-0.5 transition-transform" />
-                </a>
-              )}
+              <Link
+                href={`/projects/${project.slug}`}
+                className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-blue-400 transition-colors group/link"
+              >
+                <span>View Details</span>
+                <ChevronRight size={14} className="group-hover/link:translate-x-0.5 transition-transform" />
+              </Link>
             </div>
           </div>
         </div>
