@@ -15,6 +15,7 @@ export interface Project {
   detailedDescription: string;
   challenges: string[];
   videoUrl?: string;
+  category: 'AI' | 'Others';
 }
 
 export const projects: Project[] = [
@@ -38,6 +39,7 @@ export const projects: Project[] = [
       'How can i make tools which are both fast, secure and works',
       'Handling multiple tool calling'
     ],
+    category: 'AI',
   },
   {
     id: 2,
@@ -59,7 +61,8 @@ export const projects: Project[] = [
       'Managing state for multiple AI models simultaneously',
       'Handling rate limits and API errors gracefully'
     ],
-    videoUrl: 'https://www.youtube.com/embed/vP5HSx9GxjI?si=SwFiZUV4No-Ji8pV'
+    videoUrl: 'https://www.youtube.com/embed/vP5HSx9GxjI?si=SwFiZUV4No-Ji8pV',
+    category: 'AI',
   },
   {
     id: 3,
@@ -69,7 +72,7 @@ export const projects: Project[] = [
     tags: ['NextJS', 'Prisma', 'Postgres', 'AWS API', 'TailwindCSS', 'VPS'],
     demoLink: 'https://bucketbuddy.aysh.me/',
     githubLink: 'https://github.com/cyberboyayush/bucketbuddy',
-    featured: false,
+    featured: true,
     year: '2025',
     duration: '7 Days',
     color: 'from-indigo-600 to-purple-600',
@@ -80,7 +83,8 @@ export const projects: Project[] = [
       'Optimizing large file uploads with chunked uploads and progress tracking',
       'Building real-time sync between local state and AWS S3 buckets',
       'Designing an intuitive UI for complex S3 operations'
-    ]
+    ],
+    category: 'Others',
   },
   {
     id: 4,
@@ -101,7 +105,8 @@ export const projects: Project[] = [
       'Building real-time collaboration features with Appwrite',
       'Integrating Clerk authentication seamlessly',
       'Creating an intuitive yet powerful task management interface'
-    ]
+    ],
+    category: 'AI',
   },
   {
     id: 5,
@@ -111,7 +116,7 @@ export const projects: Project[] = [
     tags: ["React", "Typecript", "Browser Engine"],
     demoLink: 'https://quickbang.aysh.me/',
     githubLink: 'https://github.com/cyberboyayush/quickbang',
-    featured: false,
+    featured: true,
     year: '2025',
     duration: '5 Days',
     color: 'from-indigo-600 to-purple-600',
@@ -122,7 +127,8 @@ export const projects: Project[] = [
       'Implementing fast pattern matching for bang shortcuts',
       'Designing minimal UI that doesn\'t interfere with browsing',
       'Handling various search bar implementations across websites'
-    ]
+    ],
+    category: 'Others',
   },
   {
     id: 6,
@@ -132,7 +138,7 @@ export const projects: Project[] = [
     tags: ["React", "Google API", "GROQ", "Appwrite", "TailwindCSS", "Recharts", "Google Calendar API"],
     demoLink: 'https://effisense.ayush-sharma.in/',
     githubLink: 'https://github.com/cyberboyayush/effisense',
-    featured: true,
+    featured: false,
     year: '2025',
     duration: '3 months',
     color: 'from-indigo-600 to-purple-600',
@@ -143,7 +149,8 @@ export const projects: Project[] = [
       'Integrating Google Calendar API with real-time sync',
       'Creating intuitive data visualizations with Recharts',
       'Implementing intelligent workload balancing algorithms'
-    ]
+    ],
+    category: 'AI',
   },
   {
     id: 7,
@@ -166,7 +173,8 @@ export const projects: Project[] = [
       'Creating adaptive learning paths based on user progress',
       'Building a polished UI under extreme time constraints'
     ],
-    videoUrl: 'https://www.youtube.com/embed/-7sjCjZc0SI?si=4UnRtmOgKWqKjA1t'
+    videoUrl: 'https://www.youtube.com/embed/-7sjCjZc0SI?si=4UnRtmOgKWqKjA1t',
+    category: 'AI',
   },
   {
     id: 8,
@@ -188,6 +196,7 @@ export const projects: Project[] = [
       'Integrating Firebase for seamless data storage',
       'Creating smooth animations without impacting performance'
     ],
+    category: 'Others',
   },
   {
     id: 9,
@@ -208,7 +217,8 @@ export const projects: Project[] = [
       'Creating smooth scroll animations without lag',
       'Ensuring responsive design across all screen sizes',
       'Balancing visual effects with fast load times'
-    ]
+    ],
+    category: 'Others',
   }
 ];
 
