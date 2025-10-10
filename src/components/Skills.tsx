@@ -8,17 +8,18 @@ import { SiHtml5, SiCss3, SiJavascript, SiTypescript, SiReact,
   SiGit, SiPostgresql, SiVercel, SiAppwrite, SiSupabase, 
   SiC, SiCplusplus, SiCloudflare } from 'react-icons/si';
 import { Code, Sparkles } from 'lucide-react';
+import { OpenRouter } from '@lobehub/icons';
 import SectionHeading from './SectionHeading';
 
 // Enhanced tech stack with additional technologies
 const techStack = [
   { id: 'react', name: 'React', icon: SiReact, category: 'frontend' },
   { id: 'nextjs', name: 'Next.js', icon: SiNextdotjs, category: 'frontend' },
-  { id: 'javascript', name: 'JavaScript', icon: SiJavascript, category: 'frontend' },
   { id: 'typescript', name: 'TypeScript', icon: SiTypescript, category: 'frontend' },
+  { id: 'vercel-ai', name: 'Vercel AI SDK', icon: SiVercel, category: 'backend' },
+  { id: 'openrouter', name: 'OpenRouter', icon: OpenRouter, category: 'backend' },
+  { id: 'javascript', name: 'JavaScript', icon: SiJavascript, category: 'frontend' },
   { id: 'tailwindcss', name: 'Tailwind', icon: SiTailwindcss, category: 'frontend' },
-  { id: 'html5', name: 'HTML5', icon: SiHtml5, category: 'frontend' },
-  { id: 'css3', name: 'CSS3', icon: SiCss3, category: 'frontend' },
   { id: 'nodejs', name: 'Node.js', icon: SiNodedotjs, category: 'backend' },
   { id: 'python', name: 'Python', icon: SiPython, category: 'backend' },
   { id: 'c', name: 'C', icon: SiC, category: 'backend' },

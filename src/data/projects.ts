@@ -15,11 +15,34 @@ export interface Project {
   detailedDescription: string;
   challenges: string[];
   videoUrl?: string;
+  category: 'AI' | 'Others';
 }
 
 export const projects: Project[] = [
   {
     id: 1,
+    title: 'Plnr',
+    description: 'CLI Based AI Tool for planning out implementations with code context',
+    image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPOlniThGfXwQSdnq1mVN6FjDvZ2PBJOhHc8oa',
+    tags: ['Typescript','OpenRouter','Ink','Chalk'],
+    demoLink: 'https://www.npmjs.com/package/plnr',
+    githubLink: 'https://github.com/CyberBoyAyush/plnr',
+    featured: true,
+    year: '2025',
+    duration: '7 Days',
+    color: 'from-indigo-600 to-purple-600',
+    slug: 'plnr',
+    detailedDescription: 'Plnr is a CLI tool that helps developers plan out their implementations with code context. It uses OpenAI and OpenRouter APIs to generate code snippets based on user input. The tool is designed to be fast, accurate, and easy to use.',
+    challenges: [
+      'Creating a CLI UI that is easy to use and understand',
+      'Creating cli based tools and managing them',
+      'How can i make tools which are both fast, secure and works',
+      'Handling multiple tool calling'
+    ],
+    category: 'AI',
+  },
+  {
+    id: 2,
     title: 'CappyChat',
     description: 'Fastest LLM chat on the planet right now, Multi Model and Realtime Sync too.',
     image: 'https://res.cloudinary.com/dyetf2h9n/image/upload/v1759138327/AV_1_zztl3w.png',
@@ -38,10 +61,11 @@ export const projects: Project[] = [
       'Managing state for multiple AI models simultaneously',
       'Handling rate limits and API errors gracefully'
     ],
-    videoUrl: 'https://www.youtube.com/embed/vP5HSx9GxjI?si=SwFiZUV4No-Ji8pV'
+    videoUrl: 'https://www.youtube.com/embed/vP5HSx9GxjI?si=SwFiZUV4No-Ji8pV',
+    category: 'AI',
   },
   {
-    id: 2,
+    id: 3,
     title: 'Bucket Buddy',
     description: 'Modern Cloud Storage Management',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPI5rAcrjSq8BcalUnAK51orufTp2SNkO7GxHz',
@@ -59,10 +83,11 @@ export const projects: Project[] = [
       'Optimizing large file uploads with chunked uploads and progress tracking',
       'Building real-time sync between local state and AWS S3 buckets',
       'Designing an intuitive UI for complex S3 operations'
-    ]
+    ],
+    category: 'Others',
   },
   {
-    id: 3,
+    id: 4,
     title: 'TuduAI',
     description: ' An AI-powered productivity app with natural language task creation, collaborative workspaces, and a minimalist UI for effortless planning.',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPFe7ghJ5FxlZUcq1BwOub9PyMKG7d26vQfaTC',
@@ -80,10 +105,11 @@ export const projects: Project[] = [
       'Building real-time collaboration features with Appwrite',
       'Integrating Clerk authentication seamlessly',
       'Creating an intuitive yet powerful task management interface'
-    ]
+    ],
+    category: 'AI',
   },
   {
-    id: 4,
+    id: 5,
     title: 'QuickBang',
     description: 'Lightning-fast search shortcuts to enhance your workflow.',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAP4yZsxBVEKBr0gueU6fJkSAaYjWMON8X2HPdV',
@@ -101,17 +127,18 @@ export const projects: Project[] = [
       'Implementing fast pattern matching for bang shortcuts',
       'Designing minimal UI that doesn\'t interfere with browsing',
       'Handling various search bar implementations across websites'
-    ]
+    ],
+    category: 'Others',
   },
   {
-    id: 5,
+    id: 6,
     title: 'Effisense',
     description: 'Experience the future of productivity with AI-powered task scheduling, smart prioritization, and intelligent workload balancing.',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPfgNH3bZTmUXblVz2o8y4iIF6cHMBLqAhke5Y',
     tags: ["React", "Google API", "GROQ", "Appwrite", "TailwindCSS", "Recharts", "Google Calendar API"],
     demoLink: 'https://effisense.ayush-sharma.in/',
     githubLink: 'https://github.com/cyberboyayush/effisense',
-    featured: true,
+    featured: false,
     year: '2025',
     duration: '3 months',
     color: 'from-indigo-600 to-purple-600',
@@ -122,10 +149,11 @@ export const projects: Project[] = [
       'Integrating Google Calendar API with real-time sync',
       'Creating intuitive data visualizations with Recharts',
       'Implementing intelligent workload balancing algorithms'
-    ]
+    ],
+    category: 'AI',
   },
   {
-    id: 6,
+    id: 7,
     title: 'SkillCompass',
     description: 'Unlock your potential with AI-powered personalized learning paths, interactive content, and real-time progress tracking.',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPUFlBGN1k8DdHYcXLswQzrg6SM7qbVytx3Npf',
@@ -145,10 +173,11 @@ export const projects: Project[] = [
       'Creating adaptive learning paths based on user progress',
       'Building a polished UI under extreme time constraints'
     ],
-    videoUrl: 'https://www.youtube.com/embed/-7sjCjZc0SI?si=4UnRtmOgKWqKjA1t'
+    videoUrl: 'https://www.youtube.com/embed/-7sjCjZc0SI?si=4UnRtmOgKWqKjA1t',
+    category: 'AI',
   },
   {
-    id: 7,
+    id: 8,
     title: 'PortDev',
     description: 'Create Devloper Portfolio in Minutes.',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPiVdP9VfLSeCsIaE1NktK9ur3Tyv6x4QMqg8z',
@@ -167,9 +196,10 @@ export const projects: Project[] = [
       'Integrating Firebase for seamless data storage',
       'Creating smooth animations without impacting performance'
     ],
+    category: 'Others',
   },
   {
-    id: 8,
+    id: 9,
     title: 'React Portfolio',
     description: 'Personal Portfolio Website using React Js',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPIh52zvSq8BcalUnAK51orufTp2SNkO7GxHzm',
@@ -187,7 +217,8 @@ export const projects: Project[] = [
       'Creating smooth scroll animations without lag',
       'Ensuring responsive design across all screen sizes',
       'Balancing visual effects with fast load times'
-    ]
+    ],
+    category: 'Others',
   }
 ];
 
