@@ -20,6 +20,27 @@ export interface Project {
 export const projects: Project[] = [
   {
     id: 1,
+    title: 'Plnr',
+    description: 'CLI Based AI Tool for planning out implementations with code context',
+    image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPOlniThGfXwQSdnq1mVN6FjDvZ2PBJOhHc8oa',
+    tags: ['Typescript','OpenRouter','Ink','Chalk'],
+    demoLink: 'https://www.npmjs.com/package/plnr',
+    githubLink: 'https://github.com/CyberBoyAyush/plnr',
+    featured: true,
+    year: '2025',
+    duration: '7 Days',
+    color: 'from-indigo-600 to-purple-600',
+    slug: 'plnr',
+    detailedDescription: 'Plnr is a CLI tool that helps developers plan out their implementations with code context. It uses OpenAI and OpenRouter APIs to generate code snippets based on user input. The tool is designed to be fast, accurate, and easy to use.',
+    challenges: [
+      'Creating a CLI UI that is easy to use and understand',
+      'Creating cli based tools and managing them',
+      'How can i make tools which are both fast, secure and works',
+      'Handling multiple tool calling'
+    ],
+  },
+  {
+    id: 2,
     title: 'CappyChat',
     description: 'Fastest LLM chat on the planet right now, Multi Model and Realtime Sync too.',
     image: 'https://res.cloudinary.com/dyetf2h9n/image/upload/v1759138327/AV_1_zztl3w.png',
@@ -41,14 +62,14 @@ export const projects: Project[] = [
     videoUrl: 'https://www.youtube.com/embed/vP5HSx9GxjI?si=SwFiZUV4No-Ji8pV'
   },
   {
-    id: 2,
+    id: 3,
     title: 'Bucket Buddy',
     description: 'Modern Cloud Storage Management',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPI5rAcrjSq8BcalUnAK51orufTp2SNkO7GxHz',
     tags: ['NextJS', 'Prisma', 'Postgres', 'AWS API', 'TailwindCSS', 'VPS'],
     demoLink: 'https://bucketbuddy.aysh.me/',
     githubLink: 'https://github.com/cyberboyayush/bucketbuddy',
-    featured: true,
+    featured: false,
     year: '2025',
     duration: '7 Days',
     color: 'from-indigo-600 to-purple-600',
@@ -62,7 +83,7 @@ export const projects: Project[] = [
     ]
   },
   {
-    id: 3,
+    id: 4,
     title: 'TuduAI',
     description: ' An AI-powered productivity app with natural language task creation, collaborative workspaces, and a minimalist UI for effortless planning.',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPFe7ghJ5FxlZUcq1BwOub9PyMKG7d26vQfaTC',
@@ -83,14 +104,14 @@ export const projects: Project[] = [
     ]
   },
   {
-    id: 4,
+    id: 5,
     title: 'QuickBang',
     description: 'Lightning-fast search shortcuts to enhance your workflow.',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAP4yZsxBVEKBr0gueU6fJkSAaYjWMON8X2HPdV',
     tags: ["React", "Typecript", "Browser Engine"],
     demoLink: 'https://quickbang.aysh.me/',
     githubLink: 'https://github.com/cyberboyayush/quickbang',
-    featured: true,
+    featured: false,
     year: '2025',
     duration: '5 Days',
     color: 'from-indigo-600 to-purple-600',
@@ -104,7 +125,7 @@ export const projects: Project[] = [
     ]
   },
   {
-    id: 5,
+    id: 6,
     title: 'Effisense',
     description: 'Experience the future of productivity with AI-powered task scheduling, smart prioritization, and intelligent workload balancing.',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPfgNH3bZTmUXblVz2o8y4iIF6cHMBLqAhke5Y',
@@ -125,7 +146,7 @@ export const projects: Project[] = [
     ]
   },
   {
-    id: 6,
+    id: 7,
     title: 'SkillCompass',
     description: 'Unlock your potential with AI-powered personalized learning paths, interactive content, and real-time progress tracking.',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPUFlBGN1k8DdHYcXLswQzrg6SM7qbVytx3Npf',
@@ -148,7 +169,7 @@ export const projects: Project[] = [
     videoUrl: 'https://www.youtube.com/embed/-7sjCjZc0SI?si=4UnRtmOgKWqKjA1t'
   },
   {
-    id: 7,
+    id: 8,
     title: 'PortDev',
     description: 'Create Devloper Portfolio in Minutes.',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPiVdP9VfLSeCsIaE1NktK9ur3Tyv6x4QMqg8z',
@@ -169,7 +190,7 @@ export const projects: Project[] = [
     ],
   },
   {
-    id: 8,
+    id: 9,
     title: 'React Portfolio',
     description: 'Personal Portfolio Website using React Js',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPIh52zvSq8BcalUnAK51orufTp2SNkO7GxHzm',

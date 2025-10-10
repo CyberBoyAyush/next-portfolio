@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback, useMemo, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronDown,
   Github,
@@ -20,7 +20,9 @@ import {
   SiPrisma,
   SiPostgresql,
   SiAppwrite,
+  SiVercel,
 } from "react-icons/si";
+import { OpenRouter } from "@lobehub/icons";
 
 // Custom X (Twitter) Icon Component
 const XIcon = ({ size = 18, className = "" }) => (
@@ -43,6 +45,22 @@ const Hero = () => {
   const [imageAttempted, setImageAttempted] = useState(false);
   const [isHoverCapable, setIsHoverCapable] = useState(true);
   const [isStatusCardOpen, setIsStatusCardOpen] = useState(false);
+
+  // Cycling role titles with proper articles
+  const roles = [
+    { title: "Full Stack Developer", article: "a" },
+    { title: "AI Engineer", article: "an" },
+    { title: "AI + Backend Guy", article: "an" },
+  ];
+  const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
+    }, 3000); // Change every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [roles.length]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -258,7 +276,19 @@ const Hero = () => {
                 <span className="text-white">Ayush Sharma</span>
                 <br />
                 <span className="text-gray-400 text-3xl sm:text-3xl md:text-5xl">
-                  I&apos;m a Full Stack Developer
+                  I&apos;m{" "}
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={currentRoleIndex}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.5, ease: "easeInOut" }}
+                      className="inline-block"
+                    >
+                      {roles[currentRoleIndex].article} {roles[currentRoleIndex].title}
+                    </motion.span>
+                  </AnimatePresence>
                 </span>
               </h1>
             </motion.div>
@@ -274,7 +304,7 @@ const Hero = () => {
                   <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
                   Scalable
                 </span>{" "}
-                beautiful looking web apps using{" "}
+                beautiful looking AI web apps using{" "}
                 <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/30 font-medium text-xs sm:text-sm mr-1">
                   <SiTypescript className="w-3 h-3 sm:w-4 sm:h-4" />
                   Typescript
@@ -303,6 +333,16 @@ const Hero = () => {
                 <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-pink-500/10 text-pink-400 rounded-lg border border-pink-500/30 font-medium text-xs sm:text-sm mr-1">
                   <SiAppwrite className="w-3 h-3 sm:w-4 sm:h-4" />
                   Appwrite
+                </span>
+                ,
+                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-gray-500/10 text-gray-300 rounded-lg border border-gray-500/30 font-medium text-xs sm:text-sm mr-1">
+                  <SiVercel className="w-3 h-3 sm:w-4 sm:h-4" />
+                  Vercel AI SDK
+                </span>
+                ,
+                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-indigo-500/10 text-indigo-400 rounded-lg border border-indigo-500/30 font-medium text-xs sm:text-sm mr-1">
+                  <OpenRouter size={16} className="w-3 h-3 sm:w-4 sm:h-4" />
+                  OpenRouter
                 </span>
                 , with focusing on security and good{" "}
                 <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-purple-500/10 text-purple-400 rounded-lg border border-purple-500/30 font-medium text-xs sm:text-sm">
