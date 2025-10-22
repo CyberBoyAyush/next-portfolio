@@ -1,11 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Disable ESLint during builds
-  eslint: {
-    // Skip ESLint during builds
-    ignoreDuringBuilds: true,
-  },
   images: {
     remotePatterns: [
       {
@@ -33,8 +28,8 @@ const nextConfig: NextConfig = {
         hostname: 'res.cloudinary.com',
       }
     ],
-    // Add image optimization settings
     formats: ['image/avif', 'image/webp'],
+    qualities: [75, 95],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     minimumCacheTTL: 60,
   },

@@ -64,7 +64,7 @@ const Contact = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [typingText, setTypingText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [time, setTime] = useState('');
+  const [time, setTime] = useState({ date: '', time: '' });
   const [isSimpleMode, setIsSimpleMode] = useState(false);
   const [simpleForm, setSimpleForm] = useState({
     name: '',
@@ -436,7 +436,11 @@ Please fill in all fields before sending.`;
 
   useEffect(() => {
     const updateTime = () => {
-      setTime(new Date().toLocaleTimeString());
+      const now = new Date();
+      setTime({
+        date: now.toLocaleDateString(),
+        time: now.toLocaleTimeString()
+      });
     };
     
     updateTime();
@@ -619,7 +623,7 @@ Please fill in all fields before sending.`;
                   </div>
                   <div className="flex-1 text-center text-gray-400 text-sm font-mono">Terminal — contact.sh</div>
                   <div className="text-green-400 text-sm font-mono">
-                    {time || '--:--:-- --'}
+                    {time.time || '--:--:-- --'}
                   </div>
                   <Terminal size={18} className="text-gray-400" />
                 </div>
@@ -632,7 +636,7 @@ Please fill in all fields before sending.`;
                 >
                   {/* Intro animation text */}
                   <div className="text-green-400 mb-2">
-                    Last login: {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</div>
+                    Last login: {time.date} {time.time}</div>
                   <div className="text-gray-300 mb-4 border-b border-gray-800 pb-2">
                     <span className="text-green-500 font-bold">Portfolio Terminal</span> v1.0.0 - Type <span className="text-yellow-400">help</span> for available commands
                   </div>

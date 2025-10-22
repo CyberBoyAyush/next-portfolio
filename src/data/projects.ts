@@ -22,9 +22,9 @@ export const projects: Project[] = [
   {
     id: 1,
     title: 'Plnr',
-    description: 'CLI Based AI Tool for planning out implementations with code context',
+    description: 'AI-powered CLI tool for intelligent codebase planning and context-aware implementation assistance',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPOlniThGfXwQSdnq1mVN6FjDvZ2PBJOhHc8oa',
-    tags: ['Typescript','OpenRouter','Ink','Chalk'],
+    tags: ['TypeScript','OpenRouter','Node.js','MCP','Exa AI'],
     demoLink: 'https://www.npmjs.com/package/plnr',
     githubLink: 'https://github.com/CyberBoyAyush/plnr',
     featured: true,
@@ -32,12 +32,13 @@ export const projects: Project[] = [
     duration: '7 Days',
     color: 'from-indigo-600 to-purple-600',
     slug: 'plnr',
-    detailedDescription: 'Plnr is a CLI tool that helps developers plan out their implementations with code context. It uses OpenAI and OpenRouter APIs to generate code snippets based on user input. The tool is designed to be fast, accurate, and easy to use.',
+    detailedDescription: 'Plnr is an intelligent CLI tool that revolutionizes software development planning. It analyzes your entire codebase, understands project architecture, and generates detailed implementation plans using advanced AI models via OpenRouter. Features include automatic framework detection, security audits (OWASP Top 10), real-time web search integration with Exa AI, and Model Context Protocol (MCP) for accessing up-to-date library documentation. The tool supports multiple AI models including GPT-5, Claude 4.5, Grok, and Gemini, with smart context window optimization (100K-2M+ tokens). Built with TypeScript and featuring a beautiful terminal UI, plnr helps developers make informed decisions before writing code.',
     challenges: [
-      'Creating a CLI UI that is easy to use and understand',
-      'Creating cli based tools and managing them',
-      'How can i make tools which are both fast, secure and works',
-      'Handling multiple tool calling'
+      'Building intelligent todo management system that ensures all analysis tasks complete before providing responses',
+      'Implementing dynamic context window optimization for different AI models (100K to 2M+ tokens)',
+      'Integrating multiple AI tool calling systems (MCP, Exa Search, file operations) with proper error recovery',
+      'Creating a professional terminal UI with real-time progress indicators and prompt enhancement features',
+      'Developing comprehensive security audit capabilities covering 12 OWASP vulnerability categories'
     ],
     category: 'AI',
   },
