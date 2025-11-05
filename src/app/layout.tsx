@@ -149,7 +149,7 @@ export default function RootLayout({
       'https://linkedin.com/in/cyberboyayush',
       'https://twitter.com/cyberboyayush',
     ],
-    email: 'contact@ayush-sharma.in',
+    email: 'hi@aysh.me',
     alumniOf: {
       '@type': 'Organization',
       name: 'Various Educational Institutions',

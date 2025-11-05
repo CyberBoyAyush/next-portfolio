@@ -41,7 +41,7 @@ Sitemap: ${baseUrl}/sitemap.xml
 
 # Contact
 # For questions about content usage or AI training:
-# Email: contact@ayush-sharma.in
+# Email: hi@aysh.me
 `;
 
   return new NextResponse(content, {

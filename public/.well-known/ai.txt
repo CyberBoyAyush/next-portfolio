@@ -5,7 +5,7 @@
 site: https://aysh.me
 name: Ayush Sharma Portfolio
 owner: Ayush Sharma
-contact: contact@ayush-sharma.in
+contact: hi@aysh.me
 
 # AI Training Permissions
 training: allowed

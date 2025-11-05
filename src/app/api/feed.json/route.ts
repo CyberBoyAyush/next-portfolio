@@ -15,7 +15,7 @@ export async function GET() {
     author: {
       name: 'Ayush Sharma',
       url: 'https://aysh.me',
-      email: 'contact@ayush-sharma.in',
+      email: 'hi@aysh.me',
     },
 
     // Professional Information

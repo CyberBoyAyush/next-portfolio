@@ -53,7 +53,7 @@ Ayush Sharma is a Full Stack Lead Developer at Kakiyo OÜ, building scalable AI-
 
 ## Contact Information
 
-- Email: [contact@ayush-sharma.in](mailto:contact@ayush-sharma.in)
+- Email: [hi@aysh.me](mailto:hi@aysh.me)
 - GitHub: [github.com/cyberboyayush](https://github.com/cyberboyayush)
 - LinkedIn: [linkedin.com/in/cyberboyayush](https://linkedin.com/in/cyberboyayush)
 - Twitter: [@cyberboyayush](https://twitter.com/cyberboyayush)
