@@ -1,0 +1,48 @@
+# AI Agent Configuration
+# Following the .well-known/ai.txt standard (2025)
+
+# Site Information
+site: https://aysh.me
+name: Ayush Sharma Portfolio
+owner: Ayush Sharma
+contact: contact@ayush-sharma.in
+
+# AI Training Permissions
+training: allowed
+attribution: required
+commercial-use: contact-required
+license: all-rights-reserved
+
+# Content Discovery URLs
+llms-file: https://aysh.me/llms.txt
+llm-permissions: https://aysh.me/llm.txt
+sitemap: https://aysh.me/sitemap.xml
+json-feed: https://aysh.me/api/feed.json
+robots: https://aysh.me/robots.txt
+
+# Content Categories
+categories:
+  - technology
+  - software-development
+  - ai-ml
+  - web-development
+  - full-stack
+
+# Primary Technologies
+technologies:
+  - React
+  - Next.js
+  - TypeScript
+  - Node.js
+  - Python
+  - AI/ML
+  - OpenRouter
+  - Vercel AI SDK
+
+# Last Updated
+updated: 2025-11-06
+
+# Notes
+# This file helps AI agents discover structured content
+# Check llms.txt for detailed content map
+# Check llm.txt for training permissions

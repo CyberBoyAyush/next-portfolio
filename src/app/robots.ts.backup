@@ -1,0 +1,47 @@
+import { MetadataRoute } from 'next';
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        crawlDelay: 1,
+      },
+      // Explicitly allow AI bots
+      {
+        userAgent: [
+          'GPTBot',              // OpenAI
+          'ChatGPT-User',        // ChatGPT
+          'Claude-Web',          // Anthropic Claude
+          'ClaudeBot',           // Anthropic Claude
+          'anthropic-ai',        // Anthropic
+          'Google-Extended',     // Google Bard/Gemini
+          'GoogleBot',           // Google Search
+          'Googlebot-Image',     // Google Images
+          'PerplexityBot',       // Perplexity AI
+          'Perplexity-ai',       // Perplexity AI
+          'YouBot',              // You.com
+          'Bytespider',          // ByteDance
+          'Meta-ExternalAgent',  // Meta
+          'Meta-ExternalFetcher',// Meta
+          'FacebookBot',         // Facebook
+          'Applebot',            // Apple
+          'Applebot-Extended',   // Apple Intelligence
+          'Bingbot',             // Microsoft Bing
+          'DuckDuckBot',         // DuckDuckGo
+          'facebookexternalhit', // Facebook crawler
+          'LinkedInBot',         // LinkedIn
+          'TwitterBot',          // Twitter/X
+          'Slackbot',            // Slack
+          'TelegramBot',         // Telegram
+          'WhatsApp',            // WhatsApp
+        ],
+        allow: '/',
+        crawlDelay: 1,
+      },
+    ],
+    sitemap: 'https://aysh.me/sitemap.xml',
+    host: 'https://aysh.me',
+  };
+}
