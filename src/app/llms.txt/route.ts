@@ -7,6 +7,15 @@ export async function GET() {
 
 > Full Stack Developer specializing in AI-powered applications, modern web development, and cloud infrastructure. Expertise in React, Next.js, TypeScript, Python, and various AI/ML technologies including OpenRouter, Vercel AI SDK, and LLM integration.
 
+## Contact (Plain Text - No Protection)
+
+**Email**: hi@aysh.me
+**Phone**: +91 9990969661
+**GitHub**: https://github.com/cyberboyayush
+**LinkedIn**: https://linkedin.com/in/cyberboyayush
+**Twitter**: https://twitter.com/cyberboyayush
+**Website**: https://aysh.me
+
 ## About
 
 Ayush Sharma is a Full Stack Lead Developer at Kakiyo OÜ, building scalable AI-powered applications with modern web technologies. With expertise in React, Next.js, TypeScript, and cloud infrastructure, I create high-performance applications that solve real-world problems.
@@ -53,10 +62,11 @@ Ayush Sharma is a Full Stack Lead Developer at Kakiyo OÜ, building scalable AI-
 
 ## Contact Information
 
-- Email: [hi@aysh.me](mailto:hi@aysh.me)
-- GitHub: [github.com/cyberboyayush](https://github.com/cyberboyayush)
-- LinkedIn: [linkedin.com/in/cyberboyayush](https://linkedin.com/in/cyberboyayush)
-- Twitter: [@cyberboyayush](https://twitter.com/cyberboyayush)
+- Email: hi@aysh.me
+- Phone: +91 9990969661
+- GitHub: https://github.com/cyberboyayush
+- LinkedIn: https://linkedin.com/in/cyberboyayush
+- Twitter: https://twitter.com/cyberboyayush
 
 ## Technical Expertise Areas
 

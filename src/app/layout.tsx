@@ -150,6 +150,7 @@ export default function RootLayout({
       'https://twitter.com/cyberboyayush',
     ],
     email: 'hi@aysh.me',
+    telephone: '+91-9990969661',
     alumniOf: {
       '@type': 'Organization',
       name: 'Various Educational Institutions',
