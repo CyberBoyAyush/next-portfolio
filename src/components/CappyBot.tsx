@@ -14,7 +14,9 @@ export default function CappyBot() {
   const [mounted, setMounted] = useState(false);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const lastScrollTime = useRef<number>(0);
 
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
@@ -35,11 +37,30 @@ export default function CappyBot() {
   ] : messages;
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const now = Date.now();
+    // Throttle scroll to once every 500ms to prevent too frequent scrolling
+    if (now - lastScrollTime.current < 500) return;
+
+    lastScrollTime.current = now;
+
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   };
 
   useEffect(() => {
-    scrollToBottom();
+    // Only auto-scroll if user is near bottom (within 100px)
+    if (messagesContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
+      const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
+
+      if (isNearBottom) {
+        scrollToBottom();
+      }
+    }
   }, [messages]);
 
   useEffect(() => {
@@ -125,7 +146,10 @@ export default function CappyBot() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-[#0A0F1E] cappybot-scrollbar">
+          <div
+            ref={messagesContainerRef}
+            className="flex-1 overflow-y-auto p-5 space-y-4 bg-[#0A0F1E] cappybot-scrollbar"
+          >
             {displayMessages.map((message, index) => (
               <div
                 key={message.id || index}
@@ -147,7 +171,7 @@ export default function CappyBot() {
                         : 'bg-[#1A2332] text-slate-100 border border-slate-700/30 shadow-black/40'
                     }`}
                   >
-                    <div className="text-[13.5px] leading-relaxed prose prose-invert prose-sm max-w-none prose-p:my-1.5 prose-p:leading-relaxed prose-pre:my-2.5 prose-pre:bg-black/40 prose-pre:border prose-pre:border-slate-700/50 prose-pre:rounded-xl prose-pre:p-3 prose-pre:shadow-inner prose-code:text-cyan-400 prose-code:bg-slate-900/60 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-xs prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-a:transition-colors prose-strong:text-slate-50 prose-strong:font-semibold prose-ul:my-2 prose-ol:my-2 prose-li:my-1 prose-li:text-slate-200 prose-headings:text-slate-50 prose-headings:font-semibold">
+                    <div className="text-[14px] leading-[1.7] prose prose-invert prose-sm max-w-none prose-p:my-2.5 prose-p:leading-[1.7] prose-pre:my-3 prose-pre:bg-black/40 prose-pre:border prose-pre:border-slate-700/50 prose-pre:rounded-xl prose-pre:p-3 prose-pre:shadow-inner prose-code:text-cyan-400 prose-code:bg-slate-900/60 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-xs prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-a:transition-colors prose-strong:text-slate-50 prose-strong:font-semibold prose-ul:my-2.5 prose-ul:space-y-1.5 prose-ol:my-2.5 prose-ol:space-y-1.5 prose-li:my-1 prose-li:text-slate-200 prose-li:leading-[1.6] prose-headings:text-slate-50 prose-headings:font-semibold prose-headings:mb-2 prose-headings:mt-3">
                       {message.parts?.map((part, i) => {
                         if (part.type === 'text' && part.text) {
                           return (

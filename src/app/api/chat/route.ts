@@ -3,8 +3,6 @@ import { streamText, convertToModelMessages } from 'ai';
 import { CAPPYBOT_SYSTEM_PROMPT } from '@/lib/cappybot-context';
 import { cappybotTools } from '@/lib/cappybot-tools';
 import { rateLimit, getClientIdentifier } from '@/lib/rate-limit';
-import { validateChatRequest } from '@/lib/input-validation';
-import { z } from 'zod';
 
 export const maxDuration = 30;
 
@@ -51,9 +49,8 @@ export async function POST(req: Request) {
       return new Response('Forbidden', { status: 403 });
     }
 
-    // Parse and validate request body
-    const body = await req.json();
-    const validatedData = validateChatRequest(body);
+    // Parse request body
+    const { messages } = await req.json();
 
     if (!process.env.OPENROUTER_API_KEY) {
       return new Response('Service temporarily unavailable', { status: 503 });
@@ -66,7 +63,7 @@ export async function POST(req: Request) {
     const result = streamText({
       model: openrouter.chat('x-ai/grok-4-fast'),
       system: CAPPYBOT_SYSTEM_PROMPT,
-      messages: convertToModelMessages(validatedData.messages as any),
+      messages: convertToModelMessages(messages),
       tools: cappybotTools,
     });
 
@@ -88,20 +85,6 @@ export async function POST(req: Request) {
     // Log error securely (in production, use a logging service)
     if (process.env.NODE_ENV === 'development') {
       console.error('Chat API Error:', error);
-    }
-
-    // Handle validation errors
-    if (error instanceof z.ZodError) {
-      return new Response(
-        JSON.stringify({
-          error: 'Invalid request format',
-          details: process.env.NODE_ENV === 'development' ? error.issues : undefined,
-        }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
     }
 
     // Generic error response (don't expose internal details)
