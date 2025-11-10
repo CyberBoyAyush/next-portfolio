@@ -1,5 +1,6 @@
 import { tool } from 'ai';
 import { z } from 'zod';
+import { sanitizeEmailContent, sanitizeName, isValidEmail } from './input-validation';
 
 export const sendContactEmailTool = tool({
   description: 'Send a contact email to Ayush when a visitor wants to reach out for work opportunities or collaboration. Only use this when the visitor explicitly provides their email and wants to contact Ayush.',
@@ -10,6 +11,25 @@ export const sendContactEmailTool = tool({
   }),
   execute: async ({ visitorEmail, visitorName, message }) => {
     try {
+      // Validate and sanitize inputs
+      if (!isValidEmail(visitorEmail)) {
+        return {
+          success: false,
+          message: 'Please provide a valid email address.',
+        };
+      }
+
+      const sanitizedName = sanitizeName(visitorName);
+      const sanitizedMessage = sanitizeEmailContent(message);
+      const sanitizedEmail = visitorEmail.trim().toLowerCase();
+
+      // Additional validation
+      if (sanitizedMessage.length < 10) {
+        return {
+          success: false,
+          message: 'Please provide a more detailed message (at least 10 characters).',
+        };
+      }
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
@@ -17,18 +37,18 @@ export const sendContactEmailTool = tool({
         },
         body: JSON.stringify({
           access_key: process.env.WEB3FORMS_ACCESS_KEY,
-          subject: `CappyBot Contact: ${visitorName || 'Visitor'} wants to connect`,
+          subject: `CappyBot Contact: ${sanitizedName} wants to connect`,
           from_name: 'CappyBot - Portfolio Assistant',
-          email: visitorEmail,
-          name: visitorName || 'Visitor',
+          email: sanitizedEmail,
+          name: sanitizedName,
           message: `
 New contact request from CappyBot:
 
-From: ${visitorName || 'Visitor'}
-Email: ${visitorEmail}
+From: ${sanitizedName}
+Email: ${sanitizedEmail}
 
 Message:
-${message}
+${sanitizedMessage}
 
 ---
 This message was sent via CappyBot on your portfolio.
@@ -41,7 +61,7 @@ This message was sent via CappyBot on your portfolio.
       if (data.success) {
         return {
           success: true,
-          message: `Thank you so much for reaching out! I've successfully forwarded your inquiry to Ayush. He'll review your message and get back to you at ${visitorEmail} as soon as possible. Looking forward to connecting you both!`,
+          message: `Thank you so much for reaching out! I've successfully forwarded your inquiry to Ayush. He'll review your message and get back to you at ${sanitizedEmail} as soon as possible. Looking forward to connecting you both!`,
         };
       } else {
         return {

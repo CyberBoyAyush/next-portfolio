@@ -54,8 +54,9 @@ export default function CappyBot() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (input.trim()) {
-      sendMessage({ text: input });
+    const trimmedInput = input.trim();
+    if (trimmedInput && trimmedInput.length <= 2000) {
+      sendMessage({ text: trimmedInput });
       setInput('');
     }
   };
@@ -239,6 +240,7 @@ export default function CappyBot() {
                 placeholder="Ask me about my work and experience..."
                 className="flex-1 rounded-xl border-0 bg-[#1A2332] px-4 py-2.5 text-[13px] text-slate-200 placeholder-slate-500 outline-none transition-all focus:ring-2 focus:ring-blue-500/30"
                 disabled={isLoading}
+                maxLength={2000}
               />
               <button
                 type="submit"
