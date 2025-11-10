@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import Image from 'next/image';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { MessageCircle, X, Send } from 'lucide-react';
@@ -17,6 +18,7 @@ export default function CappyBot() {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const lastScrollTime = useRef<number>(0);
+  const avatarSrc = '/profile-comp.png';
 
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
@@ -86,8 +88,9 @@ export default function CappyBot() {
     sendMessage({ text: question });
   };
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', {
+  const formatTime = (date: Date | string) => {
+    const value = typeof date === 'string' ? new Date(date) : date;
+    return value.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
     });
@@ -98,134 +101,118 @@ export default function CappyBot() {
   const chatUI = (
     <>
       {/* Floating Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        style={{
-          position: 'fixed',
-          right: '2rem',
-          zIndex: 9999,
-        }}
-        className="group flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-700/50 text-slate-400 shadow-xl shadow-black/40 transition-all hover:border-blue-500/60 hover:text-blue-400 hover:shadow-2xl hover:shadow-blue-500/20 hover:scale-105 active:scale-95 bottom-24 md:bottom-8"
-        aria-label="Toggle CappyBot"
-      >
-        {isOpen ? (
-          <X size={20} className="transition-transform duration-200 group-hover:rotate-90" />
-        ) : (
-          <MessageCircle size={20} className="transition-transform duration-200 group-hover:scale-110" />
-        )}
-      </button>
+      <div className="pointer-events-none fixed inset-x-0 bottom-[5.5rem] md:bottom-8 z-[9999] px-4 md:px-10">
+        <div className="flex justify-end">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="pointer-events-auto group flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-[#0A0B12]/90 text-slate-200 shadow-[0_25px_60px_rgba(0,0,0,0.65)] backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-blue-500/60 hover:text-white active:scale-95"
+            aria-label="Toggle CappyBot"
+          >
+            {isOpen ? (
+              <X size={20} className="transition-transform duration-200 group-hover:rotate-90" />
+            ) : (
+              <MessageCircle size={20} className="transition-transform duration-200 group-hover:scale-110" />
+            )}
+          </button>
+        </div>
+      </div>
 
       {/* Chat Window */}
       {isOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            right: '1rem',
-            zIndex: 9998,
-          }}
-          className="flex h-[650px] w-[calc(100vw-2rem)] max-w-[480px] flex-col rounded-2xl border border-slate-700/40 bg-[#0A0F1E] shadow-2xl shadow-black/60 backdrop-blur-xl bottom-32 md:bottom-28 md:right-8">
+        <div className="fixed bottom-32 md:bottom-28 right-4 md:right-10 z-[9998] flex h-[640px] w-[min(440px,calc(100vw-2rem))] flex-col rounded-[32px] border border-white/10 bg-[#050608]/95 shadow-[0_35px_80px_rgba(0,0,0,0.75)] ring-1 ring-white/5 backdrop-blur-2xl">
           {/* Header */}
-          <div className="flex items-center gap-3 border-b border-slate-700/40 bg-[#0D1425]/80 backdrop-blur-sm px-5 py-3.5 rounded-t-2xl">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 shadow-lg shadow-blue-500/10">
-              <MessageCircle size={18} className="text-blue-400" />
+          <div className="flex items-center gap-3 border-b border-white/5 px-6 py-4 rounded-t-[32px] bg-black/40">
+            <div className="relative h-12 w-12">
+              <Image
+                src={avatarSrc}
+                alt="Ayush Sharma profile thumbnail"
+                fill
+                sizes="48px"
+                className="rounded-2xl border border-white/10 object-cover"
+                priority
+              />
+              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border border-[#050608] bg-emerald-400 shadow-[0_0_6px_rgba(16,185,129,0.8)]" />
             </div>
-            <div className="flex-1">
-              <h3 className="text-sm font-semibold text-slate-100 tracking-tight">Ayush's Portfolio Assistant</h3>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50"></div>
-                <span className="text-xs text-slate-500 font-medium">Online</span>
-              </div>
+            <div className="flex-1 leading-tight">
+              <p className="text-sm font-semibold text-white">Ayush's Portfolio Assistant</p>
+              <p className="text-xs text-slate-400">Always-on insights about Ayush's work</p>
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="rounded-lg p-1.5 text-slate-500 transition-all hover:bg-slate-800/50 hover:text-slate-300 active:scale-95"
+              className="rounded-xl border border-white/5 p-2 text-slate-400 transition-all hover:border-white/20 hover:text-white"
               aria-label="Close chat"
             >
-              <X size={18} />
+              <X size={16} />
             </button>
           </div>
 
           {/* Messages */}
           <div
             ref={messagesContainerRef}
-            className="flex-1 overflow-y-auto p-5 space-y-4 bg-[#0A0F1E] cappybot-scrollbar"
+            className="flex-1 overflow-y-auto space-y-5 bg-gradient-to-b from-[#050608] via-[#050608] to-[#080B14] px-6 py-5 cappybot-scrollbar"
           >
             {displayMessages.map((message, index) => (
               <div
                 key={message.id || index}
                 className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <div className="flex flex-col gap-1.5 max-w-[85%]">
-                  {message.role === 'assistant' && (
-                    <div className="flex items-center gap-2 mb-1">
-                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30">
-                        <MessageCircle size={13} className="text-blue-400" />
-                      </div>
-                      <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Assistant</span>
-                    </div>
-                  )}
-                  <div
-                    className={`rounded-2xl px-4 py-3 shadow-lg ${
-                      message.role === 'user'
-                        ? 'bg-blue-600 text-white border-0 shadow-blue-600/20'
-                        : 'bg-[#1A2332] text-slate-100 border border-slate-700/30 shadow-black/40'
-                    }`}
-                  >
-                    <div className="text-[14px] leading-[1.7] prose prose-invert prose-sm max-w-none prose-p:my-2.5 prose-p:leading-[1.7] prose-pre:my-3 prose-pre:bg-black/40 prose-pre:border prose-pre:border-slate-700/50 prose-pre:rounded-xl prose-pre:p-3 prose-pre:shadow-inner prose-code:text-cyan-400 prose-code:bg-slate-900/60 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-xs prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-a:transition-colors prose-strong:text-slate-50 prose-strong:font-semibold prose-ul:my-2.5 prose-ul:space-y-1.5 prose-ol:my-2.5 prose-ol:space-y-1.5 prose-li:my-1 prose-li:text-slate-200 prose-li:leading-[1.6] prose-headings:text-slate-50 prose-headings:font-semibold prose-headings:mb-2 prose-headings:mt-3">
-                      {message.parts?.map((part, i) => {
-                        if (part.type === 'text' && part.text) {
+                <div
+                  className={`max-w-[88%] rounded-[26px] px-4 py-3 shadow-2xl ring-1 transition-colors ${
+                    message.role === 'user'
+                      ? 'bg-gradient-to-r from-[#3E63FF] to-[#7B5CFF] text-white ring-blue-500/40'
+                      : 'bg-[#0E1119]/90 text-slate-100 ring-white/5'
+                  }`}
+                >
+                  <div className="text-[13.5px] leading-relaxed prose prose-invert prose-sm max-w-none prose-p:my-2.5 prose-pre:my-3 prose-pre:bg-black/40 prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl prose-pre:p-3 prose-code:text-cyan-300 prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-a:text-blue-200 prose-a:no-underline hover:prose-a:underline">
+                    {message.parts?.map((part, i) => {
+                      if (part.type === 'text' && part.text) {
+                        return (
+                          <ReactMarkdown
+                            key={i}
+                            remarkPlugins={[remarkGfm]}
+                            components={{
+                              a: ({ node, ...props }) => (
+                                <a {...props} target="_blank" rel="noopener noreferrer" />
+                              ),
+                            }}
+                          >
+                            {part.text}
+                          </ReactMarkdown>
+                        );
+                      }
+                      if (part.type === 'tool-result' && 'output' in part && part.output) {
+                        const result = part.output as { success?: boolean; message?: string };
+                        if (result?.message) {
                           return (
-                            <ReactMarkdown
-                              key={i}
-                              remarkPlugins={[remarkGfm]}
-                              components={{
-                                a: ({ node, ...props }) => (
-                                  <a {...props} target="_blank" rel="noopener noreferrer" />
-                                ),
-                              }}
-                            >
-                              {part.text}
-                            </ReactMarkdown>
+                            <div key={i} className="text-slate-200">
+                              {result.message}
+                            </div>
                           );
                         }
-                        if (part.type === 'tool-result' && 'output' in part && part.output) {
-                          const result = part.output as { success?: boolean; message?: string };
-                          if (result?.message) {
-                            return (
-                              <div key={i} className="text-slate-200">
-                                {result.message}
-                              </div>
-                            );
-                          }
-                        }
-                        return null;
-                      })}
-                    </div>
+                      }
+                      return null;
+                    })}
                   </div>
-                  {message.role === 'assistant' && (
-                    <span className="text-[10px] text-slate-600 px-1 font-medium">
-                      {formatTime('createdAt' in message ? message.createdAt : new Date())}
-                    </span>
-                  )}
+                  <span
+                    className={`mt-2 block text-[10px] font-semibold tracking-[0.18em] ${
+                      message.role === 'user' ? 'text-white/70' : 'text-slate-500'
+                    }`}
+                  >
+                    {message.role === 'user' ? 'You' : 'CappyBot'}
+                    {' · '}
+                    {formatTime('createdAt' in message ? message.createdAt : new Date())}
+                  </span>
                 </div>
               </div>
             ))}
 
             {isLoading && displayMessages.length > 0 && displayMessages[displayMessages.length - 1].role !== 'assistant' && (
               <div className="flex justify-start">
-                <div className="flex flex-col gap-1.5 max-w-[85%]">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30">
-                      <MessageCircle size={13} className="text-blue-400" />
-                    </div>
-                    <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Assistant</span>
-                  </div>
-                  <div className="rounded-2xl bg-[#1A2332] border border-slate-700/30 px-4 py-3 shadow-lg shadow-black/40">
-                    <div className="flex gap-1.5 items-center">
-                      <div className="h-2 w-2 animate-bounce rounded-full bg-blue-400 [animation-delay:-0.3s]"></div>
-                      <div className="h-2 w-2 animate-bounce rounded-full bg-cyan-400 [animation-delay:-0.15s]"></div>
-                      <div className="h-2 w-2 animate-bounce rounded-full bg-blue-400"></div>
-                    </div>
+                <div className="max-w-[70%] rounded-[26px] bg-[#0E1119]/90 px-4 py-3 ring-1 ring-white/5">
+                  <div className="flex items-center gap-1.5">
+                    <div className="h-2 w-2 animate-bounce rounded-full bg-blue-400 [animation-delay:-0.3s]"></div>
+                    <div className="h-2 w-2 animate-bounce rounded-full bg-cyan-400 [animation-delay:-0.15s]"></div>
+                    <div className="h-2 w-2 animate-bounce rounded-full bg-blue-400"></div>
                   </div>
                 </div>
               </div>
@@ -233,17 +220,19 @@ export default function CappyBot() {
 
             {/* Quick Questions - Show only at start */}
             {displayMessages.length === 1 && (
-              <div className="space-y-2 pt-2">
-                <p className="text-[11px] text-slate-500 font-medium">Quick questions:</p>
-                {QUICK_QUESTIONS.map((question, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => handleQuickQuestion(question)}
-                    className="block w-full rounded-xl border border-slate-700/40 bg-[#1A2332]/60 px-3.5 py-2.5 text-left text-[13px] text-slate-300 transition-all hover:border-blue-500/40 hover:bg-[#1A2332] hover:text-slate-200 active:scale-[0.98]"
-                  >
-                    {question}
-                  </button>
-                ))}
+              <div className="pt-2">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/40">Quick questions</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {QUICK_QUESTIONS.map((question, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleQuickQuestion(question)}
+                      className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[12px] text-white/80 transition-all hover:border-white/40 hover:bg-white/10 hover:text-white"
+                    >
+                      {question}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -253,23 +242,23 @@ export default function CappyBot() {
           {/* Input */}
           <form
             onSubmit={handleSubmit}
-            className="border-t border-slate-700/40 bg-[#0D1425]/80 backdrop-blur-sm px-4 py-3.5 rounded-b-2xl"
+            className="rounded-b-[32px] border-t border-white/5 bg-[#050608]/90 px-5 py-4"
           >
-            <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[#0B0D15]/80 px-4 py-2.5 shadow-inner shadow-black/60 focus-within:border-blue-500/60">
               <input
                 ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask me about my work and experience..."
-                className="flex-1 rounded-xl border-0 bg-[#1A2332] px-4 py-2.5 text-[13px] text-slate-200 placeholder-slate-500 outline-none transition-all focus:ring-2 focus:ring-blue-500/30"
+                className="flex-1 bg-transparent text-[13px] text-white placeholder:text-white/30 outline-none"
                 disabled={isLoading}
                 maxLength={2000}
               />
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-600/30 transition-all hover:bg-blue-500 hover:shadow-xl hover:shadow-blue-500/40 active:scale-95 disabled:opacity-40 disabled:shadow-none disabled:hover:bg-blue-600"
+                className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#5D63FF] to-[#3FA2FF] text-white shadow-lg shadow-[#3FA2FF]/30 transition-all hover:shadow-[#3FA2FF]/50 active:scale-95 disabled:opacity-30"
                 aria-label="Send message"
               >
                 <Send size={16} />
@@ -283,4 +272,3 @@ export default function CappyBot() {
 
   return createPortal(chatUI, document.body);
 }
-
