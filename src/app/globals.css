@@ -46,6 +46,31 @@ html.dark {
   --muted-foreground: #a1a1aa;
 }
 
+/* Custom Scrollbar for CappyBot */
+.cappybot-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cappybot-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cappybot-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(71, 85, 105, 0.5);
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+
+.cappybot-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(71, 85, 105, 0.8);
+}
+
+/* Firefox scrollbar */
+.cappybot-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(71, 85, 105, 0.5) transparent;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Spotlight from "../components/Spotlight";
 import OnekoCat from "@/components/OnekoCat";
+import CappyBot from "@/components/CappyBot";
 import Script  from "next/script";
 
 const geistSans = Geist({
@@ -188,6 +189,7 @@ export default function RootLayout({
           {children}
         </main>
         <OnekoCat />
+        <CappyBot />
         <Footer />
         <Script defer src="https://stats.ayush-sharma.in/script.js" data-website-id="da6760a3-fa2d-4b1f-85f6-14ed18ebdf92" />
       </body>
