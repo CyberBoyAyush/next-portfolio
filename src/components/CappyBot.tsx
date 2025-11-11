@@ -14,6 +14,8 @@ export default function CappyBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [input, setInput] = useState('');
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -66,14 +68,43 @@ export default function CappyBot() {
   }, [messages]);
 
   useEffect(() => {
-    if (isOpen && inputRef.current) {
+    if (isOpen && inputRef.current && isMobile === false) {
       inputRef.current.focus();
     }
-  }, [isOpen]);
+  }, [isOpen, isMobile]);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleChange);
+    } else {
+      mediaQuery.addListener(handleChange);
+    }
+
+    return () => {
+      if (typeof mediaQuery.removeEventListener === 'function') {
+        mediaQuery.removeEventListener('change', handleChange);
+      } else {
+        mediaQuery.removeListener(handleChange);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setIsKeyboardVisible(false);
+    }
+  }, [isOpen]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -98,6 +129,23 @@ export default function CappyBot() {
 
   if (!mounted) return null;
 
+  const isMobileViewport = isMobile === true;
+  const chatWindowClassName = `fixed z-[9998] flex flex-col rounded-[32px] border border-white/10 bg-[#050608]/95 shadow-[0_35px_80px_rgba(0,0,0,0.75)] ring-1 ring-white/5 backdrop-blur-2xl transition-all duration-300 ${
+    isMobileViewport
+      ? `${isKeyboardVisible ? 'bottom-2' : 'bottom-20'} left-4 right-4`
+      : 'bottom-32 md:bottom-28 right-4 md:right-10 h-[640px] w-[min(440px,calc(100vw-2rem))]'
+  }`;
+  const chatWindowStyle = isMobileViewport
+    ? {
+        height: isKeyboardVisible ? '64dvh' : '82dvh',
+        maxHeight: '680px',
+        minHeight: isKeyboardVisible ? '420px' : '520px',
+      }
+    : undefined;
+  const formPaddingClass = isMobileViewport ? (isKeyboardVisible ? 'py-2.5' : 'py-3.5') : 'py-4';
+  const inputShellPadding = isMobileViewport ? (isKeyboardVisible ? 'py-1.5' : 'py-2') : 'py-2.5';
+  const inputTextSizeClass = isMobileViewport ? 'text-base' : 'text-[13px]';
+
   const chatUI = (
     <>
       {/* Floating Button */}
@@ -119,7 +167,7 @@ export default function CappyBot() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-32 md:bottom-28 right-4 md:right-10 z-[9998] flex h-[640px] w-[min(440px,calc(100vw-2rem))] flex-col rounded-[32px] border border-white/10 bg-[#050608]/95 shadow-[0_35px_80px_rgba(0,0,0,0.75)] ring-1 ring-white/5 backdrop-blur-2xl">
+        <div className={chatWindowClassName} style={chatWindowStyle}>
           {/* Header */}
           <div className="flex items-center gap-3 border-b border-white/5 px-6 py-4 rounded-t-[32px] bg-black/40">
             <div className="relative h-12 w-12">
@@ -242,16 +290,20 @@ export default function CappyBot() {
           {/* Input */}
           <form
             onSubmit={handleSubmit}
-            className="rounded-b-[32px] border-t border-white/5 bg-[#050608]/90 px-5 py-4"
+            className={`rounded-b-[32px] border-t border-white/5 bg-[#050608]/90 px-5 ${formPaddingClass}`}
           >
-            <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[#0B0D15]/80 px-4 py-2.5 shadow-inner shadow-black/60 focus-within:border-blue-500/60">
+            <div
+              className={`flex items-center gap-3 rounded-2xl border border-white/10 bg-[#0B0D15]/80 px-4 ${inputShellPadding} shadow-inner shadow-black/60 focus-within:border-blue-500/60`}
+            >
               <input
                 ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onFocus={() => isMobileViewport && setIsKeyboardVisible(true)}
+                onBlur={() => setIsKeyboardVisible(false)}
                 placeholder="Ask me about my work and experience..."
-                className="flex-1 bg-transparent text-[13px] text-white placeholder:text-white/30 outline-none"
+                className={`flex-1 bg-transparent ${inputTextSizeClass} text-white placeholder:text-white/30 outline-none`}
                 disabled={isLoading}
                 maxLength={2000}
               />
