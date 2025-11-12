@@ -4,8 +4,53 @@ import { rateLimit, getClientIdentifier } from '@/lib/rate-limit';
 
 export const maxDuration = 30;
 
+// CORS headers
+const corsHeaders = {
+  'Access-Control-Allow-Origin': process.env.NEXT_PUBLIC_SITE_URL || '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
+// Handle OPTIONS request for CORS preflight
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: corsHeaders,
+  });
+}
+
 export async function POST(req: Request) {
   try {
+    // Early environment variable validation
+    const requiredEnvVars = [
+      'ZOHO_SMTP_HOST',
+      'ZOHO_SMTP_PORT',
+      'ZOHO_SMTP_USER',
+      'ZOHO_SMTP_PASSWORD',
+      'ZOHO_FROM_EMAIL',
+    ];
+
+    const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+    if (missingVars.length > 0) {
+      console.error('Missing environment variables:', missingVars);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Server configuration error. Please contact the administrator.',
+          details: process.env.NODE_ENV === 'development'
+            ? `Missing: ${missingVars.join(', ')}`
+            : undefined,
+        }),
+        {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders,
+          },
+        }
+      );
+    }
     // Rate limiting
     const clientId = getClientIdentifier(req);
     const rateLimitResult = rateLimit(clientId, {
@@ -25,6 +70,7 @@ export async function POST(req: Request) {
           headers: {
             'Content-Type': 'application/json',
             'Retry-After': Math.ceil((rateLimitResult.reset - Date.now()) / 1000).toString(),
+            ...corsHeaders,
           },
         }
       );
@@ -42,7 +88,10 @@ export async function POST(req: Request) {
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders,
+          },
         }
       );
     }
@@ -55,7 +104,10 @@ export async function POST(req: Request) {
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders,
+          },
         }
       );
     }
@@ -79,7 +131,10 @@ export async function POST(req: Request) {
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders,
+          },
         }
       );
     }
@@ -107,6 +162,7 @@ This message was sent via the contact form on your portfolio.
     });
 
     if (!notificationSent) {
+      console.error('Failed to send notification email to:', process.env.ZOHO_TO_EMAIL);
       return new Response(
         JSON.stringify({
           success: false,
@@ -114,13 +170,18 @@ This message was sent via the contact form on your portfolio.
         }),
         {
           status: 500,
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders,
+          },
         }
       );
     }
 
-    // Send thank you email to visitor
-    await sendThankYouEmail(sanitizedEmail, sanitizedName, sanitizedMessage);
+    // Send thank you email to visitor (non-blocking)
+    sendThankYouEmail(sanitizedEmail, sanitizedName, sanitizedMessage).catch(error => {
+      console.error('Failed to send thank you email (non-blocking):', error);
+    });
 
     return new Response(
       JSON.stringify({
@@ -129,19 +190,29 @@ This message was sent via the contact form on your portfolio.
       }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...corsHeaders,
+        },
       }
     );
   } catch (error) {
     console.error('Contact form error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Error details:', errorMessage);
+
     return new Response(
       JSON.stringify({
         success: false,
         error: 'An error occurred. Please try again.',
+        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...corsHeaders,
+        },
       }
     );
   }
