@@ -1,6 +1,7 @@
 import { tool } from 'ai';
 import { z } from 'zod';
 import { sanitizeEmailContent, sanitizeName, isValidEmail } from './input-validation';
+import { sendZohoEmail, sendThankYouEmail, parseNameFromEmail } from './zoho-mail';
 
 export const sendContactEmailTool = tool({
   description: 'Send a contact email to Ayush when a visitor wants to reach out for work opportunities or collaboration. Only use this when the visitor explicitly provides their email and wants to contact Ayush.',
@@ -19,9 +20,14 @@ export const sendContactEmailTool = tool({
         };
       }
 
-      const sanitizedName = sanitizeName(visitorName);
-      const sanitizedMessage = sanitizeEmailContent(message);
       const sanitizedEmail = visitorEmail.trim().toLowerCase();
+      const sanitizedMessage = sanitizeEmailContent(message);
+
+      // Parse name from email if not provided or too short
+      let sanitizedName = sanitizeName(visitorName);
+      if (!sanitizedName || sanitizedName.length < 2) {
+        sanitizedName = parseNameFromEmail(sanitizedEmail);
+      }
 
       // Additional validation
       if (sanitizedMessage.length < 10) {
@@ -30,18 +36,7 @@ export const sendContactEmailTool = tool({
           message: 'Please provide a more detailed message (at least 10 characters).',
         };
       }
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          access_key: process.env.WEB3FORMS_ACCESS_KEY,
-          subject: `CappyBot Contact: ${sanitizedName} wants to connect`,
-          from_name: 'CappyBot - Portfolio Assistant',
-          email: sanitizedEmail,
-          name: sanitizedName,
-          message: `
+      const emailBody = `
 New contact request from CappyBot:
 
 From: ${sanitizedName}
@@ -52,21 +47,40 @@ ${sanitizedMessage}
 
 ---
 This message was sent via CappyBot on your portfolio.
-          `.trim(),
-        }),
+      `.trim();
+
+      // Send notification email to Ayush
+      const notificationSent = await sendZohoEmail({
+        to: process.env.ZOHO_TO_EMAIL || 'hi@aysh.me',
+        subject: `CappyBot Contact: ${sanitizedName} wants to connect`,
+        text: emailBody,
+        html: emailBody.replace(/\n/g, '<br>'),
       });
 
-      const data = await response.json();
-
-      if (data.success) {
-        return {
-          success: true,
-          message: `Thank you so much for reaching out! I've successfully forwarded your inquiry to Ayush. He'll review your message and get back to you at ${sanitizedEmail} as soon as possible. Looking forward to connecting you both!`,
-        };
-      } else {
+      if (!notificationSent) {
         return {
           success: false,
           message: 'I apologize, but there was an issue sending your message. Please try contacting Ayush directly at hi@aysh.me or connect with him on LinkedIn.',
+        };
+      }
+
+      // Send thank you email to visitor
+      const thankYouSent = await sendThankYouEmail(
+        sanitizedEmail,
+        sanitizedName,
+        sanitizedMessage
+      );
+
+      if (thankYouSent) {
+        return {
+          success: true,
+          message: `Thank you so much for reaching out, ${sanitizedName}! I've successfully forwarded your inquiry to Ayush, and you should receive a confirmation email shortly at ${sanitizedEmail}. Ayush will review your message and get back to you from hi@aysh.me as soon as possible. Looking forward to connecting you both!`,
+        };
+      } else {
+        // Notification sent but thank you email failed
+        return {
+          success: true,
+          message: `Thank you so much for reaching out, ${sanitizedName}! I've successfully forwarded your inquiry to Ayush. He'll review your message and get back to you at ${sanitizedEmail} as soon as possible. (Note: There was an issue sending the confirmation email, but your message was delivered to Ayush!)`,
         };
       }
     } catch (error) {

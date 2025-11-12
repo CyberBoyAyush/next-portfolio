@@ -21,10 +21,6 @@ type FormState = {
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
 type InputMode = '' | 'name' | 'email' | 'message';
 
-// Web3Forms API Key
-// Get your access key from https://web3forms.com/
-const WEB3FORMS_ACCESS_KEY = 'fc64c658-77a1-4a02-91b1-f03f7ff772c0'; // Replace with your Access Key
-
 // Typing animation delay in milliseconds
 const TYPING_DELAY = 30;
 
@@ -191,12 +187,12 @@ const Contact = () => {
     });
   };
   
-  // Send email function using Web3Forms
+  // Send email function using our API
   const sendEmail = async (data: FormState) => {
     try {
       // Validate required fields
-      if (!data.name || !data.email || !data.message) {
-        console.error('Missing required fields:', { name: !!data.name, email: !!data.email, message: !!data.message });
+      if (!data.email || !data.message) {
+        console.error('Missing required fields:', { email: !!data.email, message: !!data.message });
         return { success: false, error: 'Missing required fields' };
       }
 
@@ -207,51 +203,33 @@ const Contact = () => {
         return { success: false, error: 'Invalid email format' };
       }
 
-      const formData = new FormData();
+      console.log('Sending contact form...');
 
-      // Required fields
-      formData.append('access_key', WEB3FORMS_ACCESS_KEY);
-      formData.append('name', data.name.trim());
-      formData.append('email', data.email.trim());
-      formData.append('message', data.message.trim());
-
-      // Optional fields for better organization
-      formData.append('subject', `New message from ${data.name.trim()} via Terminal Contact`);
-      formData.append('from_name', 'Terminal Contact Form');
-      formData.append('replyto', data.email.trim());
-
-      // Spam protection - botcheck should be empty for humans
-      formData.append('botcheck', '');
-
-      console.log('Sending form data to Web3Forms...');
-
-      const response = await fetch('https://api.web3forms.com/submit', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.name?.trim() || '',
+          email: data.email.trim(),
+          message: data.message.trim(),
+        }),
       });
 
       console.log('Response status:', response.status, response.statusText);
 
-      // Check if response is ok before parsing JSON
-      if (!response.ok) {
-        console.error('HTTP Error:', response.status, response.statusText);
-        return {
-          success: false,
-          error: `Server error: ${response.status} ${response.statusText}`
-        };
-      }
-
       const result = await response.json();
-      console.log('Web3Forms response:', result);
+      console.log('API response:', result);
 
       if (result.success) {
         console.log('Email sent successfully!');
         return { success: true };
       } else {
-        console.error('Web3Forms error:', result);
+        console.error('API error:', result);
         return {
           success: false,
-          error: result.message || result.error || 'Unknown error from Web3Forms'
+          error: result.error || 'Failed to send message'
         };
       }
     } catch (error) {
