@@ -373,7 +373,7 @@ const Hero = () => {
                 Get in touch
               </a>
               <a
-                href="https://zcal.co/ayush/30min"
+                href="/book"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 sm:gap-2 px-4 py-2.5 sm:px-5 sm:py-2.5 bg-orange-500/10 text-orange-400 rounded-lg font-medium hover:bg-orange-500/20 transition-all border border-orange-500/30 hover:border-orange-500/50 shadow-[0_0_15px_rgba(251,146,60,0.15)] hover:shadow-[0_0_25px_rgba(251,146,60,0.3)] text-base sm:text-base"

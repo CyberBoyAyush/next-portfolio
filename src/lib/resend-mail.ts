@@ -91,7 +91,7 @@ export async function sendThankYouEmail(
 
   <p>I'll review your inquiry and respond from <strong>hi@aysh.me</strong> soon.</p>
 
-  <p>If you'd like to schedule a quick chat, feel free to book a meeting: <a href="https://zcal.co/ayush/30min">https://zcal.co/ayush/30min</a></p>
+  <p>If you'd like to schedule a quick chat, feel free to book a meeting: <a href="https://aysh.me/book">https://aysh.me/book</a></p>
 
   <p>Best regards,<br>
   Ayush Sharma<br>
@@ -113,7 +113,7 @@ Thank you for reaching out! I've received your message:
 I'll review your inquiry and respond from hi@aysh.me soon.
 
 If you'd like to schedule a quick chat, feel free to book a meeting:
-https://zcal.co/ayush/30min
+https://aysh.me/book
 
 Best regards,
 Ayush Sharma

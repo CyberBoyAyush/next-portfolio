@@ -79,6 +79,15 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/book',
+        destination: 'https://zcal.co/ayush/30min',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

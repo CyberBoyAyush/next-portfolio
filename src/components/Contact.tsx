@@ -809,7 +809,7 @@ Please fill in all fields before sending.`;
                 </div>
 
                 <a
-                  href="https://zcal.co/ayush/30min"
+                  href="/book"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center space-x-3 p-4 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:border-gray-700 transition-colors cursor-pointer"
