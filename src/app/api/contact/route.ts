@@ -1,4 +1,4 @@
-import { sendZohoEmail, sendThankYouEmail, parseNameFromEmail } from '@/lib/zoho-mail';
+import { sendResendEmail, sendThankYouEmail, parseNameFromEmail } from '@/lib/resend-mail';
 import { sanitizeEmailContent, sanitizeName, isValidEmail } from '@/lib/input-validation';
 import { rateLimit, getClientIdentifier } from '@/lib/rate-limit';
 
@@ -23,11 +23,8 @@ export async function POST(req: Request) {
   try {
     // Early environment variable validation
     const requiredEnvVars = [
-      'ZOHO_SMTP_HOST',
-      'ZOHO_SMTP_PORT',
-      'ZOHO_SMTP_USER',
-      'ZOHO_SMTP_PASSWORD',
-      'ZOHO_FROM_EMAIL',
+      'RESEND_API_KEY',
+      'RESEND_FROM_EMAIL',
     ];
 
     const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
@@ -154,15 +151,15 @@ This message was sent via the contact form on your portfolio.
     `.trim();
 
     // Send notification email to Ayush
-    const notificationSent = await sendZohoEmail({
-      to: process.env.ZOHO_TO_EMAIL || 'hi@aysh.me',
+    const notificationSent = await sendResendEmail({
+      to: process.env.RESEND_TO_EMAIL || 'hi@aysh.me',
       subject: `Contact Form: ${sanitizedName} sent you a message`,
       text: emailBody,
       html: emailBody.replace(/\n/g, '<br>'),
     });
 
     if (!notificationSent) {
-      console.error('Failed to send notification email to:', process.env.ZOHO_TO_EMAIL);
+      console.error('Failed to send notification email to:', process.env.RESEND_TO_EMAIL);
       return new Response(
         JSON.stringify({
           success: false,

@@ -1,7 +1,7 @@
 import { tool } from 'ai';
 import { z } from 'zod';
 import { sanitizeEmailContent, sanitizeName, isValidEmail } from './input-validation';
-import { sendZohoEmail, sendThankYouEmail, parseNameFromEmail } from './zoho-mail';
+import { sendResendEmail, sendThankYouEmail, parseNameFromEmail } from './resend-mail';
 
 export const sendContactEmailTool = tool({
   description: 'Send a contact email to Ayush when a visitor wants to reach out for work opportunities or collaboration. Only use this when the visitor explicitly provides their email and wants to contact Ayush.',
@@ -50,8 +50,8 @@ This message was sent via CappyBot on your portfolio.
       `.trim();
 
       // Send notification email to Ayush
-      const notificationSent = await sendZohoEmail({
-        to: process.env.ZOHO_TO_EMAIL || 'hi@aysh.me',
+      const notificationSent = await sendResendEmail({
+        to: process.env.RESEND_TO_EMAIL || 'hi@aysh.me',
         subject: `CappyBot Contact: ${sanitizedName} wants to connect`,
         text: emailBody,
         html: emailBody.replace(/\n/g, '<br>'),
