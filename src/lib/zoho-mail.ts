@@ -37,10 +37,13 @@ function createZohoTransporter() {
     throw new Error('Missing required Zoho SMTP environment variables');
   }
 
+  const port = parseInt(process.env.ZOHO_SMTP_PORT);
+
   return nodemailer.createTransport({
     host: process.env.ZOHO_SMTP_HOST,
-    port: parseInt(process.env.ZOHO_SMTP_PORT),
-    secure: true,
+    port: port,
+    secure: port === 465, // true for 465, false for other ports like 587
+    requireTLS: port !== 465, // require STARTTLS for non-465 ports
     auth: {
       user: process.env.ZOHO_SMTP_USER,
       pass: process.env.ZOHO_SMTP_PASSWORD,
