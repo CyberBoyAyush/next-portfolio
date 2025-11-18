@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback, useMemo, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import {
   ChevronDown,
   Github,
@@ -9,20 +9,12 @@ import {
   Mail,
   FileText,
   Calendar,
-  Network,
   TrendingUp,
+  Network,
+  Sparkles,
 } from "lucide-react";
 import Image from "next/image";
-import {
-  SiTypescript,
-  SiReact,
-  SiNextdotjs,
-  SiPrisma,
-  SiPostgresql,
-  SiAppwrite,
-  SiVercel,
-} from "react-icons/si";
-import { OpenRouter } from "@lobehub/icons";
+import TechTicker from "./TechTicker";
 
 // Custom X (Twitter) Icon Component
 const XIcon = ({ size = 18, className = "" }) => (
@@ -62,7 +54,7 @@ const Hero = () => {
     return () => clearInterval(interval);
   }, [roles.length]);
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -73,14 +65,14 @@ const Hero = () => {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
         duration: 0.5,
-        ease: "easeOut" as const,
+        ease: "easeOut",
       },
     },
   };
@@ -97,20 +89,31 @@ const Hero = () => {
 
     updateCapability(mediaQuery.matches);
 
+    // Use modern event listener with fallback
     const listener = (event: MediaQueryListEvent) =>
       updateCapability(event.matches);
-
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener("change", listener);
-    } else if (mediaQuery.addListener) {
-      mediaQuery.addListener(listener);
+    
+    // Safely add listener
+    try {
+       mediaQuery.addEventListener("change", listener);
+    } catch (e) {
+       // Fallback for older browsers (Safari < 14)
+       try {
+         mediaQuery.addListener(listener);
+       } catch (e2) {
+         console.warn("Media query listener not supported");
+       }
     }
 
     return () => {
-      if (mediaQuery.removeEventListener) {
+      try {
         mediaQuery.removeEventListener("change", listener);
-      } else if (mediaQuery.removeListener) {
-        mediaQuery.removeListener(listener);
+      } catch (e) {
+        try {
+          mediaQuery.removeListener(listener);
+        } catch (e2) {
+          // Ignore cleanup errors
+        }
       }
     };
   }, []);
@@ -194,21 +197,21 @@ const Hero = () => {
       <div className="absolute inset-0 -z-10 bg-[#0D1117]" />
       <div className="absolute inset-0 -z-10 bg-[length:40px_40px] [background-image:linear-gradient(rgba(255,255,255,.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.015)_1px,transparent_1px)]" />
 
-      <div className="container mx-auto px-4 pt-6 pb-2 sm:py-16 md:py-20 w-full">
-        <div className="max-w-4xl mx-auto w-full">
+      <div className="container mx-auto px-4 pt-24 pb-20 sm:pt-32 sm:pb-16 md:pt-32 md:pb-20 w-full min-h-[100dvh] flex flex-col justify-center">
+        <div className="max-w-4xl mx-auto w-full flex flex-col justify-center items-center relative z-10">
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="space-y-3 sm:space-y-5 md:space-y-8"
+            className="space-y-3 sm:space-y-4 flex-grow flex flex-col justify-center items-center w-full"
           >
             {/* Profile Image */}
             <motion.div
               variants={itemVariants}
-              className="flex justify-center sm:mt-4 md:mt-8"
+              className="flex justify-center"
             >
               <div className="relative inline-block group" ref={statusBadgeRef}>
-                <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full overflow-hidden ring-2 ring-gray-800 bg-gray-900 cursor-pointer">
+                <div className="w-28 h-28 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full overflow-hidden ring-4 ring-gray-800/50 bg-gray-900 cursor-pointer shadow-2xl shadow-purple-500/10 transition-all duration-500 group-hover:scale-105 group-hover:ring-purple-500/20">
                   {ProfileImage}
                   {!imageLoaded && !imageError && !imageAttempted && (
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -228,7 +231,7 @@ const Hero = () => {
                     <button
                       type="button"
                       onClick={handleStatusToggle}
-                      className="relative flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full border-[3px] border-[#0D1117] bg-transparent overflow-visible shadow-[0_0_0_2px_rgba(3,7,18,0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117] transition-transform"
+                      className="relative flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full border-[3px] border-[#0D1117] bg-transparent overflow-visible shadow-[0_0_0_2px_rgba(3,7,18,0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117] transition-transform hover:scale-110"
                       aria-label={
                         isHoverCapable
                           ? "Availability status"
@@ -237,7 +240,7 @@ const Hero = () => {
                       aria-expanded={statusCardVisible}
                     >
                       <span className="sr-only">Availability status</span>
-                      <span className="pointer-events-none absolute -inset-[6px] rounded-full bg-emerald-400/25 blur-[6px] opacity-80" />
+                      <span className="pointer-events-none absolute -inset-[6px] rounded-full bg-emerald-400/25 blur-[6px] opacity-80 animate-pulse" />
                       <span className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-400" />
                       <span className="pointer-events-none absolute inset-[5px] sm:inset-[6px] rounded-full bg-emerald-100/95" />
                       <span className="relative inline-flex items-center justify-center w-full h-full">
@@ -246,9 +249,9 @@ const Hero = () => {
                     </button>
 
                     <div
-                      className={`absolute left-[calc(100%+0.75rem)] sm:left-[calc(100%+0.9rem)] top-1/2 -translate-y-1/2 z-10 rounded-xl transition-opacity duration-300 ease-out pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto ${
+                      className={`absolute left-[calc(100%+0.75rem)] sm:left-[calc(100%+0.9rem)] top-1/2 -translate-y-1/2 z-10 rounded-xl transition-all duration-300 ease-out pointer-events-none opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-x-0 group-focus-within:pointer-events-auto ${
                         statusCardVisible
-                          ? "opacity-100 pointer-events-auto"
+                          ? "opacity-100 translate-x-0 pointer-events-auto"
                           : ""
                       }`}
                     >
@@ -268,173 +271,143 @@ const Hero = () => {
             {/* Main Heading */}
             <motion.div
               variants={itemVariants}
-              className="mt-4 sm:mt-5 md:mt-8"
+              className="space-y-3 text-center"
             >
-              <h1 className="text-4xl sm:text-4xl md:text-6xl font-bold leading-tight text-center">
-                <span className="text-white">Hi, I&apos;m</span>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+                <span className="text-white drop-shadow-sm">Hi, I&apos;m</span>
                 <br />
-                <span className="text-white">Ayush Sharma</span>
-                <br />
-                <span className="text-gray-400 text-3xl sm:text-3xl md:text-5xl">
-                  I&apos;m{" "}
-                  <AnimatePresence mode="wait">
-                    <motion.span
-                      key={currentRoleIndex}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.5, ease: "easeInOut" }}
-                      className="inline-block"
-                    >
-                      {roles[currentRoleIndex].article} {roles[currentRoleIndex].title}
-                    </motion.span>
-                  </AnimatePresence>
-                </span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60">Ayush Sharma</span>
               </h1>
+              <div className="text-gray-400 text-xl sm:text-2xl md:text-3xl font-medium h-8 sm:h-10 md:h-12 flex items-center justify-center">
+                <span>I&apos;m </span>
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={currentRoleIndex}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="inline-block ml-2 text-white"
+                  >
+                    {roles[currentRoleIndex].article} {roles[currentRoleIndex].title}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
             </motion.div>
 
-            {/* Description with Tech Stack */}
+            {/* Description */}
             <motion.div
               variants={itemVariants}
-              className="space-y-4 text-center"
+              className="space-y-3 text-center max-w-3xl mx-auto px-4"
             >
-              <p className="text-base sm:text-base md:text-xl text-gray-300 leading-loose max-w-3xl mx-auto">
-                I make{" "}
-                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-green-500/10 text-green-400 rounded-lg border border-green-500/30 font-medium text-xs sm:text-sm mr-1">
-                  <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
+              <p className="text-base sm:text-lg md:text-xl text-gray-300 leading-relaxed">
+                I build{" "}
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-400 rounded-full border border-green-500/20 font-medium text-sm align-middle transition-colors hover:bg-green-500/20">
+                  <TrendingUp size={14} />
                   Scalable
+                </span>
+                , high-performance AI applications and modern web solutions with a focus on exceptional{" "}
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full border border-blue-500/20 font-medium text-sm align-middle transition-colors hover:bg-blue-500/20">
+                  <Sparkles size={14} />
+                  User Experience
                 </span>{" "}
-                beautiful looking AI web apps using{" "}
-                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/30 font-medium text-xs sm:text-sm mr-1">
-                  <SiTypescript className="w-3 h-3 sm:w-4 sm:h-4" />
-                  Typescript
-                </span>
-                ,
-                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-cyan-500/10 text-cyan-400 rounded-lg border border-cyan-500/30 font-medium text-xs sm:text-sm mr-1">
-                  <SiReact className="w-3 h-3 sm:w-4 sm:h-4" />
-                  React
-                </span>
-                ,
-                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-gray-500/10 text-gray-300 rounded-lg border border-gray-500/30 font-medium text-xs sm:text-sm mr-1">
-                  <SiNextdotjs className="w-3 h-3 sm:w-4 sm:h-4" />
-                  NextJS
-                </span>
-                ,
-                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-teal-500/10 text-teal-400 rounded-lg border border-teal-500/30 font-medium text-xs sm:text-sm mr-1">
-                  <SiPrisma className="w-3 h-3 sm:w-4 sm:h-4" />
-                  Prisma ORM
-                </span>
-                ,
-                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/30 font-medium text-xs sm:text-sm mr-1">
-                  <SiPostgresql className="w-3 h-3 sm:w-4 sm:h-4" />
-                  Postgres
-                </span>
-                ,
-                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-pink-500/10 text-pink-400 rounded-lg border border-pink-500/30 font-medium text-xs sm:text-sm mr-1">
-                  <SiAppwrite className="w-3 h-3 sm:w-4 sm:h-4" />
-                  Appwrite
-                </span>
-                ,
-                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-gray-500/10 text-gray-300 rounded-lg border border-gray-500/30 font-medium text-xs sm:text-sm mr-1">
-                  <SiVercel className="w-3 h-3 sm:w-4 sm:h-4" />
-                  Vercel AI SDK
-                </span>
-                ,
-                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-indigo-500/10 text-indigo-400 rounded-lg border border-indigo-500/30 font-medium text-xs sm:text-sm mr-1">
-                  <OpenRouter size={16} className="w-3 h-3 sm:w-4 sm:h-4" />
-                  OpenRouter
-                </span>
-                , with focusing on security and good{" "}
-                <span className="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-purple-500/10 text-purple-400 rounded-lg border border-purple-500/30 font-medium text-xs sm:text-sm">
-                  <Network className="w-3 h-3 sm:w-4 sm:h-4" />
-                  System design
+                and robust{" "}
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-500/10 text-purple-400 rounded-full border border-purple-500/20 font-medium text-sm align-middle transition-colors hover:bg-purple-500/20">
+                  <Network size={14} />
+                  System Design
                 </span>
                 .
               </p>
+            </motion.div>
+            
+            {/* Tech Ticker */}
+            <motion.div 
+              variants={itemVariants}
+              className="w-full pt-1"
+            >
+              <TechTicker />
             </motion.div>
 
             {/* Action Buttons */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-wrap items-center justify-center gap-2 sm:gap-3"
+              className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-1"
             >
               <a
                 href="/Resume.pdf"
-                className="inline-flex items-center gap-1.5 sm:gap-2 px-4 py-2.5 sm:px-5 sm:py-2.5 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition-all text-base sm:text-base"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-white text-gray-900 rounded-full font-semibold hover:bg-gray-100 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-white/5 text-sm sm:text-base"
               >
-                <FileText size={16} className="sm:w-4 sm:h-4" />
+                <FileText size={18} className="sm:w-[18px] sm:h-[18px]" />
                 Resume / CV
               </a>
               <a
                 href="#contact"
-                className="inline-flex items-center gap-1.5 sm:gap-2 px-4 py-2.5 sm:px-5 sm:py-2.5 bg-transparent text-gray-300 rounded-lg font-medium hover:bg-gray-800/50 hover:text-white transition-all border border-gray-700 text-base sm:text-base"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-transparent text-white rounded-full font-medium hover:bg-white/5 transition-all border border-white/10 hover:border-white/30 text-sm sm:text-base"
               >
-                <Mail size={16} className="sm:w-4 sm:h-4" />
+                <Mail size={18} className="sm:w-[18px] sm:h-[18px]" />
                 Get in touch
               </a>
               <a
                 href="/book"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 sm:gap-2 px-4 py-2.5 sm:px-5 sm:py-2.5 bg-orange-500/10 text-orange-400 rounded-lg font-medium hover:bg-orange-500/20 transition-all border border-orange-500/30 hover:border-orange-500/50 shadow-[0_0_15px_rgba(251,146,60,0.15)] hover:shadow-[0_0_25px_rgba(251,146,60,0.3)] text-base sm:text-base"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-orange-500/10 text-orange-400 rounded-full font-medium hover:bg-orange-500/20 transition-all border border-orange-500/20 hover:border-orange-500/40 text-sm sm:text-base"
               >
-                <Calendar size={16} className="sm:w-4 sm:h-4" />
-                Schedule 1:1 Call
+                <Calendar size={18} className="sm:w-[18px] sm:h-[18px]" />
+                Schedule Call
               </a>
             </motion.div>
 
-            {/* Social Links */}
+            {/* Social Links + Scroll */}
             <motion.div
               variants={itemVariants}
-              className="flex items-center justify-center gap-3 pt-1 sm:pt-2 md:pt-3"
+              className="flex flex-col items-center justify-center gap-3 pt-4 sm:pt-4"
             >
+              <div className="flex items-center justify-center gap-6 sm:gap-6">
+                <a
+                  href="https://x.com/cyberboyayush"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-white hover:scale-110 transition-all"
+                  aria-label="Twitter"
+                >
+                  <XIcon size={22} className="sm:w-[20px] sm:h-[20px]" />
+                </a>
+                <a
+                  href="https://linkedin.com/in/cyberboyayush"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-white hover:scale-110 transition-all"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin size={22} className="sm:w-[20px] sm:h-[20px]" />
+                </a>
+                <a
+                  href="https://github.com/cyberboyayush"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-white hover:scale-110 transition-all"
+                  aria-label="GitHub"
+                >
+                  <Github size={22} className="sm:w-[20px] sm:h-[20px]" />
+                </a>
+                <a
+                  href="mailto:hi@aysh.me"
+                  className="text-gray-400 hover:text-white hover:scale-110 transition-all"
+                  aria-label="Email"
+                >
+                  <Mail size={22} className="sm:w-[20px] sm:h-[20px]" />
+                </a>
+              </div>
               <a
-                href="https://x.com/cyberboyayush"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
-                aria-label="Twitter"
+                href="#skills"
+                className="hidden md:inline-flex animate-bounce p-2 text-gray-500 hover:text-white transition-colors"
+                aria-label="Scroll down"
               >
-                <XIcon size={20} />
-              </a>
-              <a
-                href="https://linkedin.com/in/cyberboyayush"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin size={20} />
-              </a>
-              <a
-                href="https://github.com/cyberboyayush"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
-                aria-label="GitHub"
-              >
-                <Github size={20} />
-              </a>
-              <a
-                href="mailto:hi@aysh.me"
-                className="text-gray-400 hover:text-white transition-colors"
-                aria-label="Email"
-              >
-                <Mail size={20} />
+                <ChevronDown size={24} />
               </a>
             </motion.div>
           </motion.div>
-
-          {/* Scroll Indicator */}
-          <div className="flex justify-center mt-1 sm:mt-4 md:mt-10">
-            <a
-              href="#skills"
-              className="animate-bounce rounded-full p-2 text-gray-500 hover:text-gray-300 transition-colors"
-              aria-label="Scroll down"
-            >
-              <ChevronDown size={24} />
-            </a>
-          </div>
         </div>
       </div>
     </section>

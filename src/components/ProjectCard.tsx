@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ExternalLink, Github, Globe2, ChevronRight, Server, Chrome, Calendar, Bot, Database } from 'lucide-react';
+import { Github, Globe2, ChevronRight, Server, Calendar, Bot, Database } from 'lucide-react';
 import { 
   SiNextdotjs, 
   SiPrisma, 
@@ -9,14 +9,15 @@ import {
   SiTailwindcss, 
   SiReact, 
   SiTypescript, 
-  SiAppwrite,
-  SiVercel,
-  SiJavascript,
-  SiOpenai,
-  SiAmazon,
-  SiGooglegemini,
-  SiGoogle,
-  SiMeta
+  SiAppwrite, 
+  SiVercel, 
+  SiJavascript, 
+  SiOpenai, 
+  SiAmazon, 
+  SiGooglegemini, 
+  SiGoogle, 
+  SiMeta,
+  SiGooglechrome
 } from 'react-icons/si';
 import Image from 'next/image';
 import { OpenRouter, Groq as GroqIcon } from '@lobehub/icons';
@@ -70,7 +71,7 @@ const getTechIcon = (tech: string) => {
   if (techLower.includes('openrouter')) return <OpenRouter size={iconSize} />;
   if (techLower.includes('groq')) return <GroqIcon size={iconSize} />;
   if (techLower.includes('llama')) return <SiMeta className={iconClass} />;
-  if (techLower.includes('browser') || techLower.includes('chrome')) return <Chrome className={iconClass} />;
+  if (techLower.includes('browser') || techLower.includes('chrome')) return <SiGooglechrome className={iconClass} />;
   if (techLower.includes('clerk')) return <Bot className={iconClass} />;
   if (techLower.includes('realtime')) return <Bot className={iconClass} />;
   if (techLower.includes('recharts') || techLower.includes('chart')) return <Bot className={iconClass} />;

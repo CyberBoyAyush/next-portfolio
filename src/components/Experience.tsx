@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Calendar, MapPin, Briefcase } from 'lucide-react';
+import { Briefcase } from 'lucide-react';
 import Image from 'next/image';
 import SectionHeading from './SectionHeading';
 import { getAllExperiences } from '../data/experience';
@@ -38,95 +38,89 @@ const Experience = () => {
       <div className="container mx-auto px-4 max-w-4xl">
         <SectionHeading
           subtitle="Experience"
-          title="Work"
+          title="Work History"
           description="Building scalable solutions and leading development teams"
           className="mb-12"
         />
 
-        {/* Experience Cards */}
-        <div className="space-y-8">
+        <div className="space-y-6">
           {experiences.map((experience, index) => (
             <motion.div
               key={experience.id}
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="space-y-4"
+              className="group"
             >
-              {/* Header - Company and Date */}
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gray-800/50 flex items-center justify-center flex-shrink-0 border border-gray-700 overflow-hidden p-1">
-                    {experience.logo ? (
-                      <Image
-                        src={experience.logo}
-                        alt={`${experience.company} logo`}
-                        width={48}
-                        height={48}
-                        className="w-full h-full object-contain"
-                      />
-                    ) : (
-                      <Briefcase size={20} className="text-gray-500" />
-                    )}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-lg sm:text-xl font-bold text-white">
-                        {experience.company}
-                      </h3>
-                      {experience.current && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-500/10 text-green-400 text-xs font-semibold rounded border border-green-500/20">
-                          <span className="w-1 h-1 rounded-full bg-green-400" />
-                          Current
-                        </span>
+              {/* Glass Card - No shift on hover, just subtle border/shadow */}
+              <div className="relative p-6 sm:p-8 rounded-2xl border border-gray-800 bg-gray-900/40 backdrop-blur-md transition-all duration-300 hover:border-gray-700 hover:bg-gray-900/60 shadow-xl">
+                
+                {/* Header - Company and Date */}
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5 mb-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gray-800/80 flex items-center justify-center flex-shrink-0 border border-gray-700 overflow-hidden p-2 shadow-inner">
+                      {experience.logo ? (
+                        <Image
+                          src={experience.logo}
+                          alt={`${experience.company} logo`}
+                          width={56}
+                          height={56}
+                          className="w-full h-full object-contain"
+                        />
+                      ) : (
+                        <Briefcase size={24} className="text-gray-500" />
                       )}
                     </div>
-                    <p className="text-base text-gray-300 font-medium">
-                      {experience.position}
-                    </p>
+                    <div>
+                      <div className="flex items-center gap-3 mb-1 flex-wrap">
+                        <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
+                          {experience.company}
+                        </h3>
+                        {experience.current && (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 text-xs font-semibold rounded-full border border-emerald-500/20">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            Current
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-lg text-gray-300 font-medium">
+                        {experience.position}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-400 font-medium bg-gray-800/50 px-4 py-1.5 rounded-full self-start sm:self-auto border border-gray-700/50 whitespace-nowrap">
+                    {experience.duration}
                   </div>
                 </div>
-                <div className="text-sm text-gray-400 sm:text-right flex-shrink-0 ml-[52px] sm:ml-0">
-                  <div>{experience.duration}</div>
-                  <div className="text-gray-500">{experience.location}</div>
-                </div>
-              </div>
 
-              {/* Technologies & Tools */}
-              <div>
-                <div className="text-xs text-gray-500 font-semibold mb-2 uppercase tracking-wide">
-                  Technologies & Tools
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {experience.technologies.map((tech, idx) => {
-                    const Icon = techIconMap[tech];
-                    return (
-                      <span
-                        key={idx}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-800/60 text-gray-300 text-xs font-medium rounded-md border border-gray-700/50"
-                      >
-                        {Icon && <Icon className="text-sm" />}
-                        {tech}
-                      </span>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Responsibilities */}
-              <div className="space-y-2">
-                {experience.responsibilities.slice(0, 4).map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-2 text-sm text-gray-300">
-                    <span className="text-gray-500 mt-1 flex-shrink-0">•</span>
-                    <span className="leading-relaxed">{item}</span>
+                {/* Technologies */}
+                <div className="mb-6">
+                  <div className="flex flex-wrap gap-2">
+                    {experience.technologies.map((tech, idx) => {
+                      const Icon = techIconMap[tech];
+                      return (
+                        <span
+                          key={idx}
+                          className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-800/40 text-gray-400 text-xs font-medium rounded-md border border-gray-700/30 hover:border-gray-600 hover:text-gray-200 transition-colors cursor-default"
+                        >
+                          {Icon && <Icon className="text-sm" />}
+                          {tech}
+                        </span>
+                      );
+                    })}
                   </div>
-                ))}
-              </div>
+                </div>
 
-              {/* Divider */}
-              {index < experiences.length - 1 && (
-                <div className="pt-8 border-b border-gray-800" />
-              )}
+                {/* Responsibilities */}
+                <ul className="space-y-3">
+                  {experience.responsibilities.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-3 text-[15px] text-gray-400 group-hover:text-gray-300 transition-colors">
+                      <span className="text-blue-500 mt-1.5 flex-shrink-0 text-[10px]">●</span>
+                      <span className="leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </motion.div>
           ))}
         </div>
