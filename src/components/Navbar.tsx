@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
-import { Code2, Home, FolderOpen, Github, ExternalLink } from 'lucide-react';
+import { Code2, Home, FolderOpen, BookOpen, Github, ExternalLink } from 'lucide-react';
 
 // Custom X (Twitter) Icon Component
 const XIcon = ({ size = 18, className = "" }) => (
@@ -74,7 +74,15 @@ const Navbar = () => {
                 <FolderOpen size={16} className="group-hover:scale-105 transition-transform" />
                 <span className="font-medium text-sm">Projects</span>
               </Link>
-              
+
+              <Link
+                href="/blogs"
+                className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-white transition-all duration-300 rounded-lg hover:bg-white/5 group"
+              >
+                <BookOpen size={16} className="group-hover:scale-105 transition-transform" />
+                <span className="font-medium text-sm">Blogs</span>
+              </Link>
+
               <div className="w-px h-6 bg-white/10 mx-2" />
               
               <motion.a
@@ -189,7 +197,25 @@ const Navbar = () => {
                 <span className="text-xs mt-1 font-medium">Projects</span>
               </Link>
             </motion.div>
-            
+
+            {/* Blogs */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex-1"
+            >
+              <Link
+                href="/blogs"
+                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 rounded-xl hover:bg-white/10 group"
+              >
+                <div className="relative">
+                  <div className="absolute inset-0 bg-white/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <BookOpen size={18} className="relative group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <span className="text-xs mt-1 font-medium">Blogs</span>
+              </Link>
+            </motion.div>
+
             {/* Divider */}
             <div className="h-6 w-px bg-white/10 mx-0.5" />
             

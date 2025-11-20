@@ -1,0 +1,206 @@
+.blog-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+@media (min-width: 640px) {
+  .blog-content h2 {
+    font-size: 2rem;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.blog-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #e5e7eb;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+@media (min-width: 640px) {
+  .blog-content h3 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.blog-content p {
+  color: #9ca3af;
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+}
+
+.blog-content ul,
+.blog-content ol {
+  color: #9ca3af;
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.blog-content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.7;
+}
+
+.blog-content strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.blog-content code {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  color: #e879f9;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  font-weight: 500;
+}
+
+.blog-content pre {
+  position: relative;
+  background: #1e1e2e !important;
+  padding: 1rem;
+  padding-top: 2.5rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border: 1px solid #2a2a3e;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+@media (min-width: 640px) {
+  .blog-content pre {
+    padding: 1.5rem;
+    padding-top: 3rem;
+    margin: 2rem 0;
+  }
+}
+
+.blog-content pre::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.blog-content pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  color: #e5e7eb;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  display: block;
+  box-shadow: none;
+}
+
+@media (min-width: 640px) {
+  .blog-content pre code {
+    font-size: 0.875rem;
+    line-height: 1.8;
+  }
+}
+
+.blog-content pre code .hljs-comment {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.blog-content pre code .hljs-keyword,
+.blog-content pre code .hljs-selector-tag,
+.blog-content pre code .hljs-literal {
+  color: #c678dd;
+}
+
+.blog-content pre code .hljs-string,
+.blog-content pre code .hljs-attr {
+  color: #98c379;
+}
+
+.blog-content pre code .hljs-number,
+.blog-content pre code .hljs-built_in {
+  color: #d19a66;
+}
+
+.blog-content pre code .hljs-function,
+.blog-content pre code .hljs-title {
+  color: #61afef;
+}
+
+.blog-content pre code .hljs-variable,
+.blog-content pre code .hljs-params {
+  color: #e5c07b;
+}
+
+.blog-content blockquote {
+  border-left: 4px solid #3b82f6;
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  color: #d1d5db;
+  font-style: italic;
+  background-color: rgba(59, 130, 246, 0.05);
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+}
+
+.blog-content a {
+  color: #60a5fa;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.blog-content a:hover {
+  color: #93c5fd;
+  border-bottom-color: #93c5fd;
+}
+
+.blog-content img {
+  border-radius: 0.75rem;
+  margin: 2rem 0;
+  border: 1px solid rgba(75, 85, 99, 0.3);
+}
+
+.blog-content hr {
+  border-color: rgba(75, 85, 99, 0.3);
+  margin: 3rem 0;
+}
+
+.blog-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+}
+
+.blog-content table th,
+.blog-content table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(75, 85, 99, 0.3);
+  text-align: left;
+}
+
+.blog-content table th {
+  background-color: rgba(31, 41, 55, 0.5);
+  font-weight: 600;
+  color: #fff;
+}
+
+.blog-content table td {
+  color: #9ca3af;
+}
