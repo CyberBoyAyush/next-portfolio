@@ -45,12 +45,18 @@ export default function BlogsClient({ blogs }: BlogsClientProps) {
         ></div>
 
         <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
-          <SectionHeading
-            subtitle="Blog"
-            title="Articles & Insights"
-            description="Exploring the world of web development, AI, and modern technology"
-            className="mb-12 md:mb-20"
-          />
+          <div className="flex flex-col items-center mb-12 md:mb-20">
+            <SectionHeading
+              subtitle="Blog"
+              title="Articles & Insights"
+              description="Exploring the world of web development, AI, and modern technology"
+              className="mb-6"
+            />
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-gray-400 backdrop-blur-sm">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"/>
+              {blogs.length} Articles Published
+            </div>
+          </div>
 
           {blogs.length === 0 ? (
             <div className="text-center text-gray-400">
@@ -59,114 +65,80 @@ export default function BlogsClient({ blogs }: BlogsClientProps) {
           ) : (
             <>
               {/* Blogs Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-10 xl:gap-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
                 {blogs.map((blog, index) => (
                   <motion.div
                     key={blog.slug}
                     initial={{ opacity: 0, y: 20 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
-                    <Link href={`/blogs/${blog.slug}`}>
-                      <div className="group relative rounded-2xl overflow-hidden flex flex-col h-full hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-                        {/* Dark themed background with subtle gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900" />
-
-                        {/* Subtle colored accent on hover */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                        {/* Animated border gradient */}
-                        <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-gray-700 via-gray-600 to-gray-700 group-hover:from-blue-500/50 group-hover:via-purple-500/50 group-hover:to-pink-500/50 transition-all duration-300">
-                          <div className="h-full w-full rounded-2xl bg-gray-900" />
-                        </div>
-
-                        {/* Blog Image or Placeholder */}
-                        <div className="relative z-10">
+                    <Link href={`/blogs/${blog.slug}`} className="block h-full group">
+                      <article className="flex flex-col h-full bg-[#161b22] border border-gray-800/60 rounded-2xl overflow-hidden hover:border-gray-700 transition-all duration-300 hover:shadow-xl hover:shadow-black/20">
+                        {/* Blog Image */}
+                        <div className="relative aspect-video overflow-hidden bg-gray-900">
                           {blog.imageUrl ? (
-                            <div className="w-full aspect-[1408/768] relative overflow-hidden rounded-t-2xl">
-                              <Image
-                                src={blog.imageUrl}
-                                alt={blog.title}
-                                fill
-                                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                              />
-                            </div>
+                            <Image
+                              src={blog.imageUrl}
+                              alt={blog.title}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-500"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            />
                           ) : (
                             <BlogImagePlaceholder title={blog.title} />
                           )}
+                          {/* Overlay gradient */}
+                          <div className="absolute inset-0 bg-linear-to-t from-[#161b22] to-transparent opacity-20" />
                         </div>
 
-                        {/* Content Container */}
-                        <div className="relative z-10 flex flex-col h-full p-4 sm:p-5 md:p-6">
-                          {/* Meta Info */}
-                          <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 mb-3 md:mb-4 text-xs text-gray-400">
-                            <div className="flex items-center gap-1.5">
-                              <Calendar size={14} />
-                              <span>{new Date(blog.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                              <Clock size={14} />
-                              <span>{blog.readingTime}</span>
-                            </div>
-                          </div>
-
+                        {/* Content */}
+                        <div className="flex flex-col grow p-6">
                           {/* Title */}
-                          <h3 className="text-lg sm:text-xl font-bold text-white leading-tight mb-2 sm:mb-3 group-hover:text-blue-300 transition-colors">
+                          <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors line-clamp-2">
                             {blog.title}
                           </h3>
 
                           {/* Description */}
-                          <p className="text-gray-400 text-sm leading-relaxed mb-4 line-clamp-3">
+                          <p className="text-gray-400 text-sm leading-relaxed mb-6 line-clamp-2 grow">
                             {blog.description}
                           </p>
 
                           {/* Tags */}
-                          <div className="mt-auto">
-                            <div className="text-xs text-gray-500 font-semibold mb-2 uppercase tracking-wide flex items-center gap-1.5">
-                              <Tag size={12} />
-                              Topics
-                            </div>
-                            <div className="flex flex-wrap gap-1.5 mb-4">
-                              {blog.tags.slice(0, 4).map((tag, idx) => (
-                                <span
-                                  key={idx}
-                                  className="inline-flex items-center px-2.5 py-1 bg-gray-800/80 backdrop-blur-sm text-gray-300 text-xs font-medium rounded-md border border-gray-700/50 hover:border-gray-600 hover:bg-gray-800 transition-colors"
-                                >
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
+                          <div className="flex flex-wrap gap-2 mb-6">
+                            {blog.tags.slice(0, 3).map((tag, idx) => (
+                              <span
+                                key={idx}
+                                className="px-2.5 py-1 bg-[#21262d] text-gray-400 text-xs font-medium rounded-full border border-gray-700/50"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
 
-                            {/* Read More Button */}
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-gray-800">
-                              <span className="text-xs text-gray-400 font-medium">By {blog.author}</span>
-                              <button className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white text-xs font-medium rounded-lg border border-white/10 hover:border-white/20 transition-all group/btn w-full sm:w-auto justify-center sm:justify-start">
-                                <span>Read Article</span>
-                                <ArrowRight size={12} className="group-hover/btn:translate-x-0.5 transition-transform" />
-                              </button>
+                          {/* Footer */}
+                          <div className="pt-4 border-t border-gray-800/60 flex items-center justify-between mt-auto text-xs text-gray-500">
+                            <div className="flex items-center gap-2">
+                              <Calendar size={14} />
+                              <time dateTime={blog.date}>
+                                {new Date(blog.date).toLocaleDateString('en-US', {
+                                  month: 'long',
+                                  day: 'numeric',
+                                  year: 'numeric',
+                                })}
+                              </time>
+                            </div>
+                            <div className="flex items-center gap-1 group-hover:text-blue-400 transition-colors">
+                              <span>Read Article</span>
+                              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </article>
                     </Link>
                   </motion.div>
                 ))}
               </div>
-
-              {/* Blog count info */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="text-center mt-12 md:mt-16 lg:mt-20"
-              >
-                <div className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 md:px-8 md:py-4 bg-gradient-to-r from-gray-800/60 to-gray-700/60 rounded-xl border border-gray-600/30 backdrop-blur-sm">
-                  <span className="text-gray-300 font-medium text-sm md:text-base">
-                    {blogs.length} Article{blogs.length !== 1 ? 's' : ''} Published
-                  </span>
-                </div>
-              </motion.div>
             </>
           )}
         </div>

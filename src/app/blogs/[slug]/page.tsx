@@ -8,6 +8,7 @@ import { getAllBlogSlugs, getBlogBySlug } from '@/lib/blog';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 import CodeBlock from '@/components/CodeBlock';
+import CopyMarkdownButton from '@/components/CopyMarkdownButton';
 import 'highlight.js/styles/github-dark.css';
 import './blog-content.css';
 
@@ -67,14 +68,17 @@ export default async function BlogPost({ params }: Props) {
 
       <article className="py-8 md:py-16">
         <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
-          {/* Back button */}
-          <Link
-            href="/blogs"
-            className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6 sm:mb-8 group"
-          >
-            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-            <span className="text-sm font-medium">Back to Blogs</span>
-          </Link>
+          {/* Back button and Copy Markdown button */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+            <Link
+              href="/blogs"
+              className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors group"
+            >
+              <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+              <span className="text-sm font-medium">Back to Blogs</span>
+            </Link>
+            <CopyMarkdownButton content={content} frontmatter={frontmatter} />
+          </div>
 
           {/* Cover Image */}
           {frontmatter.imageUrl && (

@@ -1,3 +1,8 @@
+.blog-content {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 .blog-content h2 {
   font-size: 1.5rem;
   font-weight: 700;
@@ -67,34 +72,20 @@
 }
 
 .blog-content pre {
-  position: relative;
-  background: #1e1e2e !important;
+  background: transparent !important;
   padding: 1rem;
-  padding-top: 2.5rem;
-  border-radius: 0.5rem;
-  overflow-x: auto;
-  margin: 1.5rem 0;
-  border: 1px solid #2a2a3e;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  overflow-x: visible;
 }
 
 @media (min-width: 640px) {
   .blog-content pre {
     padding: 1.5rem;
-    padding-top: 3rem;
-    margin: 2rem 0;
+    margin: 0;
   }
-}
-
-.blog-content pre::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
-  border-radius: 0.5rem 0.5rem 0 0;
 }
 
 .blog-content pre code {
@@ -104,16 +95,18 @@
   border: none;
   color: #e5e7eb;
   font-size: 0.8rem;
-  line-height: 1.6;
+  line-height: 1.5;
   font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
   display: block;
   box-shadow: none;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 @media (min-width: 640px) {
   .blog-content pre code {
     font-size: 0.875rem;
-    line-height: 1.8;
+    line-height: 1.5;
   }
 }
 
@@ -125,27 +118,32 @@
 .blog-content pre code .hljs-keyword,
 .blog-content pre code .hljs-selector-tag,
 .blog-content pre code .hljs-literal {
-  color: #c678dd;
+  color: #ff79c6;
 }
 
-.blog-content pre code .hljs-string,
+.blog-content pre code .hljs-string {
+  color: #a6e22e;
+}
+
 .blog-content pre code .hljs-attr {
-  color: #98c379;
+  color: #f8f8f2;
 }
 
 .blog-content pre code .hljs-number,
 .blog-content pre code .hljs-built_in {
-  color: #d19a66;
+  color: #bd93f9;
 }
 
 .blog-content pre code .hljs-function,
 .blog-content pre code .hljs-title {
-  color: #61afef;
+  color: #bd93f9;
 }
 
 .blog-content pre code .hljs-variable,
-.blog-content pre code .hljs-params {
-  color: #e5c07b;
+.blog-content pre code .hljs-params,
+.blog-content pre code .hljs-name,
+.blog-content pre code .hljs-property {
+  color: #f8f8f2;
 }
 
 .blog-content blockquote {
@@ -175,6 +173,8 @@
   border-radius: 0.75rem;
   margin: 2rem 0;
   border: 1px solid rgba(75, 85, 99, 0.3);
+  max-width: 100%;
+  height: auto;
 }
 
 .blog-content hr {
@@ -186,6 +186,9 @@
   width: 100%;
   border-collapse: collapse;
   margin: 2rem 0;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .blog-content table th,

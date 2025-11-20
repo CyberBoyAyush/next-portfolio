@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Check, Copy } from 'lucide-react';
 
 interface CodeBlockProps {
@@ -9,7 +9,21 @@ interface CodeBlockProps {
 
 export default function CodeBlock({ children }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
+  const [language, setLanguage] = useState('');
   const codeRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (codeRef.current) {
+      const codeElement = codeRef.current.querySelector('code');
+      if (codeElement) {
+        const classes = codeElement.className.split(' ');
+        const langClass = classes.find(c => c.startsWith('language-'));
+        if (langClass) {
+          setLanguage(langClass.replace('language-', ''));
+        }
+      }
+    }
+  }, []);
 
   const handleCopy = async () => {
     if (codeRef.current) {
@@ -24,19 +38,24 @@ export default function CodeBlock({ children }: CodeBlockProps) {
   };
 
   return (
-    <div ref={codeRef} className="relative group">
-      <button
-        onClick={handleCopy}
-        className="absolute right-4 top-4 p-1.5 rounded bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all opacity-0 group-hover:opacity-100 z-10"
-        aria-label="Copy code"
-      >
-        {copied ? (
-          <Check size={14} className="text-green-400" />
-        ) : (
-          <Copy size={14} className="text-gray-400 hover:text-white transition-colors" />
-        )}
-      </button>
-      {children}
+    <div ref={codeRef} className="relative group my-6 rounded-lg border border-white/10 bg-[#050505] overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-2 bg-white/5 border-b border-white/5">
+        <span className="text-xs font-medium text-gray-400 uppercase font-mono">{language}</span>
+        <button
+          onClick={handleCopy}
+          className="p-1.5 rounded hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+          aria-label="Copy code"
+        >
+          {copied ? (
+            <Check size={14} className="text-green-400" />
+          ) : (
+            <Copy size={14} className="text-gray-400 hover:text-white transition-colors" />
+          )}
+        </button>
+      </div>
+      <div className="overflow-x-auto">
+        {children}
+      </div>
     </div>
   );
 }
