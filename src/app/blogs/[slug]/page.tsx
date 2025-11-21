@@ -31,16 +31,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const ogImages = blog.frontmatter.imageUrl
-    ? [
-        {
-          url: blog.frontmatter.imageUrl,
-          width: 1408,
-          height: 768,
-          alt: blog.frontmatter.title,
-        },
-      ]
-    : [];
+  let ogImages = [];
+
+  if (blog.frontmatter.imageUrl) {
+    ogImages.push({
+      url: blog.frontmatter.imageUrl,
+      width: 1408,
+      height: 768,
+      alt: blog.frontmatter.title,
+    });
+  }
 
   return {
     title: `${blog.frontmatter.title} | Ayush Sharma`,
@@ -62,8 +62,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image',
       title: blog.frontmatter.title,
       description: blog.frontmatter.description,
-      images: ogImages,
+      images: blog.frontmatter.imageUrl ? [blog.frontmatter.imageUrl] : [],
       creator: '@cyberboyayush',
+    },
+    alternates: {
+      canonical: `/blogs/${slug}`,
     },
   };
 }
