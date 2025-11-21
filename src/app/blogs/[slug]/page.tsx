@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, Clock, Tag, ArrowLeft } from 'lucide-react';
-import { getAllBlogSlugs, getBlogBySlug } from '@/lib/blog';
+import { getAllBlogs, getBlogBySlug } from '@/lib/blog';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 import CodeBlock from '@/components/CodeBlock';
@@ -17,15 +17,15 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  const slugs = getAllBlogSlugs();
-  return slugs.map((slug) => ({ slug }));
+  const blogs = getAllBlogs();
+  return blogs.map((blog) => ({ slug: blog.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const blog = getBlogBySlug(slug);
 
-  if (!blog) {
+  if (!blog || blog.frontmatter.isHidden) {
     return {
       title: 'Blog Not Found',
     };
@@ -51,7 +51,7 @@ export default async function BlogPost({ params }: Props) {
   const { slug } = await params;
   const blog = getBlogBySlug(slug);
 
-  if (!blog) {
+  if (!blog || blog.frontmatter.isHidden) {
     notFound();
   }
 

@@ -36,7 +36,7 @@ export function getAllBlogs(): BlogPost[] {
   const slugs = getAllBlogSlugs();
   const blogs = slugs
     .map((slug) => getBlogBySlug(slug))
-    .filter((blog): blog is BlogPost => blog !== null)
+    .filter((blog): blog is BlogPost => blog !== null && !blog.frontmatter.isHidden)
     .sort((a, b) => {
       const dateA = new Date(a.frontmatter.date).getTime();
       const dateB = new Date(b.frontmatter.date).getTime();

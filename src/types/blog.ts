@@ -6,6 +6,7 @@ export interface BlogFrontmatter {
   tags: string[];
   readingTime: string;
   featured?: boolean;
+  isHidden?: boolean;
   imageUrl?: string;
 }
 
