@@ -26,7 +26,7 @@ const StatCard = ({ src, alt }: { src: string; alt: string }) => {
     <div className="relative w-full min-h-[200px] bg-gray-900/50">
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-gray-500/20 border-t-gray-400 rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-gray-500/20 border-t-gray-400 animate-spin" />
         </div>
       )}
       <Image
@@ -34,9 +34,8 @@ const StatCard = ({ src, alt }: { src: string; alt: string }) => {
         alt={alt}
         width={800}
         height={200}
-        className={`object-contain w-full h-auto rounded-lg transition-opacity duration-300 ${
-          isLoading ? 'opacity-0' : 'opacity-100'
-        }`}
+        className={`object-contain w-full h-auto transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'
+          }`}
         onLoad={() => setIsLoading(false)}
         onError={() => setIsError(true)}
         unoptimized // Add this for dynamic stats images
@@ -53,10 +52,10 @@ const CodingStats = () => {
     <section id="coding-stats" className="py-20 relative overflow-hidden">
       <div className="absolute inset-0 -z-10 bg-[#0D1117]" />
       <div className="absolute inset-0 -z-10 bg-[length:40px_40px] [background-image:linear-gradient(rgba(255,255,255,.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.015)_1px,transparent_1px)]" />
-      
+
       <div className="container mx-auto px-4 max-w-6xl">
         <div ref={statsRef}>
-          <SectionHeading 
+          <SectionHeading
             subtitle="My Progress"
             title="Coding Stats"
             description="A snapshot of my coding journey across different platforms."
@@ -70,7 +69,7 @@ const CodingStats = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="rounded-2xl border border-gray-800 bg-gray-900/50 p-6"
+            className="border border-gray-800 bg-gray-900/50 p-6"
           >
             <h3 className="text-base font-semibold mb-4 text-white flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="18" width="18" className="mr-2 text-gray-500">
@@ -78,9 +77,9 @@ const CodingStats = () => {
               </svg>
               GitHub Stats
             </h3>
-            
+
             <div className="space-y-3">
-              <div className="relative overflow-hidden rounded-xl border border-gray-800/50 bg-gray-900/30">
+              <div className="relative overflow-hidden border border-gray-800/50 bg-gray-900/30">
                 <div className="relative p-2">
                   <StatCard
                     src={`https://github-readme-stats.vercel.app/api?username=${githubUsername}&show_icons=true&hide_border=true&theme=dark&bg_color=0D1117&title_color=FFFFFF&icon_color=FFFFFF&text_color=FFFFFF&include_all_commits=true&hide=issues&count_private=true&hide_rank=true`}
@@ -89,7 +88,7 @@ const CodingStats = () => {
                 </div>
               </div>
 
-              <div className="relative overflow-hidden rounded-xl border border-gray-800/50 bg-gray-900/30">
+              <div className="relative overflow-hidden border border-gray-800/50 bg-gray-900/30">
                 <div className="relative p-2">
                   <StatCard
                     src={`https://github-readme-streak-stats.herokuapp.com/?user=${githubUsername}&theme=dark&hide_border=true&background=0D1117&ring=FFFFFF&fire=FFFFFF&currStreakLabel=FFFFFF`}
@@ -99,13 +98,13 @@ const CodingStats = () => {
               </div>
             </div>
           </motion.div>
-          
+
           {/* LeetCode Stats Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="rounded-2xl border border-gray-800 bg-gray-900/50 p-6"
+            className="border border-gray-800 bg-gray-900/50 p-6"
           >
             <h3 className="text-base font-semibold mb-4 text-white flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" className="mr-2 text-gray-500">
@@ -113,9 +112,9 @@ const CodingStats = () => {
               </svg>
               LeetCode Stats
             </h3>
-            
+
             <div className="space-y-3">
-              <div className="relative overflow-hidden rounded-xl border border-gray-800/50 bg-gray-900/30">
+              <div className="relative overflow-hidden border border-gray-800/50 bg-gray-900/30">
                 <div className="relative p-2">
                   <StatCard
                     src={`https://leetcard.jacoblin.cool/${leetcodeUsername}?theme=dark&font=Nunito&ext=heatmap&animation=false&border=0`}
@@ -128,14 +127,14 @@ const CodingStats = () => {
                 <div className="flex items-center space-x-4 mt-2">
                   <div className="flex-1 flex justify-between items-center">
                     <span>Problem solving</span>
-                    <div className="h-1.5 w-24 bg-gray-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-gray-500 rounded-full w-4/5"></div>
+                    <div className="h-1.5 w-24 bg-gray-800 overflow-hidden">
+                      <div className="h-full bg-gray-500 w-4/5"></div>
                     </div>
                   </div>
                   <div className="flex-1 flex justify-between items-center">
                     <span>Algorithm skills</span>
-                    <div className="h-1.5 w-24 bg-gray-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-gray-500 rounded-full w-3/4"></div>
+                    <div className="h-1.5 w-24 bg-gray-800 overflow-hidden">
+                      <div className="h-full bg-gray-500 w-3/4"></div>
                     </div>
                   </div>
                 </div>

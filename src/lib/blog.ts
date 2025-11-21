@@ -22,9 +22,15 @@ export function getBlogBySlug(slug: string): BlogPost | null {
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
 
+    // Ensure date is a string
+    const frontmatter = {
+      ...data,
+      date: data.date instanceof Date ? data.date.toISOString() : data.date,
+    } as BlogFrontmatter;
+
     return {
       slug,
-      frontmatter: data as BlogFrontmatter,
+      frontmatter,
       content,
     };
   } catch (error) {

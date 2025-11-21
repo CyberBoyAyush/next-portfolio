@@ -92,17 +92,17 @@ const Hero = () => {
     // Use modern event listener with fallback
     const listener = (event: MediaQueryListEvent) =>
       updateCapability(event.matches);
-    
+
     // Safely add listener
     try {
-       mediaQuery.addEventListener("change", listener);
+      mediaQuery.addEventListener("change", listener);
     } catch (e) {
-       // Fallback for older browsers (Safari < 14)
-       try {
-         mediaQuery.addListener(listener);
-       } catch (e2) {
-         console.warn("Media query listener not supported");
-       }
+      // Fallback for older browsers (Safari < 14)
+      try {
+        mediaQuery.addListener(listener);
+      } catch (e2) {
+        console.warn("Media query listener not supported");
+      }
     }
 
     return () => {
@@ -163,9 +163,8 @@ const Hero = () => {
         alt="Ayush Sharma"
         fill
         sizes="(max-width: 768px) 10rem, 12rem"
-        className={`object-cover transition-opacity duration-300 ${
-          imageLoaded ? "opacity-100" : "opacity-0"
-        }`}
+        className={`object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"
+          }`}
         priority
         onLoad={handleImageLoad}
         onError={handleImageError}
@@ -211,11 +210,11 @@ const Hero = () => {
               className="flex justify-center"
             >
               <div className="relative inline-block group" ref={statusBadgeRef}>
-                <div className="w-28 h-28 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full overflow-hidden ring-4 ring-gray-800/50 bg-gray-900 cursor-pointer shadow-2xl shadow-purple-500/10 transition-all duration-500 group-hover:scale-105 group-hover:ring-purple-500/20">
+                <div className="w-28 h-28 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full overflow-hidden ring-4 ring-gray-800/50 bg-gray-900 cursor-pointer shadow-2xl shadow-purple-500/10 transition-all duration-500 group-hover:scale-105 group-hover:ring-4 group-hover:ring-purple-500/30 group-hover:shadow-purple-500/20">
                   {ProfileImage}
                   {!imageLoaded && !imageError && !imageAttempted && (
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-12 h-12 border-2 border-gray-600 border-t-white rounded-full animate-spin"></div>
+                      <div className="w-12 h-12 border-2 border-gray-600 border-t-white animate-spin"></div>
                     </div>
                   )}
                   {(imageError || imageAttempted) && !imageLoaded && (
@@ -231,7 +230,7 @@ const Hero = () => {
                     <button
                       type="button"
                       onClick={handleStatusToggle}
-                      className="relative flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full border-[3px] border-[#0D1117] bg-transparent overflow-visible shadow-[0_0_0_2px_rgba(3,7,18,0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117] transition-transform hover:scale-110"
+                      className="relative flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full border-[3px] border-[#0D1117] bg-[#0D1117] overflow-visible shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117] transition-transform hover:scale-110 active:scale-95"
                       aria-label={
                         isHoverCapable
                           ? "Availability status"
@@ -240,27 +239,35 @@ const Hero = () => {
                       aria-expanded={statusCardVisible}
                     >
                       <span className="sr-only">Availability status</span>
-                      <span className="pointer-events-none absolute -inset-[6px] rounded-full bg-emerald-400/25 blur-[6px] opacity-80 animate-pulse" />
-                      <span className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-400" />
-                      <span className="pointer-events-none absolute inset-[5px] sm:inset-[6px] rounded-full bg-emerald-100/95" />
-                      <span className="relative inline-flex items-center justify-center w-full h-full">
-                        <span className="inline-flex w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-600 shadow-[0_0_12px_rgba(16,185,129,0.75)]" />
+                      {/* Ping animation */}
+                      <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+
+                      {/* Pulse glow */}
+                      <span className="absolute -inset-1 rounded-full bg-emerald-500/20 blur-md animate-pulse" />
+
+                      {/* Main dot */}
+                      <span className="relative inline-flex items-center justify-center w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-[0_0_10px_rgba(16,185,129,0.5)] border border-emerald-300/20">
+                        <span className="absolute inset-0 rounded-full bg-white/20" />
                       </span>
                     </button>
 
                     <div
-                      className={`absolute left-[calc(100%+0.75rem)] sm:left-[calc(100%+0.9rem)] top-1/2 -translate-y-1/2 z-10 rounded-xl transition-all duration-300 ease-out pointer-events-none opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-x-0 group-focus-within:pointer-events-auto ${
-                        statusCardVisible
-                          ? "opacity-100 translate-x-0 pointer-events-auto"
-                          : ""
-                      }`}
+                      className={`absolute left-[calc(100%+0.75rem)] sm:left-[calc(100%+0.9rem)] top-1/2 -translate-y-1/2 z-10 transition-all duration-300 ease-out pointer-events-none opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-x-0 group-focus-within:pointer-events-auto ${statusCardVisible
+                        ? "opacity-100 translate-x-0 pointer-events-auto"
+                        : ""
+                        }`}
                     >
-                      <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 bg-gray-700 border border-gray-700 border-t-transparent border-r-transparent rotate-45" />
-                      <div className="relative bg-gradient-to-r from-gray-800 via-gray-900 to-gray-950 border border-gray-700 rounded-xl md:px-4 md:py-3 px-3 py-2 shadow-[0_12px_32px_rgba(0,0,0,0.6),0_0_16px_rgba(255,255,255,0.08)] backdrop-blur-sm">
-                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/5 via-transparent to-white/10" />
-                        <span className="relative text-xs md:text-sm font-semibold whitespace-nowrap bg-gradient-to-r from-gray-100 via-white to-gray-100 bg-clip-text text-transparent">
-                          Available For Work
-                        </span>
+                      <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 bg-gray-900/95 border-l border-b border-white/10 rotate-45" />
+                      <div className="relative bg-gray-900/95 backdrop-blur-md border border-white/10 rounded-xl px-4 py-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
+                        <div className="flex items-center gap-2">
+                          <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                          </span>
+                          <span className="text-xs sm:text-sm font-medium text-gray-100 whitespace-nowrap">
+                            Available For Work
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -302,26 +309,26 @@ const Hero = () => {
             >
               <p className="text-base sm:text-lg md:text-xl text-gray-300 leading-relaxed">
                 I build{" "}
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-400 rounded-full border border-green-500/20 font-medium text-sm align-middle transition-colors hover:bg-green-500/20">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 font-medium text-sm align-middle transition-colors hover:bg-green-500/20">
                   <TrendingUp size={14} />
                   Scalable
                 </span>
                 , high-performance AI applications and modern web solutions with a focus on exceptional{" "}
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full border border-blue-500/20 font-medium text-sm align-middle transition-colors hover:bg-blue-500/20">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium text-sm align-middle transition-colors hover:bg-blue-500/20">
                   <Sparkles size={14} />
                   User Experience
                 </span>{" "}
                 and robust{" "}
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-500/10 text-purple-400 rounded-full border border-purple-500/20 font-medium text-sm align-middle transition-colors hover:bg-purple-500/20">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 font-medium text-sm align-middle transition-colors hover:bg-purple-500/20">
                   <Network size={14} />
                   System Design
                 </span>
                 .
               </p>
             </motion.div>
-            
+
             {/* Tech Ticker */}
-            <motion.div 
+            <motion.div
               variants={itemVariants}
               className="w-full pt-1"
             >
@@ -335,14 +342,14 @@ const Hero = () => {
             >
               <a
                 href="/Resume.pdf"
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-white text-gray-900 rounded-full font-semibold hover:bg-gray-100 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-white/5 text-sm sm:text-base"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-white text-gray-900 font-semibold hover:bg-gray-100 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-white/5 text-sm sm:text-base"
               >
                 <FileText size={18} className="sm:w-[18px] sm:h-[18px]" />
                 Resume / CV
               </a>
               <a
                 href="#contact"
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-transparent text-white rounded-full font-medium hover:bg-white/5 transition-all border border-white/10 hover:border-white/30 text-sm sm:text-base"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-transparent text-white font-medium hover:bg-white/5 transition-all border border-white/10 hover:border-white/30 text-sm sm:text-base"
               >
                 <Mail size={18} className="sm:w-[18px] sm:h-[18px]" />
                 Get in touch
@@ -351,7 +358,7 @@ const Hero = () => {
                 href="/book"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-orange-500/10 text-orange-400 rounded-full font-medium hover:bg-orange-500/20 transition-all border border-orange-500/20 hover:border-orange-500/40 text-sm sm:text-base"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-orange-500/10 text-orange-400 font-medium hover:bg-orange-500/20 transition-all border border-orange-500/20 hover:border-orange-500/40 text-sm sm:text-base"
               >
                 <Calendar size={18} className="sm:w-[18px] sm:h-[18px]" />
                 Schedule Call

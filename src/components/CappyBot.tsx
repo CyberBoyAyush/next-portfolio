@@ -36,7 +36,7 @@ export default function CappyBot() {
     {
       id: 'welcome',
       role: 'assistant' as const,
-      parts: [{ type: 'text' as const, text:  "Hi! I'm CappyBot, Ayush Sharma's AI portfolio assistant.\n\nAsk me about his experience, skills, or projects.\n\nI can also forward your message directly to Ayush if you share your email and query." }],
+      parts: [{ type: 'text' as const, text: "Hi! I'm CappyBot, Ayush Sharma's AI portfolio assistant.\n\nAsk me about his experience, skills, or projects.\n\nI can also forward your message directly to Ayush if you share your email and query." }],
       createdAt: new Date(),
     }
   ] : messages;
@@ -149,17 +149,16 @@ export default function CappyBot() {
   if (!mounted) return null;
 
   const isMobileViewport = isMobile === true;
-  const chatWindowClassName = `fixed z-[9998] flex flex-col rounded-[32px] border border-white/10 bg-[#050608]/95 shadow-[0_35px_80px_rgba(0,0,0,0.75)] ring-1 ring-white/5 backdrop-blur-2xl transition-all duration-300 ${
-    isMobileViewport
-      ? `${isKeyboardVisible ? 'bottom-2' : 'bottom-20'} left-4 right-4`
-      : 'bottom-32 md:bottom-28 right-4 md:right-10 h-[640px] w-[min(440px,calc(100vw-2rem))]'
-  }`;
+  const chatWindowClassName = `fixed z-[9998] flex flex-col border border-white/10 bg-[#050608]/95 shadow-[0_35px_80px_rgba(0,0,0,0.75)] ring-1 ring-white/5 backdrop-blur-2xl transition-all duration-300 ${isMobileViewport
+    ? `${isKeyboardVisible ? 'bottom-2' : 'bottom-20'} left-4 right-4`
+    : 'bottom-32 md:bottom-28 right-4 md:right-10 h-[640px] w-[min(440px,calc(100vw-2rem))]'
+    }`;
   const chatWindowStyle = isMobileViewport
     ? {
-        height: isKeyboardVisible ? '64dvh' : '82dvh',
-        maxHeight: '680px',
-        minHeight: isKeyboardVisible ? '420px' : '520px',
-      }
+      height: isKeyboardVisible ? '64dvh' : '82dvh',
+      maxHeight: '680px',
+      minHeight: isKeyboardVisible ? '420px' : '520px',
+    }
     : undefined;
   const formPaddingClass = isMobileViewport ? (isKeyboardVisible ? 'py-2.5' : 'py-3.5') : 'py-4';
   const inputShellPadding = isMobileViewport ? (isKeyboardVisible ? 'py-1.5' : 'py-2') : 'py-2.5';
@@ -172,7 +171,7 @@ export default function CappyBot() {
         <div className="flex justify-end">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="pointer-events-auto group flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-[#0A0B12]/90 text-slate-200 shadow-[0_25px_60px_rgba(0,0,0,0.65)] backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-blue-500/60 hover:text-white active:scale-95"
+            className="pointer-events-auto group flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-[#0A0B12]/90 text-slate-200 shadow-[0_25px_60px_rgba(0,0,0,0.65)] backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-blue-500/60 hover:text-white active:scale-95"
             aria-label="Toggle CappyBot"
           >
             {isOpen ? (
@@ -196,14 +195,14 @@ export default function CappyBot() {
             style={chatWindowStyle}
           >
             {/* Header */}
-            <div className="relative flex items-center gap-4 border-b border-white/10 px-6 py-4 rounded-t-[32px] bg-[#0A0B12]">
+            <div className="relative flex items-center gap-4 border-b border-white/10 px-6 py-4 bg-[#0A0B12]">
               <div className="relative h-10 w-10 shrink-0">
                 <Image
                   src={avatarSrc}
                   alt="Ayush Sharma profile thumbnail"
                   fill
                   sizes="40px"
-                  className="rounded-xl border border-white/10 object-cover"
+                  className="rounded-full border border-white/10 object-cover"
                   priority
                 />
                 <span className="absolute -bottom-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 border-[#0A0B12] bg-[#0A0B12]">
@@ -213,7 +212,7 @@ export default function CappyBot() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <p className="text-[14px] font-bold text-white truncate">CappyBot</p>
-                  <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                  <span className="flex items-center gap-1 px-1.5 py-0.5 text-[9px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">
                     <Sparkles size={8} />
                     AI
                   </span>
@@ -223,7 +222,7 @@ export default function CappyBot() {
               <div className="flex items-center gap-1">
                 <button
                   onClick={handleReset}
-                  className="shrink-0 rounded-lg p-2 text-slate-400 transition-all hover:bg-white/5 hover:text-white"
+                  className="shrink-0 p-2 text-slate-400 transition-all hover:bg-white/5 hover:text-white"
                   aria-label="Reset chat"
                   title="Reset Chat"
                 >
@@ -231,7 +230,7 @@ export default function CappyBot() {
                 </button>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="shrink-0 rounded-lg p-2 text-slate-400 transition-all hover:bg-red-500/10 hover:text-red-400"
+                  className="shrink-0 p-2 text-slate-400 transition-all hover:bg-red-500/10 hover:text-red-400"
                   aria-label="Close chat"
                 >
                   <X size={18} />
@@ -256,13 +255,12 @@ export default function CappyBot() {
                   className={`relative flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-2xl px-5 py-4 shadow-sm text-[14.5px] leading-relaxed ${
-                      message.role === 'user'
-                        ? 'bg-[#2A2D36] text-white rounded-br-sm font-medium'
-                        : 'bg-[#0A0B12] border border-white/15 text-slate-200 rounded-bl-sm'
-                    }`}
+                    className={`max-w-[85%] px-5 py-4 shadow-sm text-[14.5px] leading-relaxed ${message.role === 'user'
+                      ? 'bg-[#2A2D36] text-white font-medium'
+                      : 'bg-[#0A0B12] border border-white/15 text-slate-200'
+                      }`}
                   >
-                    <div className="prose prose-invert prose-sm max-w-none prose-p:my-1.5 prose-strong:text-white prose-headings:text-white prose-ul:text-slate-300 prose-ol:text-slate-300 prose-pre:my-3 prose-pre:bg-[#15171F] prose-pre:border prose-pre:border-white/10 prose-pre:rounded-lg">
+                    <div className="prose prose-invert prose-sm max-w-none prose-p:my-1.5 prose-strong:text-white prose-headings:text-white prose-ul:text-slate-300 prose-ol:text-slate-300 prose-pre:my-3 prose-pre:bg-[#15171F] prose-pre:border prose-pre:border-white/10">
                       {message.parts?.map((part, i) => {
                         if (part.type === 'text' && part.text) {
                           return (
@@ -297,16 +295,16 @@ export default function CappyBot() {
               ))}
 
               {isLoading && displayMessages.length > 0 && displayMessages[displayMessages.length - 1].role !== 'assistant' && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="flex justify-start"
                 >
-                  <div className="rounded-2xl rounded-bl-sm bg-[#0A0B12] border border-white/10 px-4 py-3">
+                  <div className="bg-[#0A0B12] border border-white/10 px-4 py-3">
                     <div className="flex items-center gap-1.5">
-                      <div className="h-1.5 w-1.5 animate-bounce rounded-full bg-blue-500 [animation-delay:-0.3s]"></div>
-                      <div className="h-1.5 w-1.5 animate-bounce rounded-full bg-blue-500 [animation-delay:-0.15s]"></div>
-                      <div className="h-1.5 w-1.5 animate-bounce rounded-full bg-blue-500"></div>
+                      <div className="h-1.5 w-1.5 animate-bounce bg-blue-500 [animation-delay:-0.3s]"></div>
+                      <div className="h-1.5 w-1.5 animate-bounce bg-blue-500 [animation-delay:-0.15s]"></div>
+                      <div className="h-1.5 w-1.5 animate-bounce bg-blue-500"></div>
                     </div>
                   </div>
                 </motion.div>
@@ -314,7 +312,7 @@ export default function CappyBot() {
 
               {/* Quick Questions - Grid Layout */}
               {displayMessages.length === 1 && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
@@ -333,9 +331,9 @@ export default function CappyBot() {
                       <button
                         key={idx}
                         onClick={() => handleQuickQuestion(item.text)}
-                        className="group flex items-center gap-3 w-full rounded-xl border border-white/5 bg-[#0A0B12] p-3 text-left transition-all hover:border-blue-500/20 hover:bg-[#0F111A]"
+                        className="group flex items-center gap-3 w-full border border-white/5 bg-[#0A0B12] p-3 text-left transition-all hover:border-blue-500/20 hover:bg-[#0F111A]"
                       >
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/5 text-slate-400 transition-colors group-hover:bg-blue-500/10 group-hover:text-blue-400">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center bg-white/5 text-slate-400 transition-colors group-hover:bg-blue-500/10 group-hover:text-blue-400">
                           <item.icon size={14} />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -353,10 +351,10 @@ export default function CappyBot() {
             </div>
 
             {/* Input */}
-            <div className={`rounded-b-[32px] border-t border-white/10 bg-[#0A0B12] px-5 ${formPaddingClass}`}>
+            <div className={`border-t border-white/10 bg-[#0A0B12] px-5 ${formPaddingClass}`}>
               <form
                 onSubmit={handleSubmit}
-                className={`flex items-center gap-2 rounded-2xl border border-white/10 bg-[#15171F] px-2 py-2 transition-all focus-within:border-blue-500/30 focus-within:bg-[#1A1D26] focus-within:shadow-[0_0_20px_-5px_rgba(59,130,246,0.2)]`}
+                className={`flex items-center gap-2 border border-white/10 bg-[#15171F] px-2 py-2 transition-all focus-within:border-blue-500/30 focus-within:bg-[#1A1D26] focus-within:shadow-[0_0_20px_-5px_rgba(59,130,246,0.2)]`}
               >
                 <input
                   ref={inputRef}
@@ -373,14 +371,14 @@ export default function CappyBot() {
                 <button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-black shadow-lg transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center bg-white text-black shadow-lg transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
                   aria-label="Send message"
                 >
                   <Send size={16} className={input.trim() ? 'ml-0.5' : ''} />
                 </button>
               </form>
               <div className="mt-2 text-center">
-                 <span className="text-[9px] font-medium text-slate-600 tracking-wide">POWERED BY AI · GEMINI 2.5 FLASH</span>
+                <span className="text-[9px] font-medium text-slate-600 tracking-wide">POWERED BY AI · GEMINI 2.5 FLASH</span>
               </div>
             </div>
           </motion.div>

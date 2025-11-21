@@ -11,10 +11,10 @@ const Portfolio = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true });
   const [activeFilter, setActiveFilter] = useState<'All' | 'AI' | 'Others'>('All');
-  
+
   const featuredProjects = getFeaturedProjects();
-  const filteredProjects = activeFilter === 'All' 
-    ? featuredProjects 
+  const filteredProjects = activeFilter === 'All'
+    ? featuredProjects
     : featuredProjects.filter(project => project.category === activeFilter);
 
   const filters = [
@@ -48,19 +48,18 @@ const Portfolio = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="flex justify-center mb-12"
         >
-          <div className="flex p-1 bg-gray-900/60 backdrop-blur-xl border border-gray-800/60 rounded-xl shadow-inner shadow-black/20">
+          <div className="flex p-1 bg-gray-900/60 backdrop-blur-xl border border-gray-800/60 shadow-inner shadow-black/20">
             {filters.map((filter) => (
               <button
                 key={filter.id}
                 onClick={() => setActiveFilter(filter.id as any)}
-                className={`relative px-5 py-2 text-sm font-medium rounded-lg transition-all duration-300 focus:outline-none ${
-                  activeFilter === filter.id ? 'text-white' : 'text-gray-400 hover:text-gray-200'
-                }`}
+                className={`relative px-5 py-2 text-sm font-medium transition-all duration-300 focus:outline-none ${activeFilter === filter.id ? 'text-white' : 'text-gray-400 hover:text-gray-200'
+                  }`}
               >
                 {activeFilter === filter.id && (
                   <motion.div
                     layoutId="activePortfolioFilter"
-                    className="absolute inset-0 bg-gray-800 rounded-lg border border-gray-700 shadow-sm"
+                    className="absolute inset-0 bg-gray-800 border border-gray-700 shadow-sm"
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
@@ -74,7 +73,7 @@ const Portfolio = () => {
         </motion.div>
 
         {/* Grid */}
-        <motion.div 
+        <motion.div
           layout
           className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
         >
@@ -89,11 +88,11 @@ const Portfolio = () => {
                 transition={{ duration: 0.3 }}
               >
                 <ProjectCard
-                  project={{ 
-                    ...project, 
-                    id: String(project.id), 
+                  project={{
+                    ...project,
+                    id: String(project.id),
                     featured: true,
-                    isHackathonProject: project.isHackathonProject 
+                    isHackathonProject: project.isHackathonProject
                   }}
                   index={index}
                   isInView={isInView}
@@ -114,7 +113,7 @@ const Portfolio = () => {
         >
           <Link
             href="/projects"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gray-800/50 text-white rounded-full font-medium hover:bg-gray-800 transition-all border border-gray-700 group hover:scale-105 hover:shadow-lg hover:shadow-blue-500/10"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gray-800/50 text-white font-medium hover:bg-gray-800 transition-all border border-gray-700 group hover:scale-105 hover:shadow-lg hover:shadow-blue-500/10"
           >
             <span>View All Projects</span>
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-blue-400" />

@@ -29,10 +29,10 @@ const Contact = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true });
-  
+
   const [commandHistory, setCommandHistory] = useState<CommandType[]>([
-    { 
-      command: '', 
+    {
+      command: '',
       output: (
         <div className="space-y-2 text-gray-300">
           <p className="text-gray-300 font-semibold">Welcome to Ayush's Terminal Contact!</p>
@@ -47,7 +47,7 @@ const Contact = () => {
       )
     }
   ]);
-  
+
   const [command, setCommand] = useState('');
   const [inputMode, setInputMode] = useState<InputMode>('');
   const [inputPrompt, setInputPrompt] = useState('');
@@ -68,7 +68,7 @@ const Contact = () => {
     message: ''
   });
   const [simpleFormStatus, setSimpleFormStatus] = useState<FormStatus>('idle');
-  
+
   // This will scroll to the bottom of the terminal when new commands are added
   useEffect(() => {
     if (terminalRef.current) {
@@ -87,19 +87,19 @@ const Contact = () => {
   const simulateTyping = (text: string, callback?: () => void) => {
     setIsTyping(true);
     setTypingText('');
-    
+
     let i = 0;
     const interval = setInterval(() => {
       setTypingText(text.substring(0, i + 1));
       i++;
-      
+
       if (i === text.length) {
         clearInterval(interval);
         setIsTyping(false);
         callback?.();
       }
     }, TYPING_DELAY);
-    
+
     return () => clearInterval(interval);
   };
 
@@ -112,7 +112,7 @@ const Contact = () => {
       }
     } else if (e.key === 'Tab') {
       e.preventDefault();
-      
+
       // Simple tab completion
       if (!inputMode) {
         const suggestions = ['name', 'email', 'message', 'send', 'status', 'clear', 'help'];
@@ -128,7 +128,7 @@ const Contact = () => {
         .filter(entry => entry.command)
         .map(entry => entry.command)
         .pop();
-      
+
       if (lastCommand && !inputMode) {
         setCommand(lastCommand);
       }
@@ -137,10 +137,10 @@ const Contact = () => {
 
   const handleInputSubmit = () => {
     if (!command.trim()) return;
-    
+
     // Process the input based on the current mode
     const newCommand: CommandType = { command: command, output: '' };
-    
+
     if (inputMode === 'name') {
       if (command.trim().length < 2) {
         newCommand.output = 'Please enter a valid name (at least 2 characters).';
@@ -175,7 +175,7 @@ const Contact = () => {
         setCurrentStep(Math.max(currentStep, 4));
       }
     }
-    
+
     setCommandHistory(prev => [...prev, newCommand]);
     setCommand('');
   };
@@ -186,7 +186,7 @@ const Contact = () => {
       handleCommand(cmdText);
     });
   };
-  
+
   // Send email function using our API
   const sendEmail = async (data: FormState) => {
     try {
@@ -243,13 +243,13 @@ const Contact = () => {
 
   const handleCommand = (cmdOverride?: string) => {
     if (inputMode || isTyping) return; // Don't process commands while in input mode or typing
-    
+
     const cmdText = cmdOverride || command;
     if (!cmdText.trim()) return;
-    
+
     const newCommand: CommandType = { command: cmdText, output: '' };
     const lowerCommand = cmdText.toLowerCase().trim();
-    
+
     // Process the command
     if (lowerCommand === 'clear') {
       setCommandHistory([]);
@@ -279,7 +279,7 @@ Please fill in all fields before sending.`;
       } else {
         setStatus('submitting');
         newCommand.output = 'Sending your message...';
-        
+
         // Actually send the email with Web3Forms
         sendEmail(formState).then((result) => {
           if (result.success) {
@@ -363,11 +363,11 @@ Please fill in all fields before sending.`;
       newCommand.output = `Command not found: ${cmdText}. Type "help" to see available commands.`;
       newCommand.isError = true;
     }
-    
+
     setCommandHistory(prev => [...prev, newCommand]);
     setCommand('');
   };
-  
+
   // Get next suggested command based on what info is missing
   const getNextSuggestedCommand = () => {
     if (!formState.name) return 'name';
@@ -420,10 +420,10 @@ Please fill in all fields before sending.`;
         time: now.toLocaleTimeString()
       });
     };
-    
+
     updateTime();
     const interval = setInterval(updateTime, 1000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -433,12 +433,12 @@ Please fill in all fields before sending.`;
       <div className="absolute inset-0 -z-10 bg-[#0D1117]">
         <div className="absolute top-1/4 right-1/4 w-1/2 h-1/2 bg-gradient-radial from-gray-800/20 to-transparent opacity-50 blur-[100px]" />
       </div>
-      
+
       {/* Simplified grid background - consistent with Hero */}
       <div className="absolute inset-0 -z-10 bg-[length:40px_40px] md:bg-[length:50px_50px] [background-image:linear-gradient(rgba(255,255,255,.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.01)_1px,transparent_1px)]" />
-      
+
       <div className="container mx-auto px-4 max-w-6xl">
-        <SectionHeading 
+        <SectionHeading
           subtitle="Get In Touch"
           title={isSimpleMode ? "Contact Form" : "Terminal Contact"}
           description={isSimpleMode ? "Send me a message using this simple form" : "Send me a message using simple terminal commands"}
@@ -451,7 +451,7 @@ Please fill in all fields before sending.`;
             onClick={() => setIsSimpleMode(!isSimpleMode)}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="group flex items-center gap-3 px-6 py-3 bg-gray-900/50 hover:bg-gray-800/60 border border-gray-700/50 hover:border-gray-600/50 rounded-xl backdrop-blur-sm transition-all duration-300"
+            className="group flex items-center gap-3 px-6 py-3 bg-gray-900/50 hover:bg-gray-800/60 border border-gray-700/50 hover:border-gray-600/50 backdrop-blur-sm transition-all duration-300"
           >
             {isSimpleMode ? (
               <>
@@ -481,7 +481,7 @@ Please fill in all fields before sending.`;
               transition={{ duration: 0.5 }}
               className="md:col-span-2"
             >
-              <div className="bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800/50 shadow-xl overflow-hidden">
+              <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 shadow-xl overflow-hidden">
                 {/* Simple Header */}
                 <div className="bg-gray-800/60 p-4 border-b border-gray-700/50">
                   <h3 className="text-lg font-semibold text-white flex items-center gap-2">
@@ -502,7 +502,7 @@ Please fill in all fields before sending.`;
                       value={simpleForm.name}
                       onChange={(e) => setSimpleForm(prev => ({ ...prev, name: e.target.value }))}
                       placeholder="Your full name"
-                      className="w-full px-3 py-2 bg-gray-800/50 border border-gray-700/50 rounded text-white placeholder-gray-500 focus:outline-none focus:border-gray-600/50 transition-colors duration-200"
+                      className="w-full px-3 py-2 bg-gray-800/50 border border-gray-700/50 text-white placeholder-gray-500 focus:outline-none focus:border-gray-600/50 transition-colors duration-200"
                       required
                     />
                   </div>
@@ -518,7 +518,7 @@ Please fill in all fields before sending.`;
                       value={simpleForm.email}
                       onChange={(e) => setSimpleForm(prev => ({ ...prev, email: e.target.value }))}
                       placeholder="your.email@example.com"
-                      className="w-full px-3 py-2 bg-gray-800/50 border border-gray-700/50 rounded text-white placeholder-gray-500 focus:outline-none focus:border-gray-600/50 transition-colors duration-200"
+                      className="w-full px-3 py-2 bg-gray-800/50 border border-gray-700/50 text-white placeholder-gray-500 focus:outline-none focus:border-gray-600/50 transition-colors duration-200"
                       required
                     />
                   </div>
@@ -534,7 +534,7 @@ Please fill in all fields before sending.`;
                       onChange={(e) => setSimpleForm(prev => ({ ...prev, message: e.target.value }))}
                       placeholder="Your message..."
                       rows={4}
-                      className="w-full px-3 py-2 bg-gray-800/50 border border-gray-700/50 rounded text-white placeholder-gray-500 focus:outline-none focus:border-gray-600/50 transition-colors duration-200 resize-none"
+                      className="w-full px-3 py-2 bg-gray-800/50 border border-gray-700/50 text-white placeholder-gray-500 focus:outline-none focus:border-gray-600/50 transition-colors duration-200 resize-none"
                       required
                     />
                   </div>
@@ -545,11 +545,11 @@ Please fill in all fields before sending.`;
                     disabled={simpleFormStatus === 'submitting'}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
-                    className="w-full py-3 px-4 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 text-white font-medium rounded transition-colors duration-200 flex items-center justify-center gap-2 disabled:cursor-not-allowed"
+                    className="w-full py-3 px-4 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 text-white font-medium transition-colors duration-200 flex items-center justify-center gap-2 disabled:cursor-not-allowed"
                   >
                     {simpleFormStatus === 'submitting' ? (
                       <>
-                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white animate-spin" />
                         Sending...
                       </>
                     ) : (
@@ -565,7 +565,7 @@ Please fill in all fields before sending.`;
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="p-3 bg-gray-800/50 border border-gray-700/50 rounded text-gray-300 text-sm text-center"
+                      className="p-3 bg-gray-800/50 border border-gray-700/50 text-gray-300 text-sm text-center"
                     >
                       ✓ Message sent successfully! I'll get back to you soon.
                     </motion.div>
@@ -575,7 +575,7 @@ Please fill in all fields before sending.`;
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="p-3 bg-gray-800/50 border border-gray-700/50 rounded text-gray-300 text-sm text-center"
+                      className="p-3 bg-gray-800/50 border border-gray-700/50 text-gray-300 text-sm text-center"
                     >
                       ✗ Failed to send message. Please try again.
                     </motion.div>
@@ -591,13 +591,13 @@ Please fill in all fields before sending.`;
               transition={{ duration: 0.5 }}
               className="md:col-span-2"
             >
-              <div className="bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800/50 shadow-xl overflow-hidden">
+              <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 shadow-xl overflow-hidden">
                 {/* Terminal header */}
                 <div className="bg-gray-800/60 p-3 flex items-center justify-between">
                   <div className="flex space-x-2 mr-4">
-                    <div className="w-3 h-3 rounded-full bg-red-500 group-hover:cursor-not-allowed"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <div className="w-3 h-3 bg-red-500 group-hover:cursor-not-allowed"></div>
+                    <div className="w-3 h-3 bg-yellow-500"></div>
+                    <div className="w-3 h-3 bg-green-500"></div>
                   </div>
                   <div className="flex-1 text-center text-gray-400 text-sm font-mono">Terminal — contact.sh</div>
                   <div className="text-green-400 text-sm font-mono">
@@ -605,9 +605,9 @@ Please fill in all fields before sending.`;
                   </div>
                   <Terminal size={18} className="text-gray-400" />
                 </div>
-                
+
                 {/* Terminal body */}
-                <div 
+                <div
                   ref={terminalRef}
                   className="p-4 h-[450px] overflow-y-auto font-mono text-sm bg-gray-900/80"
                   onClick={focusInput}
@@ -618,7 +618,7 @@ Please fill in all fields before sending.`;
                   <div className="text-gray-300 mb-4 border-b border-gray-800 pb-2">
                     <span className="text-green-500 font-bold">Portfolio Terminal</span> v1.0.0 - Type <span className="text-yellow-400">help</span> for available commands
                   </div>
-                  
+
                   {/* Command history */}
                   {commandHistory.map((entry, index) => (
                     <div key={index} className="mb-4 terminal-fade-in">
@@ -633,7 +633,7 @@ Please fill in all fields before sending.`;
                       </div>
                     </div>
                   ))}
-                  
+
                   {/* Typing animation */}
                   {isTyping && (
                     <div className="flex items-start mb-4">
@@ -644,7 +644,7 @@ Please fill in all fields before sending.`;
                       </div>
                     </div>
                   )}
-                  
+
                   {/* Current command line */}
                   {!isTyping && (
                     <div className="flex items-center relative">
@@ -663,9 +663,9 @@ Please fill in all fields before sending.`;
                           disabled={status === 'submitting' || isTyping}
                         />
                         {/* Blinking cursor - positioned absolutely with dynamic width calculation */}
-                        <span 
+                        <span
                           className="cursor-blink absolute top-0 left-0 h-full pointer-events-none"
-                          style={{ 
+                          style={{
                             transform: `translateX(${command.length * 0.54}rem)`,
                             marginLeft: command.length > 10 ? `-${Math.floor(command.length / 20) * 0.08}rem` : '0'
                           }}
@@ -677,14 +677,14 @@ Please fill in all fields before sending.`;
                   )}
                 </div>
               </div>
-              
+
               {/* Command suggestions and progress - simplified styling */}
               <div className="mt-4 space-y-4">
                 {/* Progress indicator */}
                 <div className="flex items-center justify-between">
                   <div className="flex-1 relative mt-6 mb-2">
-                    <div className="h-2 bg-gray-800/50 rounded-full overflow-hidden">
-                      <div 
+                    <div className="h-2 bg-gray-800/50 overflow-hidden">
+                      <div
                         className="h-full bg-gradient-to-r from-gray-500 to-gray-400 transition-all duration-500 ease-out absolute left-0 top-0"
                         style={{ width: `${Math.min(100, (currentStep - 1) * 33.33)}%` }}
                       ></div>
@@ -697,72 +697,72 @@ Please fill in all fields before sending.`;
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Suggested commands - simplified styling */}
                 {!inputMode && status === 'idle' && !isTyping && (
-                  <div className="flex flex-wrap gap-2 mt-2 bg-gray-900/30 p-3 rounded-lg border border-gray-800/50">
+                  <div className="flex flex-wrap gap-2 mt-2 bg-gray-900/30 p-3 border border-gray-800/50">
                     <div className="w-full text-xs text-gray-500 mb-2">Available commands:</div>
                     {!formState.name && (
-                      <motion.button 
+                      <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => executeCommand('name')}
-                        className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
+                        className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
                       >
                         <span className="text-gray-400">$</span> name
                       </motion.button>
                     )}
                     {!formState.email && (
-                      <motion.button 
+                      <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => executeCommand('email')}
-                        className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
+                        className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
                       >
                         <span className="text-gray-400">$</span> email
                       </motion.button>
                     )}
                     {!formState.message && (
-                      <motion.button 
+                      <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => executeCommand('message')}
-                        className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
+                        className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
                       >
                         <span className="text-gray-400">$</span> message
                       </motion.button>
                     )}
                     {formState.name && formState.email && formState.message && (
-                      <motion.button 
+                      <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => executeCommand('send')}
-                        className="px-3 py-1.5 bg-gray-700/50 hover:bg-gray-600/80 text-white text-xs rounded-md border border-gray-600/50 transition-colors duration-200 flex items-center gap-1"
+                        className="px-3 py-1.5 bg-gray-700/50 hover:bg-gray-600/80 text-white text-xs border border-gray-600/50 transition-colors duration-200 flex items-center gap-1"
                       >
                         <span className="text-green-400">$</span> send
                       </motion.button>
                     )}
-                    <motion.button 
+                    <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => executeCommand('status')}
-                      className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
+                      className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
                     >
                       <span className="text-gray-400">$</span> status
                     </motion.button>
-                    <motion.button 
+                    <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => executeCommand('help')}
-                      className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
+                      className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
                     >
                       <span className="text-gray-400">$</span> help
                     </motion.button>
-                    <motion.button 
+                    <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => executeCommand('clear')}
-                      className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs rounded-md border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
+                      className="px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 text-xs border border-gray-700/50 transition-colors duration-200 flex items-center gap-1"
                     >
                       <span className="text-gray-400">$</span> clear
                     </motion.button>
@@ -788,8 +788,8 @@ Please fill in all fields before sending.`;
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-center space-x-3 p-4 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-800">
-                  <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center border border-gray-700">
+                <div className="flex items-center space-x-3 p-4 bg-gray-900/50 backdrop-blur-sm border border-gray-800">
+                  <div className="w-10 h-10 bg-gray-800 flex items-center justify-center border border-gray-700">
                     <Mail className="h-5 w-5 text-blue-400" />
                   </div>
                   <div>
@@ -798,8 +798,8 @@ Please fill in all fields before sending.`;
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-3 p-4 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-800">
-                  <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center border border-gray-700">
+                <div className="flex items-center space-x-3 p-4 bg-gray-900/50 backdrop-blur-sm border border-gray-800">
+                  <div className="w-10 h-10 bg-gray-800 flex items-center justify-center border border-gray-700">
                     <Phone className="h-5 w-5 text-green-400" />
                   </div>
                   <div>
@@ -812,9 +812,9 @@ Please fill in all fields before sending.`;
                   href="/book"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center space-x-3 p-4 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:border-gray-700 transition-colors cursor-pointer"
+                  className="flex items-center space-x-3 p-4 bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:border-gray-700 transition-colors cursor-pointer"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center border border-gray-700">
+                  <div className="w-10 h-10 bg-gray-800 flex items-center justify-center border border-gray-700">
                     <Calendar className="h-5 w-5 text-orange-400" />
                   </div>
                   <div>
@@ -828,7 +828,7 @@ Please fill in all fields before sending.`;
             {/* Terminal Pro Tips */}
             {!isSimpleMode && (
               <div className="mt-10">
-                <div className="bg-gray-900/50 backdrop-blur-sm p-5 rounded-xl border border-gray-800">
+                <div className="bg-gray-900/50 backdrop-blur-sm p-5 border border-gray-800">
                   <h3 className="text-base font-semibold text-white mb-4">Terminal Pro Tips</h3>
                   <div className="space-y-2.5 text-sm text-gray-400">
                     <div className="flex items-start gap-2">
@@ -844,12 +844,12 @@ Please fill in all fields before sending.`;
                       <p>You can also click the command buttons below the terminal</p>
                     </div>
                   </div>
-                  
+
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => executeCommand(getNextSuggestedCommand())}
-                    className="mt-4 w-full py-2.5 px-4 bg-white text-gray-900 hover:bg-gray-100 rounded-lg text-sm font-medium flex items-center justify-center transition-colors"
+                    className="mt-4 w-full py-2.5 px-4 bg-white text-gray-900 hover:bg-gray-100 text-sm font-medium flex items-center justify-center transition-colors"
                   >
                     Next step: {getNextSuggestedCommand()} <ArrowRight size={14} className="ml-2" />
                   </motion.button>

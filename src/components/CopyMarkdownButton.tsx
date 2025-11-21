@@ -42,7 +42,7 @@ ${content}`;
   return (
     <button
       onClick={handleCopy}
-      className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-white text-sm font-medium rounded-lg border border-white/10 hover:border-white/20 transition-all group"
+      className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-white text-sm font-medium border border-white/10 hover:border-white/20 transition-all group"
       title="Copy page as markdown to ask AI about it"
     >
       {copied ? (

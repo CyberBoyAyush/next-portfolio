@@ -13,7 +13,7 @@ const XIcon = ({ size = 18, className = "" }) => (
     fill="currentColor"
     className={className}
   >
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
   </svg>
 );
 
@@ -32,9 +32,9 @@ const Navbar = () => {
         className="hidden md:block fixed top-4 left-0 right-0 z-50"
       >
         <div className="container mx-auto px-6">
-          <motion.div 
-            className="flex items-center justify-between bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl px-6 py-3 shadow-2xl shadow-black/20 max-w-4xl mx-auto"
-            whileHover={{ 
+          <motion.div
+            className="mx-auto flex h-16 max-w-5xl items-center justify-between bg-[#0a0a0a]/80 px-6 shadow-lg shadow-black/20 backdrop-blur-xl border border-white/5"
+            whileHover={{
               borderColor: 'rgba(255, 255, 255, 0.15)',
               backgroundColor: 'rgba(0, 0, 0, 0.5)'
             }}
@@ -42,14 +42,14 @@ const Navbar = () => {
           >
             {/* Logo/Name */}
             <Link href="/" className="group relative flex items-center gap-3 font-bold text-white">
-              <motion.div 
-                className="relative p-2 rounded-lg bg-white/5 border border-white/10 group-hover:border-white/20 transition-all duration-300"
+              <motion.div
+                className="relative p-2 bg-white/5 border border-white/10 group-hover:border-white/20 transition-all duration-300"
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
               >
                 <Code2 size={20} className="text-gray-300 group-hover:text-white transition-colors" />
               </motion.div>
-              
+
               <div className="relative">
                 <span className="text-lg font-semibold text-gray-200 group-hover:text-white transition-colors duration-300">
                   Ayush Sharma
@@ -61,15 +61,15 @@ const Navbar = () => {
             <nav className="flex items-center space-x-1">
               <Link
                 href="/"
-                className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-white transition-all duration-300 rounded-lg hover:bg-white/5 group"
+                className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/5 group"
               >
                 <Home size={16} className="group-hover:scale-105 transition-transform" />
                 <span className="font-medium text-sm">Home</span>
               </Link>
-              
+
               <Link
                 href="/projects"
-                className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-white transition-all duration-300 rounded-lg hover:bg-white/5 group"
+                className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/5 group"
               >
                 <FolderOpen size={16} className="group-hover:scale-105 transition-transform" />
                 <span className="font-medium text-sm">Projects</span>
@@ -77,19 +77,19 @@ const Navbar = () => {
 
               <Link
                 href="/blogs"
-                className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-white transition-all duration-300 rounded-lg hover:bg-white/5 group"
+                className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/5 group"
               >
                 <BookOpen size={16} className="group-hover:scale-105 transition-transform" />
                 <span className="font-medium text-sm">Blogs</span>
               </Link>
 
               <div className="w-px h-6 bg-white/10 mx-2" />
-              
+
               <motion.a
                 href="https://github.com/cyberboyayush"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 px-3 py-2 text-gray-400 hover:text-white transition-all duration-300 rounded-lg hover:bg-white/5 group"
+                className="flex items-center gap-1 px-3 py-2 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/5 group"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 aria-label="GitHub"
@@ -97,12 +97,12 @@ const Navbar = () => {
                 <Github size={16} className="group-hover:scale-105 transition-transform" />
                 <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
               </motion.a>
-              
+
               <motion.a
                 href="https://x.com/cyberboyayush"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 px-3 py-2 text-gray-400 hover:text-white transition-all duration-300 rounded-lg hover:bg-white/5 group"
+                className="flex items-center gap-1 px-3 py-2 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/5 group"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 aria-label="X (Twitter)"
@@ -123,28 +123,28 @@ const Navbar = () => {
         transition={{ duration: 0.6 }}
         className="md:hidden fixed top-4 left-0 right-0 z-50 px-4"
       >
-        <motion.div 
-          className="bg-[#0D1117]/80 backdrop-blur-xl border border-gray-800 rounded-2xl px-3 py-2 shadow-lg"
-          whileHover={{ 
+        <motion.div
+          className="bg-[#0D1117]/80 backdrop-blur-xl border border-gray-800 px-3 py-2 shadow-lg"
+          whileHover={{
             borderColor: 'rgba(107, 114, 128, 0.5)',
             backgroundColor: 'rgba(13, 17, 23, 0.9)',
           }}
           transition={{ duration: 0.3 }}
         >
           <Link href="/" className="group flex items-center justify-center">
-            <motion.div 
+            <motion.div
               className="flex items-center gap-2"
               whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
-              <motion.div 
-                className="p-1.5 bg-white/5 rounded-lg border border-white/10 group-hover:border-white/20 transition-all duration-300"
+              <motion.div
+                className="p-1.5 bg-white/5 border border-white/10 group-hover:border-white/20 transition-all duration-300"
                 whileHover={{ rotate: 3 }}
                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
               >
                 <Code2 size={16} className="text-gray-300 group-hover:text-white transition-colors" />
               </motion.div>
-              
+
               <span className="text-base font-semibold text-gray-200 group-hover:text-white transition-colors duration-300">
                 Ayush Sharma
               </span>
@@ -160,7 +160,7 @@ const Navbar = () => {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="md:hidden fixed bottom-2 left-2 right-2 z-50"
       >
-        <div className="bg-black/40 backdrop-blur-3xl border border-white/15 rounded-2xl px-1 py-1 shadow-xl shadow-black/30">
+        <div className="bg-black/40 backdrop-blur-3xl border border-white/15 px-1 py-1 shadow-xl shadow-black/30">
           <div className="flex items-center justify-between">
             {/* Home */}
             <motion.div
@@ -170,16 +170,16 @@ const Navbar = () => {
             >
               <Link
                 href="/"
-                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 rounded-xl hover:bg-white/10 group"
+                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/10 group"
               >
                 <div className="relative">
-                  <div className="absolute inset-0 bg-white/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <Home size={18} className="relative group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <span className="text-xs mt-1 font-medium">Home</span>
               </Link>
             </motion.div>
-            
+
             {/* Projects */}
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -188,10 +188,10 @@ const Navbar = () => {
             >
               <Link
                 href="/projects"
-                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 rounded-xl hover:bg-white/10 group"
+                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/10 group"
               >
                 <div className="relative">
-                  <div className="absolute inset-0 bg-white/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <FolderOpen size={18} className="relative group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <span className="text-xs mt-1 font-medium">Projects</span>
@@ -206,10 +206,10 @@ const Navbar = () => {
             >
               <Link
                 href="/blogs"
-                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 rounded-xl hover:bg-white/10 group"
+                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/10 group"
               >
                 <div className="relative">
-                  <div className="absolute inset-0 bg-white/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <BookOpen size={18} className="relative group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <span className="text-xs mt-1 font-medium">Blogs</span>
@@ -218,7 +218,7 @@ const Navbar = () => {
 
             {/* Divider */}
             <div className="h-6 w-px bg-white/10 mx-0.5" />
-            
+
             {/* GitHub */}
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -229,17 +229,17 @@ const Navbar = () => {
                 href="https://github.com/cyberboyayush"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 rounded-xl hover:bg-white/10 group"
+                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/10 group"
                 aria-label="GitHub"
               >
                 <div className="relative">
-                  <div className="absolute inset-0 bg-white/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <Github size={18} className="relative group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <span className="text-xs mt-1 font-medium">GitHub</span>
               </a>
             </motion.div>
-            
+
             {/* X (Twitter) */}
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -250,11 +250,11 @@ const Navbar = () => {
                 href="https://x.com/cyberboyayush"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 rounded-xl hover:bg-white/10 group"
+                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/10 group"
                 aria-label="X (Twitter)"
               >
                 <div className="relative">
-                  <div className="absolute inset-0 bg-white/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <XIcon size={18} className="relative group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <span className="text-xs mt-1 font-medium">X</span>

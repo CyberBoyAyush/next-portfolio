@@ -10,10 +10,10 @@ const Projects = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true });
   const [activeFilter, setActiveFilter] = useState<'All' | 'AI' | 'Others'>('All');
-  
+
   const allProjects = getAllProjects();
-  const filteredProjects = activeFilter === 'All' 
-    ? allProjects 
+  const filteredProjects = activeFilter === 'All'
+    ? allProjects
     : allProjects.filter(project => project.category === activeFilter);
 
   const filters = [
@@ -50,19 +50,18 @@ const Projects = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="flex justify-center mb-12"
         >
-          <div className="flex p-1.5 bg-gray-900/60 backdrop-blur-xl border border-gray-800/60 rounded-2xl shadow-inner shadow-black/20">
+          <div className="flex p-1.5 bg-gray-900/60 backdrop-blur-xl border border-gray-800/60 shadow-inner shadow-black/20">
             {filters.map((filter) => (
               <button
                 key={filter.id}
                 onClick={() => setActiveFilter(filter.id as any)}
-                className={`relative px-4 py-2.5 sm:px-6 text-sm font-medium rounded-xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
-                  activeFilter === filter.id ? 'text-white' : 'text-gray-400 hover:text-gray-200'
-                }`}
+                className={`relative px-4 py-2.5 sm:px-6 text-sm font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${activeFilter === filter.id ? 'text-white' : 'text-gray-400 hover:text-gray-200'
+                  }`}
               >
                 {activeFilter === filter.id && (
                   <motion.div
                     layoutId="activeFilter"
-                    className="absolute inset-0 bg-gray-800 rounded-xl border border-gray-700 shadow-sm"
+                    className="absolute inset-0 bg-gray-800 border border-gray-700 shadow-sm"
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
@@ -77,7 +76,7 @@ const Projects = () => {
         </motion.div>
 
         {/* Projects Grid */}
-        <motion.div 
+        <motion.div
           layout
           className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8"
         >

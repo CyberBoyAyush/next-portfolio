@@ -38,12 +38,12 @@ export default function CodeBlock({ children }: CodeBlockProps) {
   };
 
   return (
-    <div ref={codeRef} className="relative group my-6 rounded-lg border border-white/10 bg-[#050505] overflow-hidden">
+    <div ref={codeRef} className="relative group my-6 border border-white/10 bg-[#050505] overflow-hidden">
       <div className="flex items-center justify-between px-4 py-2 bg-white/5 border-b border-white/5">
         <span className="text-xs font-medium text-gray-400 uppercase font-mono">{language}</span>
         <button
           onClick={handleCopy}
-          className="p-1.5 rounded hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+          className="p-1.5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
           aria-label="Copy code"
         >
           {copied ? (

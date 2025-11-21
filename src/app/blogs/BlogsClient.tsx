@@ -52,8 +52,8 @@ export default function BlogsClient({ blogs }: BlogsClientProps) {
               description="Exploring the world of web development, AI, and modern technology"
               className="mb-6"
             />
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-gray-400 backdrop-blur-sm">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"/>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 border border-white/10 text-sm text-gray-400 backdrop-blur-sm">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               {blogs.length} Articles Published
             </div>
           </div>
@@ -74,7 +74,7 @@ export default function BlogsClient({ blogs }: BlogsClientProps) {
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
                     <Link href={`/blogs/${blog.slug}`} className="block h-full group">
-                      <article className="flex flex-col h-full bg-[#161b22] border border-gray-800/60 rounded-2xl overflow-hidden hover:border-gray-700 transition-all duration-300 hover:shadow-xl hover:shadow-black/20">
+                      <article className="flex flex-col h-full bg-[#161b22] border border-gray-800/60 overflow-hidden hover:border-gray-700 transition-all duration-300 hover:shadow-xl hover:shadow-black/20">
                         {/* Blog Image */}
                         <div className="relative aspect-video overflow-hidden bg-gray-900">
                           {blog.imageUrl ? (
@@ -109,7 +109,7 @@ export default function BlogsClient({ blogs }: BlogsClientProps) {
                             {blog.tags.slice(0, 3).map((tag, idx) => (
                               <span
                                 key={idx}
-                                className="px-2.5 py-1 bg-[#21262d] text-gray-400 text-xs font-medium rounded-full border border-gray-700/50"
+                                className="px-2.5 py-1 bg-[#21262d] text-gray-400 text-xs font-medium border border-gray-700/50"
                               >
                                 {tag}
                               </span>
