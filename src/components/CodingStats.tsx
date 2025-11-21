@@ -48,14 +48,16 @@ const BentoGridItem = ({
 }) => {
   return (
     <motion.div
-      whileHover={{ y: -5, scale: 1.01 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      whileHover={{ y: -2 }}
       className={cn(
-        "row-span-1 rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-none p-4 bg-gray-900/40 backdrop-blur-sm border border-gray-800/60 justify-between flex flex-col space-y-4 hover:border-blue-500/30 relative overflow-hidden",
+        "row-span-1 rounded-xl group/bento hover:shadow-2xl hover:shadow-blue-900/20 transition duration-200 shadow-input dark:shadow-none p-4 bg-gray-900/40 backdrop-blur-sm border border-white/5 hover:border-blue-500/50 justify-between flex flex-col space-y-4 relative overflow-hidden",
         className
       )}
     >
        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-transparent opacity-0 group-hover/bento:opacity-100 transition-opacity duration-500" />
+       
+       {/* Subtle Shine Effect */}
+       <div className="absolute inset-0 -translate-x-full group-hover/bento:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/5 to-transparent z-10 pointer-events-none" />
       
       {(icon || title || description) && (
         <div className="group-hover/bento:translate-x-2 transition duration-200">
@@ -76,7 +78,7 @@ const BentoGridItem = ({
           </div>
         </div>
       )}
-      <div className="w-full h-full flex items-center justify-center">
+      <div className="w-full h-full flex items-center justify-center relative z-0">
         {header}
       </div>
     </motion.div>
@@ -110,7 +112,7 @@ const StatCard = ({ src, alt, className }: { src: string; alt: string, className
         width={800}
         height={400}
         className={cn(
-          "object-contain w-full h-auto transition-all duration-500 hover:scale-[1.02]",
+          "object-contain w-full h-auto transition-all duration-500 group-hover/bento:scale-[1.03] group-hover/bento:drop-shadow-2xl",
           isLoading ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
         )}
         onLoad={() => setIsLoading(false)}
