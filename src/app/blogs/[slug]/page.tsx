@@ -31,6 +31,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  const ogImages = blog.frontmatter.imageUrl
+    ? [
+        {
+          url: blog.frontmatter.imageUrl,
+          width: 1408,
+          height: 768,
+          alt: blog.frontmatter.title,
+        },
+      ]
+    : [];
+
   return {
     title: `${blog.frontmatter.title} | Ayush Sharma`,
     description: blog.frontmatter.description,
@@ -43,6 +54,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       publishedTime: blog.frontmatter.date,
       authors: [blog.frontmatter.author],
       tags: blog.frontmatter.tags,
+      images: ogImages,
+      url: `/blogs/${slug}`,
+      siteName: 'Ayush Sharma',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: blog.frontmatter.title,
+      description: blog.frontmatter.description,
+      images: ogImages,
+      creator: '@cyberboyayush',
     },
   };
 }
@@ -64,7 +85,7 @@ export default async function BlogPost({ params }: Props) {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1/2 bg-gradient-radial from-blue-800/10 to-transparent opacity-50 blur-[120px]" />
       </div>
 
-      <div className="absolute inset-0 -z-10 bg-[length:30px_30px] md:bg-[length:40px_40px] [background-image:linear-gradient(rgba(255,255,255,.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.01)_1px,transparent_1px)]"></div>
+      <div className="absolute inset-0 -z-10 bg-size-[30px_30px] md:bg-size-[40px_40px] bg-[linear-gradient(rgba(255,255,255,.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.01)_1px,transparent_1px)]"></div>
 
       <article className="py-8 md:py-16">
         <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
@@ -82,7 +103,7 @@ export default async function BlogPost({ params }: Props) {
 
           {/* Cover Image */}
           {frontmatter.imageUrl && (
-            <div className="relative w-full aspect-[1408/768] rounded-xl sm:rounded-2xl overflow-hidden mb-8 sm:mb-10 md:mb-12 border border-gray-800">
+            <div className="relative w-full aspect-1408/768 rounded-xl sm:rounded-2xl overflow-hidden mb-8 sm:mb-10 md:mb-12 border border-gray-800">
               <Image
                 src={frontmatter.imageUrl}
                 alt={frontmatter.title}
