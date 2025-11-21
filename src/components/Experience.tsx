@@ -52,13 +52,13 @@ const Experience = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="group"
             >
-              {/* Glass Card - Merged with BG */}
-              <div className="relative p-5 sm:p-8 rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-sm transition-all duration-300 hover:bg-white/[0.04] hover:border-white/10">
+              {/* Glass Card - Sharper corners, compact padding */}
+              <div className="relative p-5 sm:p-6 rounded-lg border border-white/10 bg-[#161b22] transition-all duration-300 hover:border-white/20 hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-1">
                 
                 {/* Header - Company and Date */}
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
                   <div className="flex items-center sm:items-start gap-4">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0 border border-white/10 overflow-hidden p-2">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-md bg-white/5 flex items-center justify-center flex-shrink-0 border border-white/10 overflow-hidden p-2">
                       {experience.logo ? (
                         <Image
                           src={experience.logo}
@@ -73,27 +73,60 @@ const Experience = () => {
                     </div>
                     <div className="flex-1">
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-1">
-                        <h3 className="text-lg sm:text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
+                        <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
                           {experience.company}
                         </h3>
                         {experience.current && (
-                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-[10px] sm:text-xs font-medium rounded-full border border-emerald-500/20">
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-[10px] sm:text-xs font-medium rounded border border-emerald-500/20">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                             Current
                           </span>
                         )}
                       </div>
-                      <p className="text-base sm:text-lg text-gray-300 font-medium">
-                        {experience.position}
-                      </p>
+                      {experience.roles ? (
+                        <div className="mt-6 relative ml-2">
+                          {/* Vertical Line */}
+                          <div className="absolute left-0 top-2 bottom-2 w-px bg-white/10" />
+                          
+                          <div className="space-y-8">
+                            {experience.roles.map((role, roleIndex) => (
+                              <div key={roleIndex} className="relative pl-8 group/role">
+                                {/* Timeline Dot */}
+                                <div className={`absolute -left-[4.5px] top-1.5 w-2.5 h-2.5 rounded-full border-2 transition-all duration-300 z-10 ${
+                                  roleIndex === 0 
+                                    ? 'bg-blue-500 border-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)] scale-110' 
+                                    : 'bg-[#161b22] border-gray-600 group-hover/role:border-gray-400 group-hover/role:scale-110'
+                                }`} />
+                                
+                                <div className="flex flex-col gap-1.5">
+                                  <h4 className={`text-base sm:text-lg font-bold leading-tight transition-colors duration-300 ${
+                                    roleIndex === 0 ? 'text-white' : 'text-gray-300 group-hover/role:text-white'
+                                  }`}>
+                                    {role.title}
+                                  </h4>
+                                  <div className="flex items-center gap-2 text-sm text-gray-500 font-medium">
+                                    <span className="text-gray-400 transition-colors group-hover/role:text-gray-300">{role.type}</span>
+                                    <span className="w-1 h-1 rounded-full bg-gray-700" />
+                                    <span className="font-mono text-xs tracking-wide">{role.duration}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-base sm:text-lg text-gray-300 font-medium mt-1">
+                          {experience.position}
+                        </p>
+                      )}
                     </div>
                   </div>
-                  <div className="self-start sm:self-auto text-xs sm:text-sm text-gray-400 font-medium bg-white/5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full border border-white/10 whitespace-nowrap ml-[64px] sm:ml-0 mt-[-10px] sm:mt-0">
+                  <div className="self-start sm:self-auto text-xs sm:text-sm text-gray-400 font-medium bg-white/5 px-3 py-1 rounded border border-white/10 whitespace-nowrap ml-16 sm:ml-0 -mt-2 sm:mt-0 font-mono">
                     {experience.duration}
                   </div>
                 </div>
 
-                {/* Technologies */}
+                {/* Technologies - Compact */}
                 <div className="mb-6 pl-0 sm:pl-[72px]">
                   <div className="flex flex-wrap gap-2">
                     {experience.technologies.map((tech, idx) => {
@@ -101,7 +134,7 @@ const Experience = () => {
                       return (
                         <span
                           key={idx}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white/5 text-gray-400 text-[10px] sm:text-xs font-medium rounded-md border border-white/10 hover:bg-white/10 hover:text-gray-200 transition-colors cursor-default"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white/5 text-gray-400 text-[10px] sm:text-xs font-medium rounded border border-white/10 hover:bg-white/10 hover:text-gray-200 transition-colors cursor-default"
                         >
                           {Icon && <Icon className="text-xs sm:text-sm" />}
                           {tech}
@@ -115,7 +148,7 @@ const Experience = () => {
                 <ul className="space-y-3 pl-0 sm:pl-[72px]">
                   {experience.responsibilities.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-3 text-sm sm:text-[15px] text-gray-400 group-hover:text-gray-300 transition-colors">
-                      <span className="text-blue-500 mt-1.5 flex-shrink-0 text-[10px]">●</span>
+                      <span className="text-blue-500 mt-1.5 shrink-0 text-[10px]">●</span>
                       <span className="leading-relaxed">{item}</span>
                     </li>
                   ))}

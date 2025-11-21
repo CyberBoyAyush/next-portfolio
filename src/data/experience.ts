@@ -1,3 +1,11 @@
+export interface Role {
+  title: string;
+  type: string;
+  duration: string;
+  startDate: string;
+  endDate?: string;
+}
+
 export interface Experience {
   id: number;
   company: string;
@@ -12,13 +20,14 @@ export interface Experience {
   color: string;
   logo?: string;
   current: boolean;
+  roles?: Role[];
 }
 
 export const experiences: Experience[] = [
   {
     id: 1,
     company: 'Kakiyo OÜ',
-    position: 'Full Stack Lead Developer',
+    position: 'Lead Developer',
     duration: 'July 2025 - Present',
     startDate: 'July 2025',
     description: 'Leading full-stack development initiatives, architecting scalable solutions, and driving technical excellence in modern web applications.',
@@ -45,7 +54,22 @@ export const experiences: Experience[] = [
     location: 'Remote',
     color: 'from-blue-600 to-indigo-600',
     logo: '/images/kakiyo.png',
-    current: true
+    current: true,
+    roles: [
+      {
+        title: 'Lead Developer',
+        type: 'Full-time',
+        duration: 'Aug 2025 - Present',
+        startDate: 'Aug 2025'
+      },
+      {
+        title: 'Full Stack Developer',
+        type: 'Part-time',
+        duration: 'July 2025 - Aug 2025',
+        startDate: 'July 2025',
+        endDate: 'Aug 2025'
+      }
+    ]
   }
 ];
 
