@@ -144,7 +144,7 @@ export default async function BlogPost({ params }: Props) {
               </div>
               <span className="text-gray-600">•</span>
               <span>By {frontmatter.author}</span>
-              <div className="flex-1 flex justify-end">
+              <div className="flex-1 flex justify-center sm:justify-end w-full sm:w-auto mt-4 sm:mt-0 sm:flex-none sm:ml-auto">
                 <BlogShareButton title={frontmatter.title} />
               </div>
             </div>
