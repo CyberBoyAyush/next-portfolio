@@ -9,6 +9,8 @@ import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 import CodeBlock from '@/components/CodeBlock';
 import CopyMarkdownButton from '@/components/CopyMarkdownButton';
+import BlogContent, { BlogProvider, BlogZoomControls } from '@/components/BlogContentWrapper';
+import BlogShareButton from '@/components/BlogShareButton';
 import 'highlight.js/styles/github-dark.css';
 import './blog-content.css';
 
@@ -82,29 +84,33 @@ export default async function BlogPost({ params }: Props) {
   const { frontmatter, content } = blog;
 
   return (
-    <main className="min-h-screen bg-[#0D1117] pt-20 md:pt-20">
-      {/* Background effects */}
-      <div className="absolute inset-0 -z-10 bg-[#0D1117]">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1/2 bg-gradient-radial from-blue-800/10 to-transparent opacity-50 blur-[120px]" />
-      </div>
+    <BlogProvider>
+      <main className="min-h-screen bg-[#0D1117] pt-20 md:pt-20">
+        {/* Background effects */}
+        <div className="absolute inset-0 -z-10 bg-[#0D1117]">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1/2 bg-gradient-radial from-blue-800/10 to-transparent opacity-50 blur-[120px]" />
+        </div>
 
-      <div className="absolute inset-0 -z-10 bg-size-[30px_30px] md:bg-size-[40px_40px] bg-[linear-gradient(rgba(255,255,255,.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.01)_1px,transparent_1px)]"></div>
+        <div className="absolute inset-0 -z-10 bg-size-[30px_30px] md:bg-size-[40px_40px] bg-[linear-gradient(rgba(255,255,255,.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.01)_1px,transparent_1px)]"></div>
 
-      <article className="py-8 md:py-16">
-        <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
-          {/* Back button and Copy Markdown button */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
-            <Link
-              href="/blogs"
-              className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors group"
-            >
-              <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-              <span className="text-sm font-medium">Back to Blogs</span>
-            </Link>
-            <CopyMarkdownButton content={content} frontmatter={frontmatter} />
-          </div>
+        <article className="py-8 md:py-16">
+          <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
+            {/* Back button, Zoom controls, and Copy Markdown button */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+              <Link
+                href="/blogs"
+                className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors group"
+              >
+                <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                <span className="text-sm font-medium">Back to Blogs</span>
+              </Link>
+              <div className="flex items-center gap-3 self-end sm:self-auto">
+                <BlogZoomControls />
+                <CopyMarkdownButton content={content} frontmatter={frontmatter} />
+              </div>
+            </div>
 
-          {/* Cover Image */}
+            {/* Cover Image */}
           {frontmatter.imageUrl && (
             <div className="relative w-full aspect-1408/768 overflow-hidden mb-8 sm:mb-10 md:mb-12 border border-gray-800">
               <Image
@@ -138,6 +144,9 @@ export default async function BlogPost({ params }: Props) {
               </div>
               <span className="text-gray-600">•</span>
               <span>By {frontmatter.author}</span>
+              <div className="flex-1 flex justify-end">
+                <BlogShareButton title={frontmatter.title} />
+              </div>
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
@@ -169,7 +178,7 @@ export default async function BlogPost({ params }: Props) {
 
           {/* Content */}
           <div className="prose prose-invert prose-base sm:prose-lg max-w-none">
-            <div className="blog-content">
+            <BlogContent>
               <MDXRemote
                 source={content}
                 options={{
@@ -186,7 +195,7 @@ export default async function BlogPost({ params }: Props) {
                   ),
                 }}
               />
-            </div>
+            </BlogContent>
           </div>
 
           {/* Footer */}
@@ -202,5 +211,6 @@ export default async function BlogPost({ params }: Props) {
         </div>
       </article>
     </main>
+    </BlogProvider>
   );
 }

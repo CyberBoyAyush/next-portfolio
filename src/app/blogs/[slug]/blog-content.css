@@ -41,6 +41,8 @@
   color: #9ca3af;
   margin-bottom: 1.5rem;
   line-height: 1.8;
+  font-size: var(--blog-text-size, 1.125rem);
+  transition: font-size 0.2s ease;
 }
 
 .blog-content ul,
@@ -48,6 +50,8 @@
   color: #9ca3af;
   margin-bottom: 1.5rem;
   padding-left: 1.5rem;
+  font-size: var(--blog-text-size, 1.125rem);
+  transition: font-size 0.2s ease;
 }
 
 .blog-content li {
