@@ -60,6 +60,30 @@ export function BlogFontWrapper({ children }: { children: React.ReactNode }) {
   );
 }
 
+// Tooltip Component
+export function Tooltip({ 
+  children, 
+  content, 
+  orientation = 'horizontal' 
+}: { 
+  children: React.ReactNode; 
+  content: string; 
+  orientation?: 'horizontal' | 'vertical' 
+}) {
+  return (
+    <div className="group relative flex items-center justify-center">
+      {children}
+      <span className={`absolute whitespace-nowrap px-2 py-1 bg-[#161b22] text-gray-300 text-xs rounded border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[60] shadow-xl ${
+        orientation === 'vertical' 
+          ? 'left-full ml-2' // Right side for vertical toolbar
+          : 'bottom-full mb-2' // Top side for horizontal toolbar
+      }`}>
+        {content}
+      </span>
+    </div>
+  );
+}
+
 // Font Switcher Component
 export function BlogFontControls({ orientation = 'horizontal' }: { orientation?: 'horizontal' | 'vertical' }) {
   const { fontType, setFontType } = useBlogContext();
@@ -85,14 +109,15 @@ export function BlogFontControls({ orientation = 'horizontal' }: { orientation?:
 
   return (
     <div className="relative" ref={menuRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center justify-center h-[38px] w-[38px] bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 hover:border-white/20 transition-colors ${isOpen ? 'bg-white/10 border-white/20' : ''}`}
-        aria-label="Change font"
-        title="Change Font"
-      >
-        <CaseSensitive size={20} className="text-gray-400" />
-      </button>
+      <Tooltip content="Change Font" orientation={orientation}>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className={`flex items-center justify-center h-[38px] w-[38px] bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 hover:border-white/20 transition-colors ${isOpen ? 'bg-white/10 border-white/20' : ''}`}
+          aria-label="Change font"
+        >
+          <CaseSensitive size={20} className="text-gray-400" />
+        </button>
+      </Tooltip>
 
       {isOpen && (
         <div className={`absolute w-40 bg-[#161b22] border border-white/10 rounded-lg shadow-xl overflow-hidden z-50 backdrop-blur-sm ${
@@ -140,32 +165,39 @@ export function BlogZoomControls({ orientation = 'horizontal' }: BlogZoomControl
     <div className={`flex items-center gap-1 bg-white/5 border border-white/10 rounded-lg p-1 ${
       isVertical ? 'flex-col-reverse w-[38px] h-auto' : 'h-[38px]'
     }`}>
-      <button
-        onClick={() => setFontSize((s) => Math.max(s - 2, 14))}
-        className="p-1.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
-        aria-label="Decrease font size"
-      >
-        <Minus size={16} />
-      </button>
-      <div
-        onClick={() => {
-          if (window.innerWidth < 640) setFontSize(16);
-          else setFontSize(18);
-        }}
-        className={`text-xs font-medium text-gray-300 hover:text-white cursor-pointer font-mono text-center select-none transition-colors ${
-          isVertical ? 'py-1' : 'min-w-[3ch] px-1'
-        }`}
-        title="Reset to default"
-      >
-        {fontSize}
-      </div>
-      <button
-        onClick={() => setFontSize((s) => Math.min(s + 2, 32))}
-        className="p-1.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
-        aria-label="Increase font size"
-      >
-        <Plus size={16} />
-      </button>
+      <Tooltip content="Decrease Size" orientation={orientation}>
+        <button
+          onClick={() => setFontSize((s) => Math.max(s - 2, 14))}
+          className="p-1.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+          aria-label="Decrease font size"
+        >
+          <Minus size={16} />
+        </button>
+      </Tooltip>
+      
+      <Tooltip content="Reset Size" orientation={orientation}>
+        <div
+          onClick={() => {
+            if (window.innerWidth < 640) setFontSize(16);
+            else setFontSize(18);
+          }}
+          className={`text-xs font-medium text-gray-300 hover:text-white cursor-pointer font-mono text-center select-none transition-colors flex items-center justify-center ${
+            isVertical ? 'py-1 w-full' : 'min-w-[3ch] px-1'
+          }`}
+        >
+          {fontSize}
+        </div>
+      </Tooltip>
+
+      <Tooltip content="Increase Size" orientation={orientation}>
+        <button
+          onClick={() => setFontSize((s) => Math.min(s + 2, 32))}
+          className="p-1.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+          aria-label="Increase font size"
+        >
+          <Plus size={16} />
+        </button>
+      </Tooltip>
     </div>
   );
 }
