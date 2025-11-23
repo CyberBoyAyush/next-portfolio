@@ -84,8 +84,46 @@ export default async function BlogPost({ params }: Props) {
 
   const { frontmatter, content } = blog;
 
+  const baseUrl = 'https://aysh.me';
+  const blogUrl = `${baseUrl}/blogs/${slug}`;
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: frontmatter.title,
+    description: frontmatter.description,
+    image: frontmatter.imageUrl || `${baseUrl}/icon.png`,
+    datePublished: frontmatter.date,
+    dateModified: frontmatter.date,
+    author: {
+      '@type': 'Person',
+      name: frontmatter.author,
+      url: baseUrl,
+    },
+    publisher: {
+      '@type': 'Person',
+      name: 'Ayush Sharma',
+      url: baseUrl,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${baseUrl}/icon.png`,
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': blogUrl,
+    },
+    keywords: frontmatter.tags.join(', '),
+    articleSection: 'Technology',
+    inLanguage: 'en-US',
+  };
+
   return (
     <BlogProvider>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <main className="min-h-screen bg-[#0D1117] pt-20 md:pt-20">
         {/* Background effects */}
         <div className="absolute inset-0 -z-10 bg-[#0D1117]">

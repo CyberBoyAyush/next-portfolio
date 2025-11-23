@@ -32,6 +32,7 @@ Ayush Sharma is a Full Stack Lead Developer at Kakiyo OÜ, building scalable AI-
 
 - [Home](${baseUrl}/): Main portfolio page with hero, skills, experience, projects, and contact
 - [Projects](${baseUrl}/projects): Comprehensive list of all projects with filtering
+- [Blogs](${baseUrl}/blogs): Technical articles and insights on AI, web development, and modern technology
 - [About & Experience](${baseUrl}/#experience): Professional experience and work history
 - [Skills](${baseUrl}/#skills): Complete tech stack and technologies
 - [Contact](${baseUrl}/#contact): Get in touch via email or social media
@@ -51,6 +52,11 @@ Ayush Sharma is a Full Stack Lead Developer at Kakiyo OÜ, building scalable AI-
 - [Bucket Buddy](${baseUrl}/projects/bucket-buddy): Modern cloud storage management solution for AWS S3 with Next.js, Prisma, and PostgreSQL
 - [QuickBang](${baseUrl}/projects/quickbang): Lightning-fast search shortcuts browser extension using React and TypeScript
 - [PortDev](${baseUrl}/projects/portdev): Create developer portfolios in minutes with React, Firebase, and Framer Motion
+
+## Featured Blog Articles
+
+- [How Tool Calling Works in Large Language Models](${baseUrl}/blogs/tool-calling-llms): Deep dive into LLM tool calling, function execution, and building AI agents with Vercel AI SDK and OpenRouter
+- [Next.js App Router vs Page Router](${baseUrl}/blogs/nextjs-app-router-vs-page-router): Comprehensive comparison of Next.js routing systems with practical examples
 
 ## Professional Experience
 
@@ -75,6 +81,7 @@ Ayush Sharma is a Full Stack Lead Developer at Kakiyo OÜ, building scalable AI-
 - **Cloud Architecture**: Designing and deploying scalable cloud infrastructure on AWS, Vercel, and other platforms
 - **Performance Optimization**: Reducing costs and improving response times through caching, query optimization, and best practices
 - **Developer Tools**: Creating CLI tools and developer productivity applications
+- **Technical Writing**: Sharing insights on AI, web development, and modern technology through detailed blog articles
 
 ## Project Categories
 
@@ -85,7 +92,15 @@ This portfolio showcases **9 major projects**, with **6 AI-focused applications*
 - AI-powered automation and workflows
 - Personalized learning and scheduling systems
 
-Last Updated: 2025-11-06
+## Blog Content
+
+Technical articles covering:
+- AI and Large Language Models (tool calling, function execution, agent building)
+- Next.js and modern web development frameworks
+- Best practices for full-stack development
+- Real-world implementation guides and tutorials
+
+Last Updated: 2025-11-23
 Attribution Required: Yes
 License: All rights reserved
 `;

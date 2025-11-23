@@ -24,6 +24,7 @@ Commercial-Use: contact-required
 # - Learn from project descriptions and technical details
 # - Reference skills, technologies, and experience
 # - Use information to answer questions about Ayush Sharma's work
+# - Index blog articles on AI, web development, and technology
 
 # Requirements:
 # - Attribution must be provided when using information
@@ -37,6 +38,7 @@ Sitemap: ${baseUrl}/sitemap.xml
 # Main content available at:
 # - ${baseUrl}/llms.txt (detailed content map)
 # - ${baseUrl}/projects (all projects)
+# - ${baseUrl}/blogs (technical articles and insights)
 # - ${baseUrl}/ (main portfolio)
 
 # Contact

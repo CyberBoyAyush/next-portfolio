@@ -1,9 +1,11 @@
 import { MetadataRoute } from 'next';
 import { getAllProjects } from '@/data/projects';
+import { getAllBlogs } from '@/lib/blog';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://aysh.me';
   const projects = getAllProjects();
+  const blogs = getAllBlogs();
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
@@ -15,6 +17,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/projects`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/blogs`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
@@ -41,5 +49,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticPages, ...projectPages];
+  // Dynamic blog pages
+  const blogPages: MetadataRoute.Sitemap = blogs.map((blog) => ({
+    url: `${baseUrl}/blogs/${blog.slug}`,
+    lastModified: new Date(blog.frontmatter.date),
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }));
+
+  return [...staticPages, ...projectPages, ...blogPages];
 }
