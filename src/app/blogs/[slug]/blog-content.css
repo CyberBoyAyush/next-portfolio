@@ -64,6 +64,11 @@
   font-weight: 600;
 }
 
+/* Default code font for "Standard" and "Inter" modes */
+.blog-content .font-code {
+  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+}
+
 .blog-content code {
   background: rgba(255, 255, 255, 0.05);
   padding: 0.2rem 0.4rem;
@@ -105,6 +110,13 @@
   box-shadow: none;
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+/* Override code font when the blog content is set to mono */
+.blog-content.font-mono code,
+.blog-content.font-mono pre code,
+.blog-content.font-mono .font-code {
+  font-family: inherit;
 }
 
 @media (min-width: 640px) {

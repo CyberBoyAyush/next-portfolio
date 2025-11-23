@@ -1,12 +1,19 @@
 "use client";
 
-import { useState, createContext, useContext } from "react";
-import { Minus, Plus } from "lucide-react";
+import { useState, createContext, useContext, useRef, useEffect } from "react";
+import { Minus, Plus, Check, CaseSensitive } from "lucide-react";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+
+type FontType = 'standard' | 'mono' | 'inter';
 
 // Context
 const BlogContext = createContext<{
   fontSize: number;
   setFontSize: React.Dispatch<React.SetStateAction<number>>;
+  fontType: FontType;
+  setFontType: React.Dispatch<React.SetStateAction<FontType>>;
 } | null>(null);
 
 export function useBlogContext() {
@@ -20,20 +27,119 @@ export function useBlogContext() {
 // Provider
 export function BlogProvider({ children }: { children: React.ReactNode }) {
   const [fontSize, setFontSize] = useState(18);
+  const [fontType, setFontType] = useState<FontType>('standard');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth < 640) {
+        setFontSize(16);
+      }
+    }
+  }, []);
 
   return (
-    <BlogContext.Provider value={{ fontSize, setFontSize }}>
+    <BlogContext.Provider value={{ fontSize, setFontSize, fontType, setFontType }}>
       {children}
     </BlogContext.Provider>
   );
 }
 
-// Zoom Controls Component
-export function BlogZoomControls() {
-  const { fontSize, setFontSize } = useBlogContext();
+// Font Wrapper Component (Applies Font Family to Headings, Metadata, Content, etc.)
+export function BlogFontWrapper({ children }: { children: React.ReactNode }) {
+  const { fontType } = useBlogContext();
+
+  let fontClass = "";
+  if (fontType === 'mono') fontClass = "font-mono";
+  else if (fontType === 'inter') fontClass = inter.className;
+  // If standard, inherits default
 
   return (
-    <div className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-lg p-1">
+    <div className={fontClass}>
+      {children}
+    </div>
+  );
+}
+
+// Font Switcher Component
+export function BlogFontControls({ orientation = 'horizontal' }: { orientation?: 'horizontal' | 'vertical' }) {
+  const { fontType, setFontType } = useBlogContext();
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const isVertical = orientation === 'vertical';
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const fonts: { type: FontType; label: string; className?: string }[] = [
+    { type: 'standard', label: 'Geist Sans' },
+    { type: 'mono', label: 'Monophont', className: 'font-mono' },
+    { type: 'inter', label: 'Interfont', className: inter.className },
+  ];
+
+  return (
+    <div className="relative" ref={menuRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={`flex items-center justify-center h-[38px] w-[38px] bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 hover:border-white/20 transition-colors ${isOpen ? 'bg-white/10 border-white/20' : ''}`}
+        aria-label="Change font"
+        title="Change Font"
+      >
+        <CaseSensitive size={20} className="text-gray-400" />
+      </button>
+
+      {isOpen && (
+        <div className={`absolute w-40 bg-[#161b22] border border-white/10 rounded-lg shadow-xl overflow-hidden z-50 backdrop-blur-sm ${
+          isVertical 
+            ? 'left-full top-0 ml-2' // Vertical: Pop to right
+            : 'top-full left-0 mt-2'  // Horizontal: Pop down
+        }`}>
+          <div className="p-1 flex flex-col gap-0.5">
+            {fonts.map((font) => (
+              <button
+                key={font.type}
+                onClick={() => {
+                  setFontType(font.type);
+                  setIsOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors ${
+                  fontType === font.type
+                    ? 'bg-white/10 text-white'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <span className={font.className}>
+                  {font.label}
+                </span>
+                {fontType === font.type && <Check size={14} className="text-blue-400" />}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Zoom Controls Component
+interface BlogZoomControlsProps {
+  orientation?: 'horizontal' | 'vertical';
+}
+
+export function BlogZoomControls({ orientation = 'horizontal' }: BlogZoomControlsProps) {
+  const { fontSize, setFontSize } = useBlogContext();
+  const isVertical = orientation === 'vertical';
+
+  return (
+    <div className={`flex items-center gap-1 bg-white/5 border border-white/10 rounded-lg p-1 ${
+      isVertical ? 'flex-col-reverse w-[38px] h-auto' : 'h-[38px]'
+    }`}>
       <button
         onClick={() => setFontSize((s) => Math.max(s - 2, 14))}
         className="p-1.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
@@ -42,11 +148,16 @@ export function BlogZoomControls() {
         <Minus size={16} />
       </button>
       <div
-        onClick={() => setFontSize(18)}
-        className="text-xs font-medium text-gray-300 hover:text-white cursor-pointer font-mono min-w-[3ch] text-center select-none px-1 transition-colors"
+        onClick={() => {
+          if (window.innerWidth < 640) setFontSize(16);
+          else setFontSize(18);
+        }}
+        className={`text-xs font-medium text-gray-300 hover:text-white cursor-pointer font-mono text-center select-none transition-colors ${
+          isVertical ? 'py-1' : 'min-w-[3ch] px-1'
+        }`}
         title="Reset to default"
       >
-        {fontSize}px
+        {fontSize}
       </div>
       <button
         onClick={() => setFontSize((s) => Math.min(s + 2, 32))}
@@ -59,20 +170,43 @@ export function BlogZoomControls() {
   );
 }
 
-// Content Wrapper Component
+export function BlogFloatingControls({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="hidden xl:flex fixed left-8 top-1/2 -translate-y-1/2 z-50 flex-col items-center gap-3 p-2 bg-[#0d1117]/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl transition-all hover:border-white/20">
+      <BlogFontControls orientation="vertical" />
+      <div className="w-6 h-px bg-white/10" />
+      <BlogZoomControls orientation="vertical" />
+      <div className="w-6 h-px bg-white/10" />
+      {children}
+    </div>
+  );
+}
+
+// Content Wrapper Component (Applies Size to Body Content only)
 export default function BlogContent({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { fontSize } = useBlogContext();
+  const { fontSize, fontType } = useBlogContext();
+
+  // We also apply the font class here again to ensure specificity for the content,
+  // especially if there are overrides in standard CSS.
+  // And also for the "blog-content" specific styles that might depend on it (like the code block override).
+  let fontClass = "";
+  if (fontType === 'mono') fontClass = "font-mono";
+  else if (fontType === 'inter') fontClass = inter.className;
+
+  // Optical adjustment: Mono font is wider/larger, so we reduce the size slightly
+  // to match the visual weight of other fonts.
+  const effectiveFontSize = fontType === 'mono' ? fontSize - 2 : fontSize;
 
   return (
     <div
-      className="blog-content"
+      className={`blog-content ${fontClass}`}
       style={
         {
-          "--blog-text-size": `${fontSize}px`,
+          "--blog-text-size": `${effectiveFontSize}px`,
         } as React.CSSProperties
       }
     >
