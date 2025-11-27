@@ -55,3 +55,16 @@ export function getAllBlogs(): BlogPost[] {
 export function getFeaturedBlogs(): BlogPost[] {
   return getAllBlogs().filter((blog) => blog.frontmatter.featured);
 }
+
+export function getRelatedBlogs(currentSlug: string, tags: string[], limit = 3): BlogPost[] {
+  return getAllBlogs()
+    .filter((blog) => blog.slug !== currentSlug)
+    .map((blog) => ({
+      blog,
+      score: blog.frontmatter.tags.filter((tag) => tags.includes(tag)).length,
+    }))
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(({ blog }) => blog);
+}
