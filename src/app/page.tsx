@@ -1,4 +1,4 @@
-import { getAllBlogs } from '@/lib/blog';
+import { getFeaturedBlogs } from '@/lib/blog';
 import Hero from '../components/Hero';
 import Skills from '../components/Skills';
 import Portfolio from '../components/Portfolio';
@@ -8,7 +8,7 @@ import Contact from '../components/Contact';
 import FeaturedBlogs from '../components/FeaturedBlogs';
 
 export default function Home() {
-  const blogs = getAllBlogs();
+  const blogs = getFeaturedBlogs();
 
   return (
     <>

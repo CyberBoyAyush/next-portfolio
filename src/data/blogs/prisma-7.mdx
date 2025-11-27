@@ -1,0 +1,275 @@
+---
+title: "What's New in Prisma 7 and How to Upgrade"
+description: "Prisma 7 removes Rust, delivers 90% smaller bundles, and changes how you configure projects. Here is what changed and how to upgrade from Prisma 6."
+date: "2025-11-28"
+author: "Ayush Sharma"
+tags: ["Prisma", "ORM", "TypeScript", "Database", "Next.js"]
+readingTime: "9 min read"
+featured: false
+imageUrl: "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPj8RYcyuAdMVU8osSz0WQy91rNwFkhjHt5x2E"
+---
+
+Prisma 7 landed last week, and it is a big one. The team rewrote the entire query engine from Rust to TypeScript. They changed how you configure projects. They made driver adapters required for all databases.
+
+If you have been using Prisma for a while, this is the most significant update since the ORM went stable. And honestly, the changes are worth it. Let me walk you through what happened, why it matters, and how to upgrade without breaking anything.
+
+## Why Prisma Removed Rust
+
+Here is the thing about the old Prisma. Every time you ran a query, your JavaScript code had to talk to a separate Rust binary. That binary did the heavy lifting, then sent results back to JavaScript. Sounds efficient, but there was overhead in that handoff. Every single query paid that tax.
+
+Then there was the deployment headache. The Rust engine shipped as compiled binaries, different ones for Linux, macOS, Windows, ARM, and so on. If you deployed to Cloudflare Workers or Vercel Edge Functions, you often hit size limits. These platforms cap your bundle at 1MB to 10MB, and the Prisma engine alone was around 14MB. People were jumping through hoops just to get their apps deployed.
+
+The Prisma team spent the past year rewriting the query engine in TypeScript. They call it the Query Compiler internally. And the results are genuinely impressive.
+
+## The Numbers That Matter
+
+Let me give you the actual benchmarks from Prisma's testing:
+
+**Bundle size dropped by 90%.** The old engine was about 14MB (7MB gzipped). The new one is 1.6MB (600KB gzipped). That is a massive difference when you are deploying to edge platforms with strict limits.
+
+**Queries run up to 3x faster.** The improvement is most noticeable on large result sets. When you fetch thousands of rows, the new engine handles it significantly better. For small queries, performance is roughly the same, which is fine because those were already fast.
+
+**Cold starts improved dramatically.** If you deploy to AWS Lambda or similar serverless platforms, you know cold starts can be painful. Less code to load means faster initialization. Your users see responses quicker on that first request.
+
+**CPU and memory usage went down.** There is no separate binary running alongside your app anymore. Everything happens in the same JavaScript runtime. Less overhead, simpler resource management.
+
+## What This Means for Your Projects
+
+Beyond the raw numbers, there are practical benefits you will notice day to day.
+
+**Edge deployment actually works now.** Cloudflare Workers, Vercel Edge Functions, Deno Deploy. These platforms have strict constraints. With the smaller bundle, Prisma fits comfortably. No more workarounds or compromises.
+
+**Your IDE gets faster.** Prisma also optimized their type generation. They reduced the number of generated types by 98% for schema evaluation. If you have a large schema with dozens of models, your TypeScript language server will thank you. Autocomplete becomes snappier. Type checking finishes quicker.
+
+**Simpler deployments everywhere.** No more worrying about which binary to include for which platform. No more postinstall scripts downloading engine files. The generated client is just TypeScript code that runs anywhere JavaScript runs.
+
+**Easier contributions to Prisma itself.** This one benefits the community. The old Rust engine was a barrier. Not many developers know Rust well enough to contribute meaningfully. With the core now in TypeScript, more people can help improve Prisma. Expect faster bug fixes and more community-driven features.
+
+## What Actually Changed in the Code
+
+Now let me show you the breaking changes. There are several, but none are complicated once you understand them.
+
+### The Generator Provider Changed
+
+Your schema file needs the new generator:
+
+```prisma
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+```
+
+Two changes here. The provider is now `prisma-client` instead of `prisma-client-js`. And you need an `output` path because Prisma no longer generates code into node_modules.
+
+### Database URL Moved to a Config File
+
+You probably had your connection string in the schema file. That is deprecated now. Prisma 7 introduces a new `prisma.config.ts` file in your project root:
+
+```typescript
+import 'dotenv/config'
+import { defineConfig, env } from 'prisma/config'
+
+export default defineConfig({
+  schema: 'prisma/schema.prisma',
+  migrations: {
+    path: 'prisma/migrations',
+    seed: 'tsx prisma/seed.ts',
+  },
+  datasource: {
+    url: env('DATABASE_URL'),
+  },
+})
+```
+
+This is actually nicer. Your schema file focuses purely on your data models. Configuration lives separately. And since the config is TypeScript, you can add dynamic logic if needed.
+
+### Driver Adapters Are Required
+
+This is the change that surprises people. You cannot just instantiate PrismaClient anymore. You need a driver adapter.
+
+Old way:
+
+```typescript
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+```
+
+New way:
+
+```typescript
+import 'dotenv/config'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaClient } from './generated/prisma/client'
+
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL
+})
+
+export const prisma = new PrismaClient({ adapter })
+```
+
+The import path changed too. You pull PrismaClient from your generated folder now, not from `@prisma/client`.
+
+### Environment Variables Need Manual Loading
+
+Prisma used to read your .env file automatically. It does not do that in version 7. You need to handle it yourself by importing dotenv at the top of your files:
+
+```typescript
+import 'dotenv/config'
+```
+
+Bun users get this for free. Bun loads .env files automatically.
+
+### ESM Is Now the Default
+
+Prisma ships as an ES module. Your project needs to be configured for ESM in package.json:
+
+```json
+{
+  "type": "module"
+}
+```
+
+### Middleware Is Gone
+
+If you used `prisma.$use()` for middleware, that API was removed. Use Client Extensions instead. They are more powerful and fully type-safe anyway.
+
+### Minimum Versions Went Up
+
+Node.js 20.19 or higher. TypeScript 5.4 or higher. Check your versions before upgrading.
+
+## How to Upgrade from Prisma 6
+
+Here is the process I recommend. Do this on a separate branch so you can test properly before merging.
+
+### Step 1: Verify Your Environment
+
+```bash
+node --version   # needs to be 20.19+
+npx tsc --version   # needs to be 5.4+
+```
+
+### Step 2: Update Prisma Packages
+
+```bash
+npm install @prisma/client@7
+npm install -D prisma@7
+```
+
+### Step 3: Install dotenv and Your Database Adapter
+
+Pick the line for your database:
+
+```bash
+# PostgreSQL
+npm install dotenv @prisma/adapter-pg pg
+
+# MySQL
+npm install dotenv @prisma/adapter-mariadb mariadb
+
+# SQLite
+npm install dotenv @prisma/adapter-better-sqlite3 better-sqlite3
+```
+
+### Step 4: Update Your Schema
+
+```prisma
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Your models stay exactly the same
+```
+
+### Step 5: Create prisma.config.ts
+
+Put this in your project root, next to package.json:
+
+```typescript
+import 'dotenv/config'
+import { defineConfig, env } from 'prisma/config'
+
+export default defineConfig({
+  schema: 'prisma/schema.prisma',
+  migrations: {
+    path: 'prisma/migrations',
+  },
+  datasource: {
+    url: env('DATABASE_URL'),
+  },
+})
+```
+
+### Step 6: Update Your Prisma Client File
+
+Find where you create PrismaClient and update it:
+
+```typescript
+import 'dotenv/config'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaClient } from './generated/prisma/client'
+
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL
+})
+
+export const prisma = new PrismaClient({ adapter })
+```
+
+### Step 7: Add ESM Support
+
+In package.json:
+
+```json
+{
+  "type": "module"
+}
+```
+
+### Step 8: Regenerate and Test
+
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
+
+Run your app. Run your tests. Your existing queries should work without changes.
+
+## MongoDB Users: Hold Off for Now
+
+If your project uses MongoDB, stay on Prisma 6. MongoDB support is not in version 7 yet. The team says it is coming soon. When it lands, the migration should be straightforward.
+
+## Troubleshooting Common Issues
+
+**Import path errors:** Make sure your import path matches your output path. If output is `./generated/prisma`, import from `./generated/prisma/client`.
+
+**Environment variable not found:** Add `import 'dotenv/config'` at the top of both prisma.config.ts and your application entry point.
+
+**Module resolution errors:** Check that your tsconfig.json has `"module": "ESNext"` and `"moduleResolution": "node"`.
+
+**Middleware errors:** Rewrite any `prisma.$use()` calls using Client Extensions.
+
+## Is the Upgrade Worth It?
+
+Yes. The bundle size reduction alone makes a huge difference for serverless and edge deployments. The query performance improvements are real, especially for larger datasets. And the simplified deployment story removes friction you did not even realize you were dealing with.
+
+The upgrade takes maybe an hour for most projects. The benefits last for every deployment after that.
+
+If you are starting a new project, use Prisma 7 from day one. If you have an existing project, schedule the upgrade. The improvements are substantial.
+
+## Further Reading
+
+- [Prisma 7 Announcement](https://www.prisma.io/blog/announcing-prisma-orm-7-0-0)
+- [Official Upgrade Guide](https://www.prisma.io/docs/orm/more/upgrade-guides/upgrading-versions/upgrading-to-prisma-7)
+- [Prisma Changelog](https://www.prisma.io/changelog)
+- [Performance Benchmarks](https://www.prisma.io/blog/prisma-orm-without-rust-latest-performance-benchmarks)
