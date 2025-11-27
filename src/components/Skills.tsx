@@ -68,7 +68,7 @@ const TECH_COLORS: Record<string, string> = {
   'Bun.js': '#FBF0DF',
 };
 
-const SkillItem = ({ tech, index }: { tech: typeof techStack[0]; index: number }) => {
+const SkillItem = ({ tech }: { tech: typeof techStack[0] }) => {
   const [isHovered, setHovered] = useState(false);
   const Icon = tech.icon;
   const color = TECH_COLORS[tech.name] || '#ffffff';
@@ -81,10 +81,6 @@ const SkillItem = ({ tech, index }: { tech: typeof techStack[0]; index: number }
       onMouseLeave={() => setHovered(false)}
     >
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: index * 0.05 }}
         whileHover={{ 
           scale: 1.2, 
           y: -5,
@@ -150,24 +146,18 @@ const Skills = () => {
         />
 
         <div className="flex flex-wrap justify-center gap-x-6 gap-y-6 sm:gap-x-8 sm:gap-y-8 md:gap-x-12 md:gap-y-12 max-w-5xl mx-auto">
-          {techStack.map((tech, index) => (
-            <SkillItem key={tech.id} tech={tech} index={index} />
+          {techStack.map((tech) => (
+            <SkillItem key={tech.id} tech={tech} />
           ))}
         </div>
         
         {/* Footer Stat */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 1, duration: 1 }}
-          className="mt-16 text-center"
-        >
+        <div className="mt-16 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/5 text-sm text-gray-500 hover:text-gray-300 transition-colors">
             <Code size={14} />
             <span>{techStack.length}+ technologies in my arsenal</span>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
