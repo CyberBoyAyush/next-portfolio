@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import TechTicker from "./TechTicker";
+import { getCalApi } from "@calcom/embed-react";
 
 // Custom X (Twitter) Icon Component
 const XIcon = ({ size = 18, className = "" }) => (
@@ -53,6 +54,13 @@ const Hero = () => {
 
     return () => clearInterval(interval);
   }, [roles.length]);
+
+  useEffect(() => {
+    (async function () {
+      const cal = await getCalApi({ namespace: "30min" });
+      cal("ui", { theme: "dark", hideEventTypeDetails: false, layout: "month_view" });
+    })();
+  }, []);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -354,15 +362,15 @@ const Hero = () => {
                 <Mail size={18} className="sm:w-[18px] sm:h-[18px]" />
                 Get in touch
               </a>
-              <a
-                href="/book"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-orange-500/10 text-orange-400 font-medium hover:bg-orange-500/20 transition-all border border-orange-500/20 hover:border-orange-500/40 text-sm sm:text-base"
+              <button
+                data-cal-namespace="30min"
+                data-cal-link="cyberboyayush/30min"
+                data-cal-config='{"layout":"month_view","theme":"dark"}'
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-orange-500/10 text-orange-400 font-medium hover:bg-orange-500/20 transition-all border border-orange-500/20 hover:border-orange-500/40 text-sm sm:text-base cursor-pointer"
               >
                 <Calendar size={18} className="sm:w-[18px] sm:h-[18px]" />
                 Schedule Call
-              </a>
+              </button>
             </motion.div>
 
             {/* Social Links + Scroll */}

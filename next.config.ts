@@ -83,8 +83,8 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/book',
-        destination: 'https://zcal.co/ayush/30min',
-        permanent: true,
+        destination: 'https://cal.com/cyberboyayush/30min',
+        permanent: false,
       },
     ];
   },

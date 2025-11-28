@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Terminal, Mail, Send, ArrowRight, MessageSquare, RotateCcw, Phone, Calendar } from 'lucide-react';
+import { getCalApi } from "@calcom/embed-react";
 import '../styles/terminal.css';
 import SectionHeading from './SectionHeading';
 
@@ -29,6 +30,13 @@ const Contact = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true });
+
+  useEffect(() => {
+    (async function () {
+      const cal = await getCalApi({ namespace: "30min" });
+      cal("ui", { theme: "dark", hideEventTypeDetails: false, layout: "month_view" });
+    })();
+  }, []);
 
   const [commandHistory, setCommandHistory] = useState<CommandType[]>([
     {
@@ -808,11 +816,11 @@ Please fill in all fields before sending.`;
                   </div>
                 </div>
 
-                <a
-                  href="/book"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center space-x-3 p-4 bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:border-gray-700 transition-colors cursor-pointer"
+                <button
+                  data-cal-namespace="30min"
+                  data-cal-link="cyberboyayush/30min"
+                  data-cal-config='{"layout":"month_view","theme":"dark"}'
+                  className="flex items-center space-x-3 p-4 bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:border-gray-700 transition-colors cursor-pointer text-left"
                 >
                   <div className="w-10 h-10 bg-gray-800 flex items-center justify-center border border-gray-700">
                     <Calendar className="h-5 w-5 text-orange-400" />
@@ -821,7 +829,7 @@ Please fill in all fields before sending.`;
                     <div className="text-xs text-gray-400">Schedule</div>
                     <div className="text-white font-medium">Schedule 1:1</div>
                   </div>
-                </a>
+                </button>
               </div>
             </div>
 
