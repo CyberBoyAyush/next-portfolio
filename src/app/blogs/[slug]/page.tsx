@@ -6,14 +6,17 @@ import Image from 'next/image';
 import { Calendar, Clock, Tag, ArrowLeft } from 'lucide-react';
 import { getAllBlogs, getBlogBySlug, getRelatedBlogs } from '@/lib/blog';
 import rehypeHighlight from 'rehype-highlight';
+import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 import CodeBlock from '@/components/CodeBlock';
 import CopyMarkdownButton from '@/components/CopyMarkdownButton';
 import BlogContent, { BlogProvider, BlogZoomControls, BlogFontControls, BlogFontWrapper, BlogFloatingControls } from '@/components/BlogContentWrapper';
 import BlogShareButton from '@/components/BlogShareButton';
-import ReadingProgress from '@/components/ReadingProgress';
+import 'highlight.js/styles/github-dark.css';
 import 'highlight.js/styles/github-dark.css';
 import './blog-content.css';
+import { extractHeadings } from '@/lib/blog-utils';
+import TableOfContents from '@/components/TableOfContents';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -84,6 +87,7 @@ export default async function BlogPost({ params }: Props) {
 
   const { frontmatter, content } = blog;
   const relatedBlogs = getRelatedBlogs(slug, frontmatter.tags);
+  const headings = extractHeadings(content);
 
   const baseUrl = 'https://aysh.me';
   const blogUrl = `${baseUrl}/blogs/${slug}`;
@@ -134,9 +138,8 @@ export default async function BlogPost({ params }: Props) {
         <div className="absolute inset-0 -z-10 bg-size-[30px_30px] md:bg-size-[40px_40px] bg-[linear-gradient(rgba(255,255,255,.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.01)_1px,transparent_1px)]"></div>
 
         <article className="py-8 md:py-16">
-          <ReadingProgress />
           <BlogFontWrapper>
-            <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
+            <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
               {/* Back button, Zoom controls, and Copy Markdown button */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
                 <Link
@@ -151,7 +154,7 @@ export default async function BlogPost({ params }: Props) {
                   <BlogZoomControls />
                   <CopyMarkdownButton content={content} frontmatter={frontmatter} />
                 </div>
-<BlogFloatingControls>
+                <BlogFloatingControls>
                   <CopyMarkdownButton content={content} frontmatter={frontmatter} orientation="vertical" />
                 </BlogFloatingControls>
               </div>
@@ -224,26 +227,43 @@ export default async function BlogPost({ params }: Props) {
                 </div>
               </header>
 
-              {/* Content */}
-              <div className="prose prose-invert prose-base sm:prose-lg max-w-none">
-                <BlogContent>
-                  <MDXRemote
-                    source={content}
-                    options={{
-                      mdxOptions: {
-                        remarkPlugins: [remarkGfm],
-                        rehypePlugins: [rehypeHighlight],
-                      },
-                    }}
-                    components={{
-                      pre: ({ children, ...props }) => (
-                        <CodeBlock>
-                          <pre {...props}>{children}</pre>
-                        </CodeBlock>
-                      ),
-                    }}
-                  />
-                </BlogContent>
+              {/* Content Layout */}
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-10 xl:pl-24">
+                <div className="min-w-0">
+                  {/* Mobile TOC */}
+                  <div className="lg:hidden mb-8">
+                    <TableOfContents headings={headings} />
+                  </div>
+
+                  {/* Content */}
+                  <div className="prose prose-invert prose-base sm:prose-lg max-w-none xl:max-w-3xl mx-auto">
+                    <BlogContent>
+                      <MDXRemote
+                        source={content}
+                        options={{
+                          mdxOptions: {
+                            remarkPlugins: [remarkGfm],
+                            rehypePlugins: [rehypeHighlight, rehypeSlug],
+                          },
+                        }}
+                        components={{
+                          pre: ({ children, ...props }) => (
+                            <CodeBlock>
+                              <pre {...props}>{children}</pre>
+                            </CodeBlock>
+                          ),
+                        }}
+                      />
+                    </BlogContent>
+                  </div>
+                </div>
+
+                {/* Desktop Sidebar */}
+                <aside className="hidden lg:block">
+                  <div className="sticky top-24">
+                    <TableOfContents headings={headings} />
+                  </div>
+                </aside>
               </div>
 
               {/* Related Blogs */}
