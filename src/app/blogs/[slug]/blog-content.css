@@ -89,7 +89,7 @@
   border: none;
   border-radius: 0;
   box-shadow: none;
-  overflow-x: visible;
+  overflow-x: auto;
 }
 
 @media (min-width: 640px) {

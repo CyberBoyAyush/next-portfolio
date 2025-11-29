@@ -129,7 +129,7 @@ export default async function BlogPost({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main className="min-h-screen bg-[#0D1117] pt-20 md:pt-20">
+      <main className="min-h-screen bg-[#0D1117] pt-20 md:pt-20 overflow-x-hidden">
         {/* Background effects */}
         <div className="absolute inset-0 -z-10 bg-[#0D1117]">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1/2 bg-gradient-radial from-blue-800/10 to-transparent opacity-50 blur-[120px]" />
