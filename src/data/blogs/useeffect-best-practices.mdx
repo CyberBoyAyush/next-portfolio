@@ -1,0 +1,1009 @@
+---
+title: "You Might Not Need useEffect: A Complete Guide"
+description: "Learn when to use useEffect, when to avoid it, and modern alternatives. Practical examples for beginners and production React code."
+date: "2025-12-02"
+author: "Ayush Sharma"
+tags: ["React", "useEffect", "TanStack Query", "Best Practices"]
+readingTime: "18 min read"
+featured: true
+---
+
+## You Might Not Need useEffect
+
+If there is one React hook that developers misuse the most, it is useEffect. On the surface, it seems simple. But in practice, it causes infinite loops, stale data, memory leaks, and confusing bugs.
+
+Here is the thing: **most useEffect code you write is unnecessary**. The hook has a specific purpose. Once you understand that purpose, you will stop reaching for it as a default solution.
+
+This guide will teach you what useEffect actually does, how to use it correctly, the common mistakes developers make, and the modern alternatives you should use instead.
+
+---
+
+## What is useEffect?
+
+In React, your component is a function that returns UI. Every time state or props change, React calls your function again to get the new UI. This is called rendering.
+
+But sometimes you need to do things that are not about rendering UI:
+- Fetch data from an API
+- Subscribe to browser events
+- Connect to a WebSocket
+- Update the document title
+- Initialize a third-party library
+
+These are called **side effects**. They reach outside your component to interact with the world.
+
+**useEffect is React's way of letting you perform side effects after rendering.**
+
+The official React documentation defines it this way:
+
+> Effects let you run some code after rendering so that you can synchronize your component with some system outside of React.
+
+The key phrase is "outside of React." If there is no external system involved, you probably do not need useEffect.
+
+---
+
+## How useEffect Works
+
+The hook takes two arguments:
+
+```tsx
+useEffect(() => {
+  // Setup: runs after render
+  
+  return () => {
+    // Cleanup: runs before next effect or unmount
+  };
+}, [dependencies]);
+```
+
+**The setup function** contains your side effect code. It runs after React updates the DOM.
+
+**The cleanup function** (optional) undoes whatever the setup did. It runs before the effect runs again or when the component unmounts.
+
+**The dependency array** tells React when to re-run the effect.
+
+### The Three Modes
+
+```tsx
+// Mode 1: No array - runs after EVERY render
+useEffect(() => {
+  console.log('Runs on every render');
+});
+
+// Mode 2: Empty array - runs ONCE on mount
+useEffect(() => {
+  console.log('Runs once');
+}, []);
+
+// Mode 3: With dependencies - runs when values change
+useEffect(() => {
+  console.log('Runs when userId changes');
+}, [userId]);
+```
+
+**Mode 1** is rarely what you want. It runs after every single render, which can cause performance issues.
+
+**Mode 2** runs once when the component first appears. Use this for one-time setup like analytics or initializing libraries.
+
+**Mode 3** runs when the component mounts and whenever any dependency changes. This is the most common pattern.
+
+### The Golden Rule
+
+Include every value from your component that your effect reads in the dependency array. Do not lie to React about what your effect depends on.
+
+```tsx
+// Wrong: userId is used but not in dependencies
+useEffect(() => {
+  fetchUser(userId);
+}, []);
+
+// Right: userId is in dependencies
+useEffect(() => {
+  fetchUser(userId);
+}, [userId]);
+```
+
+The ESLint plugin for React Hooks will warn you about missing dependencies. Do not ignore these warnings.
+
+---
+
+## What to Include in the Dependency Array
+
+The dependency array is where most useEffect bugs come from. Here is how to get it right.
+
+### The Rule
+
+**Include every reactive value your effect reads.** A reactive value is anything that can change between renders: props, state, and any variables or functions declared inside your component.
+
+```tsx
+function ChatRoom({ roomId }) {
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    const connection = createConnection(roomId);
+    connection.connect();
+    return () => connection.disconnect();
+  }, [roomId]); // roomId is used inside, so it must be here
+}
+```
+
+### What Counts as a Dependency
+
+**Include these:**
+- Props passed to your component
+- State variables from useState
+- Values derived from props or state
+- Functions declared inside your component (if used in the effect)
+
+```tsx
+function SearchResults({ query, limit }) {
+  const [results, setResults] = useState([]);
+  
+  // Both query and limit are used, both must be dependencies
+  useEffect(() => {
+    fetchResults(query, limit).then(setResults);
+  }, [query, limit]);
+}
+```
+
+**Do not include these:**
+- State setter functions (setCount, setUser) - React guarantees they are stable
+- Refs from useRef - the ref object itself is stable
+- Values defined outside your component (imports, constants)
+
+```tsx
+const API_URL = 'https://api.example.com'; // Outside component, stable
+
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    fetch(`${API_URL}/users/${userId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (mountedRef.current) setUser(data);
+      });
+  }, [userId]); // Only userId - API_URL, setUser, and mountedRef are stable
+}
+```
+
+### Avoid Objects and Functions in Dependencies
+
+Objects and arrays are compared by reference, not value. A new object is created every render.
+
+```tsx
+// WRONG - options is new every render, effect runs infinitely
+function SearchPage({ query }) {
+  const options = { query, limit: 10 };
+  
+  useEffect(() => {
+    search(options);
+  }, [options]);
+}
+
+// RIGHT - use primitive values
+function SearchPage({ query }) {
+  useEffect(() => {
+    search({ query, limit: 10 });
+  }, [query]);
+}
+
+// ALSO RIGHT - memoize if you need the object elsewhere
+function SearchPage({ query }) {
+  const options = useMemo(() => ({ query, limit: 10 }), [query]);
+  
+  useEffect(() => {
+    search(options);
+  }, [options]);
+}
+```
+
+### When You Think You Need to Omit a Dependency
+
+If you feel the urge to leave something out of the dependency array, it usually means one of these:
+
+1. **The effect does too much.** Split it into multiple effects, each with its own purpose.
+
+2. **You need to read a value without reacting to it.** Use a ref to store the latest value.
+
+```tsx
+// Problem: You want to log the latest count, but not re-run on every change
+function Counter() {
+  const [count, setCount] = useState(0);
+  const latestCount = useRef(count);
+  
+  // Keep ref updated
+  useEffect(() => {
+    latestCount.current = count;
+  });
+  
+  // This effect only runs once, but reads latest count
+  useEffect(() => {
+    const id = setInterval(() => {
+      console.log('Latest count:', latestCount.current);
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+}
+```
+
+3. **You are computing a value that should just be calculated during render.** Remove the effect entirely.
+
+### Quick Dependency Checklist
+
+Before finalizing your dependency array:
+
+- Did you include all props used in the effect?
+- Did you include all state variables used in the effect?
+- Are you using objects or arrays? Switch to primitive values or useMemo.
+- Is ESLint happy? If not, fix the code, do not disable the warning.
+
+---
+
+## When to Use useEffect
+
+Use useEffect when you need to synchronize your component with an external system. Here are the legitimate use cases.
+
+### Browser Events
+
+**Problem:** You need to track window size for a responsive layout.
+
+```tsx
+function useWindowWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return width;
+}
+```
+
+The browser's resize event is outside React. You subscribe to it in the setup and unsubscribe in the cleanup.
+
+### Third-Party Libraries
+
+**Problem:** You need to initialize a chart library that manages its own DOM.
+
+```tsx
+function SalesChart({ data }) {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const chart = new Chart(canvasRef.current, {
+      type: 'line',
+      data: data,
+    });
+    return () => chart.destroy();
+  }, [data]);
+
+  return <canvas ref={canvasRef} />;
+}
+```
+
+Chart.js manages its own rendering. You initialize it after React creates the canvas element and destroy it when the component unmounts or data changes.
+
+### WebSocket Connections
+
+**Problem:** You need real-time updates from a server.
+
+```tsx
+function LivePrice({ symbol }) {
+  const [price, setPrice] = useState(null);
+
+  useEffect(() => {
+    const ws = new WebSocket(`wss://api.example.com/prices/${symbol}`);
+    ws.onmessage = (event) => setPrice(JSON.parse(event.data).price);
+    ws.onerror = (error) => console.error('WebSocket error:', error);
+    return () => ws.close();
+  }, [symbol]);
+
+  return <span>{price ? `$${price}` : 'Loading...'}</span>;
+}
+```
+
+WebSocket connections persist across renders. You open the connection in setup and close it in cleanup.
+
+### Document Metadata
+
+**Problem:** You want the browser tab to show the current page title.
+
+```tsx
+function PageTitle({ title }) {
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+
+  return null;
+}
+```
+
+The document title is outside React's virtual DOM. You need useEffect to synchronize it with your component state.
+
+### Timers and Intervals
+
+**Problem:** You need a countdown timer.
+
+```tsx
+function Countdown({ seconds }) {
+  const [remaining, setRemaining] = useState(seconds);
+
+  useEffect(() => {
+    if (remaining <= 0) return;
+    
+    const timer = setTimeout(() => {
+      setRemaining(remaining - 1);
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, [remaining]);
+
+  return <span>{remaining}s</span>;
+}
+```
+
+Timers are browser APIs outside React's control. Always clear them in cleanup to prevent memory leaks.
+
+---
+
+## Common Mistakes
+
+These are the patterns that cause bugs in production. Some are beginner mistakes, others slip into experienced developers' code too.
+
+### Mistake 1: Using useEffect for Computed Values
+
+**Problem:** You have items in a cart and need to show the total price.
+
+This is one of the most common mistakes. You have data and want to calculate something from it.
+
+```tsx
+// WRONG
+function CartTotal({ items }) {
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    const sum = items.reduce((acc, item) => acc + item.price * item.qty, 0);
+    setTotal(sum);
+  }, [items]);
+
+  return <p>Total: ${total.toFixed(2)}</p>;
+}
+```
+
+**What happens:**
+1. Component renders with total = 0
+2. User briefly sees "$0.00"
+3. Effect runs and calculates real total
+4. Component re-renders with correct value
+
+That is two renders and a flash of wrong content.
+
+```tsx
+// RIGHT
+function CartTotal({ items }) {
+  const total = items.reduce((acc, item) => acc + item.price * item.qty, 0);
+  return <p>Total: ${total.toFixed(2)}</p>;
+}
+```
+
+**Why it works:** The total is calculated during render. No state, no effect, no flash. The value is ready immediately.
+
+**Rule:** If you can calculate a value from props or state, just calculate it. Do not store it in state and do not use useEffect.
+
+---
+
+### Mistake 2: Handling User Actions in useEffect
+
+**Problem:** You want to send analytics when a user submits a form.
+
+```tsx
+// WRONG
+function ContactForm() {
+  const [formData, setFormData] = useState({ name: '', email: '' });
+  const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (submitted) {
+      analytics.track('form_submitted');
+      sendToServer(formData);
+    }
+  }, [submitted, formData]);
+
+  return (
+    <form onSubmit={() => setSubmitted(true)}>
+      <input 
+        value={formData.name}
+        onChange={e => setFormData({...formData, name: e.target.value})}
+      />
+      <button type="submit">Send</button>
+    </form>
+  );
+}
+```
+
+**The problem:** The analytics fire because a boolean changed, not because the user clicked submit. What if `submitted` becomes true for another reason? What if you need to know which button was clicked?
+
+```tsx
+// RIGHT
+function ContactForm() {
+  const [formData, setFormData] = useState({ name: '', email: '' });
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    analytics.track('form_submitted');
+    await sendToServer(formData);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input 
+        value={formData.name}
+        onChange={e => setFormData({...formData, name: e.target.value})}
+      />
+      <button type="submit">Send</button>
+    </form>
+  );
+}
+```
+
+**Rule:** If something happens because a user did something, put that logic in the event handler. useEffect is for things that happen because the component appeared on screen.
+
+---
+
+### Mistake 3: The Infinite Loop
+
+**Problem:** You want to fetch products when filters change.
+
+```tsx
+// WRONG - Infinite loop!
+function ProductList({ category }) {
+  const [products, setProducts] = useState([]);
+  const filters = { category, inStock: true };
+
+  useEffect(() => {
+    fetchProducts(filters).then(setProducts);
+  }, [filters]);
+
+  return <ul>{products.map(p => <li key={p.id}>{p.name}</li>)}</ul>;
+}
+```
+
+**Why it loops:** The `filters` object is created fresh on every render. Even if `category` has not changed, `{ category: 'shoes' }` is not equal to `{ category: 'shoes' }` because JavaScript compares objects by reference, not value.
+
+Every render creates a new object, which triggers the effect, which calls setProducts, which triggers a new render.
+
+```tsx
+// RIGHT - Use primitive values
+function ProductList({ category }) {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetchProducts({ category, inStock: true }).then(setProducts);
+  }, [category]);
+
+  return <ul>{products.map(p => <li key={p.id}>{p.name}</li>)}</ul>;
+}
+```
+
+**Rule:** Use primitive values (strings, numbers, booleans) in your dependency array, not objects or arrays.
+
+---
+
+### Mistake 4: Forgetting Cleanup
+
+**Problem:** Your notification component polls the server every 10 seconds.
+
+```tsx
+// WRONG - Memory leak
+function NotificationBadge() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const data = await fetchUnreadCount();
+      setCount(data.count);
+    }, 10000);
+    // Missing cleanup!
+  }, []);
+
+  return <span className="badge">{count}</span>;
+}
+```
+
+**What happens:** When the user navigates away, the component unmounts but the interval keeps running. It tries to call setCount on an unmounted component. Memory leak. Console warnings. Potential crashes.
+
+```tsx
+// RIGHT - Always clean up
+function NotificationBadge() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const data = await fetchUnreadCount();
+      setCount(data.count);
+    }, 10000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  return <span className="badge">{count}</span>;
+}
+```
+
+**Things that need cleanup:**
+- `setInterval` and `setTimeout`
+- Event listeners (`addEventListener`)
+- WebSocket connections
+- Subscriptions
+- Third-party library instances
+
+---
+
+### Mistake 5: Resetting State When Props Change
+
+**Problem:** You have a user profile page. When the user ID changes, you want to clear the comment draft.
+
+```tsx
+// WRONG - Extra render
+function UserProfile({ userId }) {
+  const [comment, setComment] = useState('');
+
+  useEffect(() => {
+    setComment('');
+  }, [userId]);
+
+  return (
+    <div>
+      <h1>User {userId}</h1>
+      <textarea value={comment} onChange={e => setComment(e.target.value)} />
+    </div>
+  );
+}
+```
+
+**The problem:** The component renders with the old comment first, then the effect runs and clears it, causing another render. The user might briefly see the old comment.
+
+```tsx
+// RIGHT - Use the key prop
+function UserProfilePage({ userId }) {
+  return <UserProfile userId={userId} key={userId} />;
+}
+
+function UserProfile({ userId }) {
+  const [comment, setComment] = useState('');
+
+  return (
+    <div>
+      <h1>User {userId}</h1>
+      <textarea value={comment} onChange={e => setComment(e.target.value)} />
+    </div>
+  );
+}
+```
+
+**Why it works:** When the key changes, React treats it as a completely different component and resets all state automatically. No effect needed.
+
+---
+
+### Production Mistake: Race Conditions in Data Fetching
+
+**Problem:** Your product page fetches details based on the URL. If the user clicks quickly between products, old responses might overwrite newer ones.
+
+```tsx
+// WRONG - Race condition
+function ProductPage({ productId }) {
+  const [product, setProduct] = useState(null);
+
+  useEffect(() => {
+    fetch(`/api/products/${productId}`)
+      .then(res => res.json())
+      .then(data => setProduct(data));
+  }, [productId]);
+
+  return <div>{product?.name}</div>;
+}
+```
+
+**The problem:** User clicks Product A, then quickly clicks Product B. If Product A's response arrives after Product B's, the user sees Product A even though they are on Product B's page.
+
+```tsx
+// RIGHT - Cancel stale requests
+function ProductPage({ productId }) {
+  const [product, setProduct] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch(`/api/products/${productId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!cancelled) setProduct(data);
+      });
+
+    return () => { cancelled = true; };
+  }, [productId]);
+
+  return <div>{product?.name}</div>;
+}
+```
+
+The cleanup sets `cancelled = true` before the new effect runs, so stale responses are ignored.
+
+---
+
+### Production Mistake: Expensive Filtering Without Memoization
+
+**Problem:** Your admin dashboard filters thousands of orders by status. The filter runs on every render, even when unrelated state changes.
+
+```tsx
+// WRONG - Recalculates on every render
+function OrdersTable({ orders }) {
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // This runs on EVERY render, even when just typing in search
+  const filteredOrders = orders.filter(order => 
+    statusFilter === 'all' || order.status === statusFilter
+  );
+
+  return (
+    <div>
+      <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+      <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+        <option value="all">All</option>
+        <option value="pending">Pending</option>
+        <option value="shipped">Shipped</option>
+      </select>
+      <Table data={filteredOrders} />
+    </div>
+  );
+}
+```
+
+When you type in the search box, React re-renders. The filter runs again even though `orders` and `statusFilter` have not changed.
+
+```tsx
+// RIGHT - Memoize expensive calculations
+function OrdersTable({ orders }) {
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredOrders = useMemo(() => {
+    return orders.filter(order => 
+      statusFilter === 'all' || order.status === statusFilter
+    );
+  }, [orders, statusFilter]);
+
+  return (
+    <div>
+      <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+      <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+        <option value="all">All</option>
+        <option value="pending">Pending</option>
+        <option value="shipped">Shipped</option>
+      </select>
+      <Table data={filteredOrders} />
+    </div>
+  );
+}
+```
+
+`useMemo` caches the result and only recalculates when `orders` or `statusFilter` change.
+
+---
+
+## Alternatives to useEffect
+
+For many common tasks, there are better tools than useEffect.
+
+### For Computed Values: Just Calculate
+
+If you can derive a value from props or state, calculate it during render.
+
+```tsx
+// Instead of useEffect + useState
+const fullName = `${firstName} ${lastName}`;
+const isAdult = age >= 18;
+const itemCount = items.length;
+```
+
+### For Expensive Calculations: useMemo
+
+If the calculation is expensive and you want to avoid running it on every render:
+
+```tsx
+const sortedItems = useMemo(() => {
+  return [...items].sort((a, b) => a.price - b.price);
+}, [items]);
+```
+
+`useMemo` runs during render (synchronously) and caches the result until dependencies change.
+
+### For DOM References: useRef
+
+If you need to access a DOM element or store a value that should not trigger re-renders:
+
+```tsx
+function AutoFocusInput() {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  return <input ref={inputRef} />;
+}
+```
+
+`useRef` gives you a mutable object that persists across renders without causing re-renders when it changes.
+
+### For Data Fetching: TanStack Query
+
+Using useEffect for API calls creates boilerplate and edge cases. TanStack Query handles caching, loading states, errors, retries, and race conditions.
+
+**Setup:**
+
+```tsx
+// app/providers.tsx
+'use client';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useState } from 'react';
+
+export function Providers({ children }) {
+  const [queryClient] = useState(() => new QueryClient());
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  );
+}
+```
+
+**Fetching data:**
+
+```tsx
+function UserProfile({ userId }) {
+  const { data: user, isPending, error } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetch(`/api/users/${userId}`).then(r => r.json()),
+  });
+
+  if (isPending) return <Spinner />;
+  if (error) return <p>Error loading user</p>;
+  return <div>{user.name}</div>;
+}
+```
+
+**With Prisma on the backend:**
+
+```tsx
+// app/api/users/[id]/route.ts
+import { prisma } from '@/lib/prisma';
+import { NextResponse } from 'next/server';
+
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const user = await prisma.user.findUnique({
+    where: { id },
+    select: { id: true, name: true, email: true },
+  });
+  
+  if (!user) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  return NextResponse.json(user);
+}
+```
+
+**Mutations:**
+
+```tsx
+function UpdateUserForm({ userId }) {
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (newName) =>
+      fetch(`/api/users/${userId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newName }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user', userId] });
+    },
+  });
+
+  return (
+    <button onClick={() => mutate('New Name')} disabled={isPending}>
+      {isPending ? 'Saving...' : 'Update'}
+    </button>
+  );
+}
+```
+
+**What TanStack Query gives you:**
+- Automatic caching
+- Background refetching
+- Request deduplication
+- Automatic retries
+- Loading and error states
+- No race conditions
+
+---
+
+## AI-Generated Code vs Correct Code
+
+LLMs often overuse useEffect because their training data is from 2019-2022 when useEffect was the standard approach. Here are common patterns they generate and how to fix them.
+
+### Example 1: Derived State
+
+```tsx
+// AI-Generated (Wrong)
+function PriceDisplay({ price, taxRate }) {
+  const [total, setTotal] = useState(0);
+  
+  useEffect(() => {
+    setTotal(price * (1 + taxRate));
+  }, [price, taxRate]);
+  
+  return <span>${total.toFixed(2)}</span>;
+}
+
+// Correct
+function PriceDisplay({ price, taxRate }) {
+  const total = price * (1 + taxRate);
+  return <span>${total.toFixed(2)}</span>;
+}
+```
+
+### Example 2: Event Response
+
+```tsx
+// AI-Generated (Wrong)
+function SearchBox() {
+  const [query, setQuery] = useState('');
+  const [shouldSearch, setShouldSearch] = useState(false);
+  
+  useEffect(() => {
+    if (shouldSearch) {
+      performSearch(query);
+      setShouldSearch(false);
+    }
+  }, [shouldSearch, query]);
+  
+  return (
+    <div>
+      <input value={query} onChange={e => setQuery(e.target.value)} />
+      <button onClick={() => setShouldSearch(true)}>Search</button>
+    </div>
+  );
+}
+
+// Correct
+function SearchBox() {
+  const [query, setQuery] = useState('');
+  
+  const handleSearch = () => {
+    performSearch(query);
+  };
+  
+  return (
+    <div>
+      <input value={query} onChange={e => setQuery(e.target.value)} />
+      <button onClick={handleSearch}>Search</button>
+    </div>
+  );
+}
+```
+
+### Example 3: Data Fetching
+
+```tsx
+// AI-Generated (Incomplete)
+function UserList() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    fetch('/api/users')
+      .then(res => res.json())
+      .then(data => {
+        setUsers(data);
+        setLoading(false);
+      });
+  }, []);
+  
+  if (loading) return <p>Loading...</p>;
+  return <ul>{users.map(u => <li key={u.id}>{u.name}</li>)}</ul>;
+}
+
+// Correct (with TanStack Query)
+function UserList() {
+  const { data: users, isPending } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => fetch('/api/users').then(r => r.json()),
+  });
+  
+  if (isPending) return <p>Loading...</p>;
+  return <ul>{users.map(u => <li key={u.id}>{u.name}</li>)}</ul>;
+}
+```
+
+---
+
+## Quick Reference
+
+| Scenario | Best Solution |
+|----------|---------------|
+| Calculate value from props/state | Calculate during render |
+| Expensive calculation | `useMemo` |
+| Store value without re-renders | `useRef` |
+| Access DOM element | `useRef` |
+| User clicked/typed something | Event handler |
+| Reset state when prop changes | `key` prop |
+| Fetch data from API | TanStack Query |
+| Subscribe to browser events | `useEffect` |
+| Connect to WebSocket | `useEffect` |
+| Initialize third-party library | `useEffect` |
+| Update document title | `useEffect` |
+| Set up timer/interval | `useEffect` |
+
+---
+
+## Checklist Before Using useEffect
+
+Ask yourself these four questions before writing useEffect:
+
+1. **Am I synchronizing with an external system?**
+   If there is no browser API, network connection, or third-party library involved, you probably do not need useEffect.
+
+2. **Can I calculate this value during render?**
+   If yes, just calculate it. Use `useMemo` if it is expensive.
+
+3. **Is this triggered by a user action?**
+   If yes, put the logic in the event handler, not in useEffect.
+
+4. **Am I fetching data?**
+   If yes, use TanStack Query or SWR instead of manual useEffect.
+
+---
+
+## System Prompt for Your LLM
+
+Add this to your AI assistant's instructions to get better React code:
+
+```
+When writing React: Never use useEffect for calculated values (compute during render), user actions (use event handlers), or data fetching (use TanStack Query). Only use useEffect for external systems: browser events, WebSockets, third-party libraries, document title. Always include cleanup for subscriptions and timers. Use primitive values in dependency arrays. Never ignore ESLint dependency warnings.
+```
+
+---
+
+## Conclusion
+
+useEffect is not bad. It is just overused.
+
+The hook exists for one purpose: synchronizing your React component with external systems. Browser events, WebSocket connections, third-party libraries, document metadata. These are the legitimate use cases.
+
+For everything else, there is usually a simpler solution. Computed values should be calculated during render. Expensive calculations should use useMemo. User actions belong in event handlers. Data fetching should use TanStack Query.
+
+Before you write useEffect, ask yourself: "Am I synchronizing with something outside React?"
+
+If the answer is no, you probably do not need it.
+
+---
+
+## Further Reading
+
+- [You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect) - Official React documentation
+- [useEffect Reference](https://react.dev/reference/react/useEffect) - Official React API reference
+- [Synchronizing with Effects](https://react.dev/learn/synchronizing-with-effects) - React documentation on effects
+- [TanStack Query Documentation](https://tanstack.com/query/latest) - Modern data fetching library
+- [15 Common useEffect Mistakes](https://blog.logrocket.com/15-common-useeffect-mistakes-react/) - LogRocket Blog
+- [useMemo Reference](https://react.dev/reference/react/useMemo) - Official React documentation
+- [useRef Reference](https://react.dev/reference/react/useRef) - Official React documentation
+- [Prisma with React](https://www.prisma.io/react) - Prisma documentation
