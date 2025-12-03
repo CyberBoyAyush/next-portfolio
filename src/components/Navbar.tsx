@@ -3,6 +3,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { Code2, Home, FolderOpen, BookOpen, Github, ExternalLink } from 'lucide-react';
+import { useBlogThemeSafe } from './BlogThemeProvider';
 
 // Custom X (Twitter) Icon Component
 const XIcon = ({ size = 18, className = "" }) => (
@@ -21,6 +22,8 @@ const Navbar = () => {
   const { scrollY } = useScroll();
   const headerY = useTransform(scrollY, [0, 100], [0, -20]);
   const headerOpacity = useTransform(scrollY, [0, 50, 100], [1, 0.8, 0.6]);
+  const themeContext = useBlogThemeSafe();
+  const isLight = themeContext?.theme === 'light';
 
   return (
     <>
@@ -33,25 +36,34 @@ const Navbar = () => {
       >
         <div className="container mx-auto px-6">
           <motion.div
-            className="mx-auto flex h-16 max-w-5xl items-center justify-between bg-[#0a0a0a]/80 px-6 shadow-lg shadow-black/20 backdrop-blur-xl border border-white/5"
+            key={`navbar-${isLight ? 'light' : 'dark'}`}
+            className={`mx-auto flex h-16 max-w-5xl items-center justify-between px-6 shadow-lg backdrop-blur-xl border transition-colors duration-300 ${
+              isLight 
+                ? 'bg-white/90 shadow-gray-200/50 border-gray-200' 
+                : 'bg-[#0a0a0a]/80 shadow-black/20 border-white/5'
+            }`}
             whileHover={{
-              borderColor: 'rgba(255, 255, 255, 0.15)',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)'
+              borderColor: isLight ? 'rgba(209, 213, 219, 1)' : 'rgba(255, 255, 255, 0.15)',
+              backgroundColor: isLight ? 'rgba(255, 255, 255, 0.98)' : 'rgba(0, 0, 0, 0.5)'
             }}
             transition={{ duration: 0.3 }}
           >
             {/* Logo/Name */}
-            <Link href="/" className="group relative flex items-center gap-3 font-bold text-white">
+            <Link href="/" className={`group relative flex items-center gap-3 font-bold ${isLight ? 'text-gray-900' : 'text-white'}`}>
               <motion.div
-                className="relative p-2 bg-white/5 border border-white/10 group-hover:border-white/20 transition-all duration-300"
+                className={`relative p-2 border transition-all duration-300 ${
+                  isLight 
+                    ? 'bg-gray-100 border-gray-200 group-hover:border-gray-300' 
+                    : 'bg-white/5 border-white/10 group-hover:border-white/20'
+                }`}
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
               >
-                <Code2 size={20} className="text-gray-300 group-hover:text-white transition-colors" />
+                <Code2 size={20} className={`transition-colors ${isLight ? 'text-gray-600 group-hover:text-gray-900' : 'text-gray-300 group-hover:text-white'}`} />
               </motion.div>
 
               <div className="relative">
-                <span className="text-lg font-semibold text-gray-200 group-hover:text-white transition-colors duration-300">
+                <span className={`text-lg font-semibold transition-colors duration-300 ${isLight ? 'text-gray-700 group-hover:text-gray-900' : 'text-gray-200 group-hover:text-white'}`}>
                   Ayush Sharma
                 </span>
               </div>
@@ -61,7 +73,11 @@ const Navbar = () => {
             <nav className="flex items-center space-x-1">
               <Link
                 href="/"
-                className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/5 group"
+                className={`flex items-center gap-2 px-4 py-2 transition-all duration-300 group ${
+                  isLight 
+                    ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
               >
                 <Home size={16} className="group-hover:scale-105 transition-transform" />
                 <span className="font-medium text-sm">Home</span>
@@ -69,7 +85,11 @@ const Navbar = () => {
 
               <Link
                 href="/projects"
-                className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/5 group"
+                className={`flex items-center gap-2 px-4 py-2 transition-all duration-300 group ${
+                  isLight 
+                    ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
               >
                 <FolderOpen size={16} className="group-hover:scale-105 transition-transform" />
                 <span className="font-medium text-sm">Projects</span>
@@ -77,19 +97,27 @@ const Navbar = () => {
 
               <Link
                 href="/blogs"
-                className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/5 group"
+                className={`flex items-center gap-2 px-4 py-2 transition-all duration-300 group ${
+                  isLight 
+                    ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
               >
                 <BookOpen size={16} className="group-hover:scale-105 transition-transform" />
                 <span className="font-medium text-sm">Blogs</span>
               </Link>
 
-              <div className="w-px h-6 bg-white/10 mx-2" />
+              <div className={`w-px h-6 mx-2 ${isLight ? 'bg-gray-200' : 'bg-white/10'}`} />
 
               <motion.a
                 href="https://github.com/cyberboyayush"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 px-3 py-2 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/5 group"
+                className={`flex items-center gap-1 px-3 py-2 transition-all duration-300 group ${
+                  isLight 
+                    ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 aria-label="GitHub"
@@ -102,7 +130,11 @@ const Navbar = () => {
                 href="https://x.com/cyberboyayush"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 px-3 py-2 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/5 group"
+                className={`flex items-center gap-1 px-3 py-2 transition-all duration-300 group ${
+                  isLight 
+                    ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 aria-label="X (Twitter)"
@@ -124,10 +156,15 @@ const Navbar = () => {
         className="md:hidden fixed top-4 left-0 right-0 z-50 px-4"
       >
         <motion.div
-          className="bg-[#0D1117]/80 backdrop-blur-xl border border-gray-800 px-3 py-2 shadow-lg"
+          key={`mobile-header-${isLight ? 'light' : 'dark'}`}
+          className={`backdrop-blur-xl border px-3 py-2 shadow-lg transition-colors duration-300 ${
+            isLight 
+              ? 'bg-white/90 border-gray-200 shadow-gray-200/50' 
+              : 'bg-[#0D1117]/80 border-gray-800'
+          }`}
           whileHover={{
-            borderColor: 'rgba(107, 114, 128, 0.5)',
-            backgroundColor: 'rgba(13, 17, 23, 0.9)',
+            borderColor: isLight ? 'rgba(209, 213, 219, 1)' : 'rgba(107, 114, 128, 0.5)',
+            backgroundColor: isLight ? 'rgba(255, 255, 255, 0.98)' : 'rgba(13, 17, 23, 0.9)',
           }}
           transition={{ duration: 0.3 }}
         >
@@ -138,14 +175,18 @@ const Navbar = () => {
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
               <motion.div
-                className="p-1.5 bg-white/5 border border-white/10 group-hover:border-white/20 transition-all duration-300"
+                className={`p-1.5 border transition-all duration-300 ${
+                  isLight 
+                    ? 'bg-gray-100 border-gray-200 group-hover:border-gray-300' 
+                    : 'bg-white/5 border-white/10 group-hover:border-white/20'
+                }`}
                 whileHover={{ rotate: 3 }}
                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
               >
-                <Code2 size={16} className="text-gray-300 group-hover:text-white transition-colors" />
+                <Code2 size={16} className={`transition-colors ${isLight ? 'text-gray-600 group-hover:text-gray-900' : 'text-gray-300 group-hover:text-white'}`} />
               </motion.div>
 
-              <span className="text-base font-semibold text-gray-200 group-hover:text-white transition-colors duration-300">
+              <span className={`text-base font-semibold transition-colors duration-300 ${isLight ? 'text-gray-700 group-hover:text-gray-900' : 'text-gray-200 group-hover:text-white'}`}>
                 Ayush Sharma
               </span>
             </motion.div>
@@ -160,7 +201,11 @@ const Navbar = () => {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="md:hidden fixed bottom-2 left-2 right-2 z-50"
       >
-        <div className="bg-black/40 backdrop-blur-3xl border border-white/15 px-1 py-1 shadow-xl shadow-black/30">
+        <div className={`backdrop-blur-3xl border px-1 py-1 shadow-xl transition-colors duration-300 ${
+          isLight 
+            ? 'bg-white/90 border-gray-200 shadow-gray-200/50' 
+            : 'bg-black/40 border-white/15 shadow-black/30'
+        }`}>
           <div className="flex items-center justify-between">
             {/* Home */}
             <motion.div
@@ -170,10 +215,14 @@ const Navbar = () => {
             >
               <Link
                 href="/"
-                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/10 group"
+                className={`flex flex-col items-center justify-center py-2.5 px-1 transition-all duration-300 group ${
+                  isLight 
+                    ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
+                    : 'text-gray-400 hover:text-white hover:bg-white/10'
+                }`}
               >
                 <div className="relative">
-                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isLight ? 'bg-gray-100' : 'bg-white/5'}`} />
                   <Home size={18} className="relative group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <span className="text-xs mt-1 font-medium">Home</span>
@@ -188,10 +237,14 @@ const Navbar = () => {
             >
               <Link
                 href="/projects"
-                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/10 group"
+                className={`flex flex-col items-center justify-center py-2.5 px-1 transition-all duration-300 group ${
+                  isLight 
+                    ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
+                    : 'text-gray-400 hover:text-white hover:bg-white/10'
+                }`}
               >
                 <div className="relative">
-                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isLight ? 'bg-gray-100' : 'bg-white/5'}`} />
                   <FolderOpen size={18} className="relative group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <span className="text-xs mt-1 font-medium">Projects</span>
@@ -206,10 +259,14 @@ const Navbar = () => {
             >
               <Link
                 href="/blogs"
-                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/10 group"
+                className={`flex flex-col items-center justify-center py-2.5 px-1 transition-all duration-300 group ${
+                  isLight 
+                    ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
+                    : 'text-gray-400 hover:text-white hover:bg-white/10'
+                }`}
               >
                 <div className="relative">
-                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isLight ? 'bg-gray-100' : 'bg-white/5'}`} />
                   <BookOpen size={18} className="relative group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <span className="text-xs mt-1 font-medium">Blogs</span>
@@ -217,7 +274,7 @@ const Navbar = () => {
             </motion.div>
 
             {/* Divider */}
-            <div className="h-6 w-px bg-white/10 mx-0.5" />
+            <div className={`h-6 w-px mx-0.5 ${isLight ? 'bg-gray-200' : 'bg-white/10'}`} />
 
             {/* GitHub */}
             <motion.div
@@ -229,11 +286,15 @@ const Navbar = () => {
                 href="https://github.com/cyberboyayush"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/10 group"
+                className={`flex flex-col items-center justify-center py-2.5 px-1 transition-all duration-300 group ${
+                  isLight 
+                    ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
+                    : 'text-gray-400 hover:text-white hover:bg-white/10'
+                }`}
                 aria-label="GitHub"
               >
                 <div className="relative">
-                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isLight ? 'bg-gray-100' : 'bg-white/5'}`} />
                   <Github size={18} className="relative group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <span className="text-xs mt-1 font-medium">GitHub</span>
@@ -250,11 +311,15 @@ const Navbar = () => {
                 href="https://x.com/cyberboyayush"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-col items-center justify-center py-2.5 px-1 text-gray-400 hover:text-white transition-all duration-300 hover:bg-white/10 group"
+                className={`flex flex-col items-center justify-center py-2.5 px-1 transition-all duration-300 group ${
+                  isLight 
+                    ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
+                    : 'text-gray-400 hover:text-white hover:bg-white/10'
+                }`}
                 aria-label="X (Twitter)"
               >
                 <div className="relative">
-                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isLight ? 'bg-gray-100' : 'bg-white/5'}`} />
                   <XIcon size={18} className="relative group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <span className="text-xs mt-1 font-medium">X</span>
