@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { ChevronDown, ChevronUp, List } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useBlogThemeSafe } from './BlogThemeProvider';
 
 interface Heading {
     id: string;
@@ -17,6 +18,8 @@ interface TableOfContentsProps {
 export default function TableOfContents({ headings }: TableOfContentsProps) {
     const [activeId, setActiveId] = useState<string>('');
     const [isMobileOpen, setIsMobileOpen] = useState(false);
+    const themeContext = useBlogThemeSafe();
+    const isLight = themeContext?.theme === 'light';
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -57,27 +60,17 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
     let h3Count = 0;
 
     const getNumbering = (level: number) => {
-        if (level === 2) { // Assuming H2 is top level in TOC
+        if (level === 2) {
             h2Count++;
-            h3Count = 0; // Reset H3 counter
+            h3Count = 0;
             return `${h2Count}.`;
         } else if (level === 3) {
             h3Count++;
-            // Simple roman numeral converter for small numbers
             const romans = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x'];
             return romans[h3Count - 1] || `${h3Count}`;
         }
         return '';
     };
-
-    // Pre-calculate numbering to avoid render-phase side effects if we were mapping directly in JSX
-    // But here we can just map and maintain state since it's a single pass render
-    const numberedHeadings = headings.map(h => {
-        // Reset logic needs to be handled carefully in a map if we want it to be pure-ish, 
-        // but for this simple list, we can just iterate.
-        // Actually, let's do it properly.
-        return h;
-    });
 
     // Reset counters for the render pass
     h2Count = 0;
@@ -89,24 +82,32 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
             <div className="lg:hidden mb-8">
                 <button
                     onClick={() => setIsMobileOpen(!isMobileOpen)}
-                    className="w-full flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-lg text-left text-gray-200 hover:bg-white/10 transition-colors"
+                    className={`w-full flex items-center justify-between p-4 border rounded-lg text-left transition-colors ${
+                        isLight 
+                            ? 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100' 
+                            : 'bg-white/5 border-white/10 text-gray-200 hover:bg-white/10'
+                    }`}
                 >
                     <div className="flex items-center gap-2">
-                        <List size={18} className="text-blue-400" />
+                        <List size={18} className={isLight ? 'text-blue-600' : 'text-blue-400'} />
                         <span className="font-medium font-mono">Table of Contents</span>
                     </div>
                     {isMobileOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                 </button>
 
                 {isMobileOpen && (
-                    <nav className="mt-2 p-4 bg-[#0D1117] border border-white/10 rounded-lg animate-in slide-in-from-top-2">
+                    <nav className={`mt-2 p-4 border rounded-lg animate-in slide-in-from-top-2 ${
+                        isLight 
+                            ? 'bg-white border-gray-200' 
+                            : 'bg-[#0D1117] border-white/10'
+                    }`}>
                         <ul className="space-y-3">
                             {headings.map((heading) => {
                                 const number = getNumbering(heading.level);
                                 return (
                                     <li
                                         key={heading.id}
-                                        style={{ paddingLeft: `${(heading.level - 2) * 16}px` }} // Adjusted indentation
+                                        style={{ paddingLeft: `${(heading.level - 2) * 16}px` }}
                                     >
                                         <a
                                             href={`#${heading.id}`}
@@ -114,13 +115,14 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
                                             className={cn(
                                                 "flex items-baseline gap-3 text-sm transition-colors duration-200",
                                                 activeId === heading.id
-                                                    ? "text-white font-medium"
-                                                    : "text-gray-400 hover:text-gray-200"
+                                                    ? isLight ? "text-gray-900 font-medium" : "text-white font-medium"
+                                                    : isLight ? "text-gray-500 hover:text-gray-700" : "text-gray-400 hover:text-gray-200"
                                             )}
                                         >
                                             <span className={cn(
                                                 "font-mono text-xs shrink-0 w-6 text-right",
-                                                heading.level === 3 ? "italic text-gray-500" : "text-gray-500"
+                                                heading.level === 3 ? "italic" : "",
+                                                isLight ? "text-gray-400" : "text-gray-500"
                                             )}>
                                                 {number}
                                             </span>
@@ -136,12 +138,12 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
 
             {/* Desktop Sidebar */}
             <nav className="hidden lg:block sticky top-24 max-h-[calc(100vh-8rem)] pr-4 overflow-y-auto custom-scrollbar">
-                <div className="mb-6 flex items-center justify-between text-gray-100">
+                <div className="mb-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <List size={18} className="text-gray-400" />
-                        <h3 className="font-mono text-sm tracking-wide text-gray-400 uppercase">Table of Contents</h3>
+                        <List size={18} className={isLight ? 'text-gray-500' : 'text-gray-400'} />
+                        <h3 className={`font-mono text-sm tracking-wide uppercase ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>Table of Contents</h3>
                     </div>
-                    <ChevronUp size={16} className="text-gray-600" /> {/* Decorative or functional if we want collapse */}
+                    <ChevronUp size={16} className={isLight ? 'text-gray-400' : 'text-gray-600'} />
                 </div>
 
                 <ul className="space-y-4">
@@ -157,8 +159,8 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
                                     className={cn(
                                         "flex items-baseline gap-4 text-sm transition-all duration-300 group-hover:translate-x-1",
                                         isActive
-                                            ? "text-white"
-                                            : "text-gray-400 hover:text-gray-200"
+                                            ? isLight ? "text-gray-900" : "text-white"
+                                            : isLight ? "text-gray-500 hover:text-gray-700" : "text-gray-400 hover:text-gray-200"
                                     )}
                                     style={{
                                         marginLeft: `${(heading.level - 2) * 12}px`
@@ -166,7 +168,9 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
                                 >
                                     <span className={cn(
                                         "font-mono text-xs shrink-0 w-6 text-right transition-colors duration-300",
-                                        isActive ? "text-white font-bold" : "text-gray-600 group-hover:text-gray-400",
+                                        isActive 
+                                            ? isLight ? "text-gray-900 font-bold" : "text-white font-bold" 
+                                            : isLight ? "text-gray-400 group-hover:text-gray-500" : "text-gray-600 group-hover:text-gray-400",
                                         heading.level === 3 && "italic"
                                     )}>
                                         {number}
@@ -192,11 +196,11 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
           background: transparent;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #333;
+          background: ${isLight ? '#d1d5db' : '#333'};
           border-radius: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #555;
+          background: ${isLight ? '#9ca3af' : '#555'};
         }
       `}</style>
         </>

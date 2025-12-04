@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Check, Copy } from 'lucide-react';
+import { useBlogThemeSafe } from './BlogThemeProvider';
 
 interface CodeBlockProps {
   children: React.ReactNode;
@@ -11,6 +12,8 @@ export default function CodeBlock({ children }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
   const [language, setLanguage] = useState('');
   const codeRef = useRef<HTMLDivElement>(null);
+  const themeContext = useBlogThemeSafe();
+  const isLight = themeContext?.theme === 'light';
 
   useEffect(() => {
     if (codeRef.current) {
@@ -38,8 +41,19 @@ export default function CodeBlock({ children }: CodeBlockProps) {
   };
 
   return (
-    <div ref={codeRef} className="relative group my-6 border border-white/10 bg-[#050505] overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2 bg-white/5 border-b border-white/5">
+    <div 
+      ref={codeRef} 
+      className={`relative group my-6 overflow-hidden rounded-lg transition-colors duration-300 ${
+        isLight 
+          ? 'border border-gray-200 bg-[#1e293b]' 
+          : 'border border-white/10 bg-[#050505]'
+      }`}
+    >
+      <div className={`flex items-center justify-between px-4 py-2 border-b transition-colors duration-300 ${
+        isLight 
+          ? 'bg-[#1e293b] border-gray-700/50' 
+          : 'bg-white/5 border-white/5'
+      }`}>
         <span className="text-xs font-medium text-gray-400 uppercase font-code">{language}</span>
         <button
           onClick={handleCopy}

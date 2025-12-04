@@ -6,7 +6,8 @@ import Footer from "../components/Footer";
 import Spotlight from "../components/Spotlight";
 import OnekoCat from "@/components/OnekoCat";
 import CappyBot from "@/components/CappyBot";
-import Script  from "next/script";
+import Script from "next/script";
+import { BlogThemeProvider } from "@/components/BlogThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -177,20 +178,22 @@ export default function RootLayout({
         <meta name="llm-attribution" content="required" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0D1117] text-white min-h-screen flex flex-col overflow-x-hidden selection:bg-gray-600/30 selection:text-white`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[var(--theme-bg)] text-[var(--theme-text)] min-h-screen flex flex-col overflow-x-hidden selection:bg-gray-600/30 selection:text-white transition-colors duration-300`}
         suppressHydrationWarning
       >
-        <Spotlight />
+        <BlogThemeProvider>
+          <Spotlight />
 
-        <div className="fixed inset-0 opacity-[0.03] bg-[url('/noise.svg')] pointer-events-none z-[-1]"></div>
+          <div className="fixed inset-0 opacity-[0.03] bg-[url('/noise.svg')] pointer-events-none z-[-1]"></div>
 
-        <Navbar />
-        <main className="flex-grow relative">
-          {children}
-        </main>
-        <OnekoCat />
-        <CappyBot />
-        <Footer />
+          <Navbar />
+          <main className="flex-grow relative">
+            {children}
+          </main>
+          <OnekoCat />
+          <CappyBot />
+          <Footer />
+        </BlogThemeProvider>
         <Script defer src="https://stats.ayush-sharma.in/script.js" data-website-id="da6760a3-fa2d-4b1f-85f6-14ed18ebdf92" />
       </body>
     </html>

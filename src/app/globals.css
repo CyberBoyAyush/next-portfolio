@@ -1,38 +1,6 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --primary: #8B5CF6;
-  --primary-light: #A78BFA;
-  --primary-dark: #7C3AED;
-  --secondary: #3B82F6;
-  --accent: #F472B6;
-  --border: #e5e7eb;
-  --ring: #8B5CF6;
-  --muted: #6b7280;
-  --muted-foreground: #9ca3af;
-}
-
-/* Removed unsupported @theme block */
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --primary: #8B5CF6;
-    --primary-light: #A78BFA;
-    --primary-dark: #7C3AED;
-    --secondary: #3B82F6;
-    --accent: #F472B6;
-    --border: #27272a;
-    --ring: #8B5CF6;
-    --muted: #71717a;
-    --muted-foreground: #a1a1aa;
-  }
-}
-
-html.dark {
   --background: #0a0a0a;
   --foreground: #ededed;
   --primary: #8B5CF6;
@@ -44,6 +12,63 @@ html.dark {
   --ring: #8B5CF6;
   --muted: #71717a;
   --muted-foreground: #a1a1aa;
+}
+
+[data-theme="light"] {
+  --background: #ffffff;
+  --foreground: #171717;
+  --primary: #7C3AED;
+  --primary-light: #8B5CF6;
+  --primary-dark: #6D28D9;
+  --secondary: #2563EB;
+  --accent: #EC4899;
+  --border: #e5e7eb;
+  --ring: #7C3AED;
+  --muted: #6b7280;
+  --muted-foreground: #9ca3af;
+}
+
+/* Global Scrollbar Styles - Dark Mode (default) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0D1117;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
+
+/* Global Scrollbar Styles - Light Mode */
+[data-theme="light"] ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 5px;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #374151 #0D1117;
+}
+
+[data-theme="light"] * {
+  scrollbar-color: #cbd5e1 #f1f5f9;
 }
 
 /* Custom Scrollbar for CappyBot */

@@ -306,3 +306,102 @@
     font-size: 0.75rem;
   }
 }
+
+/* Light Theme Styles */
+[data-theme="light"] .blog-content h2 {
+  color: #1f2937;
+}
+
+[data-theme="light"] .blog-content h3 {
+  color: #374151;
+}
+
+[data-theme="light"] .blog-content p {
+  color: #4b5563;
+}
+
+[data-theme="light"] .blog-content ul,
+[data-theme="light"] .blog-content ol {
+  color: #4b5563;
+}
+
+[data-theme="light"] .blog-content ul li::before {
+  background: linear-gradient(135deg, #7c3aed, #db2777);
+}
+
+[data-theme="light"] .blog-content ol li::before {
+  color: #7c3aed;
+}
+
+[data-theme="light"] .blog-content strong {
+  color: #1f2937;
+}
+
+[data-theme="light"] .blog-content code {
+  background: rgba(0, 0, 0, 0.05);
+  color: #9333ea;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .blog-content pre {
+  background: #1e293b !important;
+  border: none !important;
+}
+
+[data-theme="light"] .blog-content pre code {
+  color: #e2e8f0;
+  background: transparent !important;
+  border: none !important;
+}
+
+[data-theme="light"] .blog-content blockquote {
+  border-left-color: #7c3aed;
+  background: rgba(124, 58, 237, 0.05);
+  color: #4b5563;
+}
+
+[data-theme="light"] .blog-content blockquote p {
+  color: #4b5563;
+}
+
+[data-theme="light"] .blog-content a {
+  color: #2563eb;
+}
+
+[data-theme="light"] .blog-content a:hover {
+  color: #1d4ed8;
+  border-bottom-color: #1d4ed8;
+}
+
+[data-theme="light"] .blog-content img {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .blog-content hr {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .blog-content table {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .blog-content table thead {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(219, 39, 119, 0.05));
+}
+
+[data-theme="light"] .blog-content table th,
+[data-theme="light"] .blog-content table td {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .blog-content table th {
+  color: #374151;
+}
+
+[data-theme="light"] .blog-content table td {
+  color: #4b5563;
+}
+
+[data-theme="light"] .blog-content table tbody tr:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
