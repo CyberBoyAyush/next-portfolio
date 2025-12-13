@@ -10,8 +10,7 @@ import CodeBlock from '@/components/code-block';
 import CopyMarkdownButton from '@/components/copy-markdown-button';
 import BlogContent, { BlogProvider, BlogFontWrapper, BlogFloatingControls } from '@/components/blog-content-wrapper';
 import BlogShareButton from '@/components/blog-share-button';
-import BlogLikeButton from '@/components/blog-like-button';
-import BlogComments from '@/components/blog-comments';
+import BlogEngagementSection from '@/components/blog-engagement-section';
 import 'highlight.js/styles/github-dark.css';
 import './blog-content.css';
 import { extractHeadings } from '@/lib/blog-utils';
@@ -209,11 +208,8 @@ export default async function BlogPost({ params }: Props) {
                 </aside>
               </div>
 
-              {/* Likes and Comments */}
-              <div className="mt-12 space-y-8">
-                <BlogLikeButton slug={slug} />
-                <BlogComments slug={slug} />
-              </div>
+              {/* Engagement Section */}
+              <BlogEngagementSection slug={slug} />
 
               {/* Related Blogs */}
               {relatedBlogs.length > 0 && (
