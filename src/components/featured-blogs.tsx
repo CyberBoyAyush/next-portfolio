@@ -4,8 +4,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ArrowRight, Calendar, Clock } from 'lucide-react';
-import SectionHeading from './SectionHeading';
-import BlogImagePlaceholder from './BlogImagePlaceholder';
+import SectionHeading from './section-heading';
+import BlogImagePlaceholder from './blog-image-placeholder';
 import { BlogPost } from '@/types/blog';
 
 interface FeaturedBlogsProps {

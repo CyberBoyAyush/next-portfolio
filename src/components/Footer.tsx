@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Github, Linkedin, Mail, ArrowUp, Heart } from 'lucide-react';
-import { useBlogThemeSafe } from './BlogThemeProvider';
+import { useBlogThemeSafe } from './blog-theme-provider';
 
 // Custom X (Twitter) Icon Component
 const XIcon = ({ size = 18, className = "" }) => (

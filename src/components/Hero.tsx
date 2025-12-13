@@ -14,7 +14,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import Image from "next/image";
-import TechTicker from "./TechTicker";
+import TechTicker from "./tech-ticker";
 import { getCalApi } from "@calcom/embed-react";
 
 // Custom X (Twitter) Icon Component

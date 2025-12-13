@@ -2,8 +2,8 @@
 
 import { useRef, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
-import SectionHeading from '../../components/SectionHeading';
-import ProjectCard from '../../components/ProjectCard';
+import SectionHeading from '../../components/section-heading';
+import ProjectCard from '../../components/project-card';
 import { getAllProjects } from '../../data/projects';
 
 export default function ProjectsPage() {

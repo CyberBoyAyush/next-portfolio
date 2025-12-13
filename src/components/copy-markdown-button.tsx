@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Check, ClipboardCopy, ClipboardCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Tooltip } from "./BlogContentWrapper";
+import { Tooltip } from "./blog-content-wrapper";
 
 interface CopyMarkdownButtonProps {
   content: string;

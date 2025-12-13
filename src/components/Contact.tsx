@@ -5,7 +5,7 @@ import { motion, useInView } from 'framer-motion';
 import { Terminal, Mail, Send, ArrowRight, MessageSquare, RotateCcw, Phone, Calendar } from 'lucide-react';
 import { getCalApi } from "@calcom/embed-react";
 import '../styles/terminal.css';
-import SectionHeading from './SectionHeading';
+import SectionHeading from './section-heading';
 
 type CommandType = {
   command: string;

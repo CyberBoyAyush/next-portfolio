@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Share2, X, Copy, Check, Link as LinkIcon } from "lucide-react";
 import { FaXTwitter, FaLinkedin } from "react-icons/fa6";
 import { AnimatePresence, motion } from "framer-motion";
-import { useBlogThemeSafe } from "./BlogThemeProvider";
+import { useBlogThemeSafe } from "./blog-theme-provider";
 
 interface BlogShareButtonProps {
   title: string;

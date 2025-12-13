@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Check, Copy } from 'lucide-react';
-import { useBlogThemeSafe } from './BlogThemeProvider';
+import { useBlogThemeSafe } from './blog-theme-provider';
 
 interface CodeBlockProps {
   children: React.ReactNode;

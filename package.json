@@ -16,6 +16,7 @@
     "@ai-sdk/react": "^2.0.90",
     "@calcom/embed-react": "^1.5.3",
     "@lobehub/icons": "^2.43.1",
+    "@neondatabase/serverless": "^1.0.2",
     "@openrouter/ai-sdk-provider": "^1.2.1",
     "@react-three/drei": "^10.7.6",
     "@react-three/fiber": "^9.4.0",
@@ -26,6 +27,7 @@
     "aceternity": "^1.0.1",
     "ai": "^5.0.90",
     "clsx": "^2.1.1",
+    "drizzle-orm": "^0.45.1",
     "framer-motion": "^12.23.24",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
@@ -48,6 +50,7 @@
     "tailwind-merge": "^3.3.1",
     "tailwind-variants": "^3.1.1",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^13.0.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {
@@ -57,6 +60,8 @@
     "@types/nodemailer": "^7.0.3",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "@types/uuid": "^11.0.0",
+    "drizzle-kit": "^0.31.8",
     "eslint": "^9.38.0",
     "eslint-config-next": "16.0.0",
     "tailwindcss": "^4.1.15",
