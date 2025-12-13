@@ -15,9 +15,18 @@ function moderateComment(content: string): { approved: boolean; reason?: string 
     return { approved: false, reason: "Comment is too long (maximum 2000 characters)" };
   }
 
-  const urlPattern = /https?:\/\/[^\s]+/g;
-  const urls = trimmed.match(urlPattern);
-  if (urls && urls.length > 2) {
+  // Count URLs by parsing words - safer than regex to avoid ReDoS
+  const words = trimmed.split(/\s+/);
+  const urlCount = words.filter((word) => {
+    try {
+      const url = new URL(word);
+      return url.protocol === "http:" || url.protocol === "https:";
+    } catch {
+      return false;
+    }
+  }).length;
+
+  if (urlCount > 2) {
     return { approved: false, reason: "Too many URLs (maximum 2 allowed)" };
   }
 

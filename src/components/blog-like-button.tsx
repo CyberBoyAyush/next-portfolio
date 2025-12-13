@@ -19,17 +19,25 @@ export default function BlogLikeButton({ slug }: BlogLikeButtonProps) {
   const isLight = themeContext?.theme === "light";
 
   useEffect(() => {
-    fetch(`/api/blogs/${slug}/likes`)
-      .then((res) => res.json())
+    const controller = new AbortController();
+
+    fetch(`/api/blogs/${slug}/likes`, { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then((data) => {
         setLikeCount(data.count || 0);
         setHasLiked(data.hasLiked || false);
         setIsLoading(false);
       })
       .catch((error) => {
+        if (error.name === "AbortError") return;
         console.error("Error fetching likes:", error);
         setIsLoading(false);
       });
+
+    return () => controller.abort();
   }, [slug]);
 
   const handleToggleLike = async () => {
@@ -78,6 +86,8 @@ export default function BlogLikeButton({ slug }: BlogLikeButtonProps) {
     <motion.button
       onClick={handleToggleLike}
       disabled={isToggling}
+      aria-label={hasLiked ? `Unlike this post, currently ${likeCount} likes` : `Like this post, currently ${likeCount} likes`}
+      aria-pressed={hasLiked}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={`relative flex items-center gap-3 px-8 py-3 rounded-full border backdrop-blur-md transition-all duration-300 min-w-[140px] justify-center group ${
