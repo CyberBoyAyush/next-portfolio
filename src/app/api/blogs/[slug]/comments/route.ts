@@ -109,16 +109,17 @@ export async function POST(
       );
     }
 
-    const moderation = moderateComment(content);
+    // Sanitize first, then moderate the sanitized content
+    const sanitizedContent = sanitizeEmailContent(content);
+    const sanitizedEmail = email.trim().toLowerCase();
+
+    const moderation = moderateComment(sanitizedContent);
     if (!moderation.approved) {
       return NextResponse.json(
         { error: moderation.reason },
         { status: 400 }
       );
     }
-
-    const sanitizedContent = sanitizeEmailContent(content);
-    const sanitizedEmail = email.trim().toLowerCase();
 
     if (parentId) {
       const parentComment = await db

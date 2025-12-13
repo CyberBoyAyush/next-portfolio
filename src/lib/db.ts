@@ -8,6 +8,7 @@ import {
   integer,
   index,
   unique,
+  AnyPgColumn,
 } from "drizzle-orm/pg-core";
 
 if (!process.env.DATABASE_URL) {
@@ -36,7 +37,7 @@ export const blogComments = pgTable(
   {
     id: serial("id").primaryKey(),
     blogSlug: text("blog_slug").notNull(),
-    parentId: integer("parent_id"),
+    parentId: integer("parent_id").references((): AnyPgColumn => blogComments.id, { onDelete: "cascade" }),
     email: text("email").notNull(),
     content: text("content").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),

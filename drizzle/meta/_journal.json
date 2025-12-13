@@ -15,6 +15,13 @@
       "when": 1765651050748,
       "tag": "0001_lovely_logan",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1765651842090,
+      "tag": "0002_shocking_prowler",
+      "breakpoints": true
     }
   ]
 }
