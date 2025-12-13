@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { Code2, Home, FolderOpen, BookOpen, Github, ExternalLink } from 'lucide-react';
-import { useBlogThemeSafe } from './BlogThemeProvider';
+import { useBlogThemeSafe } from './blog-theme-provider';
 
 // Custom X (Twitter) Icon Component
 const XIcon = ({ size = 18, className = "" }) => (

@@ -1,8 +1,8 @@
 "use client";
 
 import { Sun, Moon } from "lucide-react";
-import { useBlogTheme } from "./BlogThemeProvider";
-import { Tooltip } from "./BlogContentWrapper";
+import { useBlogTheme } from "./blog-theme-provider";
+import { Tooltip } from "./blog-content-wrapper";
 
 interface ThemeSwitcherProps {
   orientation?: "horizontal" | "vertical";

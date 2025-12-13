@@ -1,8 +1,8 @@
 "use client";
 
-import { useBlogThemeSafe } from "./BlogThemeProvider";
-import ThemeSwitcher from "./ThemeSwitcher";
-import { BlogFontControls, BlogZoomControls } from "./BlogContentWrapper";
+import { useBlogThemeSafe } from "./blog-theme-provider";
+import ThemeSwitcher from "./theme-switcher";
+import { BlogFontControls, BlogZoomControls } from "./blog-content-wrapper";
 
 interface BlogPageWrapperProps {
   children: React.ReactNode;

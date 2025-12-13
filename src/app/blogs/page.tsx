@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { getAllBlogs } from '@/lib/blog';
-import BlogsClient from './BlogsClient';
+import BlogsClient from './blogs-client';
 
 export const metadata: Metadata = {
   title: 'Blog | Ayush Sharma',

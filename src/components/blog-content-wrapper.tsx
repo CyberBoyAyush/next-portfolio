@@ -3,8 +3,8 @@
 import { useState, createContext, useContext, useRef, useEffect } from "react";
 import { Minus, Plus, Check, CaseSensitive } from "lucide-react";
 import { Inter } from "next/font/google";
-import { useBlogThemeSafe } from "./BlogThemeProvider";
-import ThemeSwitcher from "./ThemeSwitcher";
+import { useBlogThemeSafe } from "./blog-theme-provider";
+import ThemeSwitcher from "./theme-switcher";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 

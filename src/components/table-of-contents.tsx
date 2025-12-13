@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { ChevronDown, ChevronUp, List } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useBlogThemeSafe } from './BlogThemeProvider';
+import { useBlogThemeSafe } from './blog-theme-provider';
 
 interface Heading {
     id: string;

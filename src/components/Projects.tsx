@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { Sparkles, Brain, Layers } from 'lucide-react';
-import ProjectCard from './ProjectCard';
+import ProjectCard from './project-card';
 import { getAllProjects } from '../data/projects';
 
 const Projects = () => {

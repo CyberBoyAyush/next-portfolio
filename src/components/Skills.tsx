@@ -12,7 +12,7 @@ import {
 import { DiRedis } from 'react-icons/di';
 import { Code } from 'lucide-react';
 import { OpenRouter } from '@lobehub/icons';
-import SectionHeading from './SectionHeading';
+import SectionHeading from './section-heading';
 
 // Tech stack data
 const techStack = [

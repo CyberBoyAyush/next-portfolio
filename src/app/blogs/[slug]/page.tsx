@@ -6,14 +6,15 @@ import { getAllBlogs, getBlogBySlug, getRelatedBlogs } from '@/lib/blog';
 import rehypeHighlight from 'rehype-highlight';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
-import CodeBlock from '@/components/CodeBlock';
-import CopyMarkdownButton from '@/components/CopyMarkdownButton';
-import BlogContent, { BlogProvider, BlogFontWrapper, BlogFloatingControls } from '@/components/BlogContentWrapper';
-import BlogShareButton from '@/components/BlogShareButton';
+import CodeBlock from '@/components/code-block';
+import CopyMarkdownButton from '@/components/copy-markdown-button';
+import BlogContent, { BlogProvider, BlogFontWrapper, BlogFloatingControls } from '@/components/blog-content-wrapper';
+import BlogShareButton from '@/components/blog-share-button';
+import BlogEngagementSection from '@/components/blog-engagement-section';
 import 'highlight.js/styles/github-dark.css';
 import './blog-content.css';
 import { extractHeadings } from '@/lib/blog-utils';
-import TableOfContents from '@/components/TableOfContents';
+import TableOfContents from '@/components/table-of-contents';
 import {
   BlogPageWrapper,
   BlogHeader,
@@ -23,7 +24,7 @@ import {
   BlogRelatedCard,
   BlogFooterSection,
   BlogCoverImage,
-} from '@/components/BlogPageWrapper';
+} from '@/components/blog-page-wrapper';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -206,6 +207,9 @@ export default async function BlogPost({ params }: Props) {
                   </div>
                 </aside>
               </div>
+
+              {/* Engagement Section */}
+              <BlogEngagementSection slug={slug} />
 
               {/* Related Blogs */}
               {relatedBlogs.length > 0 && (

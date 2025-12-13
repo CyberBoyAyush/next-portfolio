@@ -5,8 +5,8 @@ import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, Clock, Tag, ArrowRight } from 'lucide-react';
-import SectionHeading from '../../components/SectionHeading';
-import BlogImagePlaceholder from '../../components/BlogImagePlaceholder';
+import SectionHeading from '../../components/section-heading';
+import BlogImagePlaceholder from '../../components/blog-image-placeholder';
 
 interface Blog {
   slug: string;

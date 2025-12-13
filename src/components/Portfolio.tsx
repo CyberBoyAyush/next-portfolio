@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Sparkles, Brain, Layers } from 'lucide-react';
 import Link from 'next/link';
-import ProjectCard from './ProjectCard';
+import ProjectCard from './project-card';
 import { getFeaturedProjects } from '../data/projects';
 
 const Portfolio = () => {
