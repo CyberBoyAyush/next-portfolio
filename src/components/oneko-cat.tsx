@@ -33,6 +33,11 @@ const SPRITE_SETS: SpriteSet = {
 
 const NEKO_SPEED = 12;
 
+const STORAGE_KEY_DISABLED = 'oneko-cat-disabled';
+const STORAGE_KEY_SPRITE = 'oneko-sprite-type';
+
+type SpriteType = 'cat' | 'dog';
+
 export default function OnekoCat() {
   const nekoRef = useRef<HTMLDivElement>(null);
   const [nekoPos, setNekoPos] = useState<Position>({ x: 32, y: 32 });
@@ -42,8 +47,16 @@ export default function OnekoCat() {
   const [idleAnimation, setIdleAnimation] = useState<string | null>(null);
   const [idleAnimationFrame, setIdleAnimationFrame] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [spriteType, setSpriteType] = useState<SpriteType>('cat');
+  const [showContextMenu, setShowContextMenu] = useState(false);
+  const [contextMenuPos, setContextMenuPos] = useState<Position>({ x: 0, y: 0 });
+  const contextMenuRef = useRef<HTMLDivElement>(null);
   const lastFrameTimestamp = useRef<number | null>(null);
   const animationFrameId = useRef<number | null>(null);
+  const lastClickTime = useRef<number>(0);
+  const clickCount = useRef<number>(0);
+  const tapTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const setSprite = (name: string, frame: number) => {
     if (!nekoRef.current) return;
@@ -96,6 +109,21 @@ export default function OnekoCat() {
   const handleFrame = () => {
     if (!nekoRef.current) return;
 
+    if (isDisabled) {
+      // When disabled, continue sleeping animation
+      if (idleAnimation === 'sleeping') {
+        if (idleAnimationFrame < 8) {
+          setSprite("tired", 0);
+        } else {
+          setSprite("sleeping", Math.floor(idleAnimationFrame / 4));
+        }
+        setIdleAnimationFrame(prev => prev + 1);
+      } else {
+        setSprite("idle", 0);
+      }
+      return;
+    }
+
     setFrameCount(prev => prev + 1);
     const diffX = nekoPos.x - mousePos.x;
     const diffY = nekoPos.y - mousePos.y;
@@ -134,12 +162,42 @@ export default function OnekoCat() {
   };
 
   useEffect(() => {
+    const storedDisabled = localStorage.getItem(STORAGE_KEY_DISABLED);
+    if (storedDisabled === 'true') {
+      setIsDisabled(true);
+      setIdleAnimation('sleeping');
+      setIdleAnimationFrame(0);
+    }
+    const storedSprite = localStorage.getItem(STORAGE_KEY_SPRITE) as SpriteType;
+    if (storedSprite === 'cat' || storedSprite === 'dog') {
+      setSpriteType(storedSprite);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (contextMenuRef.current && !contextMenuRef.current.contains(e.target as Node)) {
+        setShowContextMenu(false);
+      }
+    };
+
+    if (showContextMenu) {
+      document.addEventListener('click', handleClickOutside);
+      return () => {
+        document.removeEventListener('click', handleClickOutside);
+      };
+    }
+  }, [showContextMenu]);
+
+  useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
+      if (isDisabled) return;
       setMousePos({ x: event.clientX, y: event.clientY });
       setIdleTime(0);
     };
 
     const handleClick = () => {
+      if (isDisabled) return;
       // Add a little bounce effect on click
       if (nekoRef.current) {
         nekoRef.current.style.transform = 'scale(1.2)';
@@ -171,8 +229,10 @@ export default function OnekoCat() {
     // Check for reduced motion preference
     const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!isReducedMotion && isVisible) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('click', handleClick);
+      if (!isDisabled) {
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('click', handleClick);
+      }
       document.addEventListener('visibilitychange', handleVisibilityChange);
       animationFrameId.current = requestAnimationFrame(animate);
     }
@@ -186,27 +246,183 @@ export default function OnekoCat() {
       }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nekoPos, mousePos, frameCount, idleTime, idleAnimation, idleAnimationFrame, isVisible]);
+  }, [nekoPos, mousePos, frameCount, idleTime, idleAnimation, idleAnimationFrame, isVisible, isDisabled]);
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setContextMenuPos({ x: e.clientX, y: e.clientY });
+    setShowContextMenu(true);
+  };
+
+  const handleSpriteChange = (type: SpriteType) => {
+    setSpriteType(type);
+    localStorage.setItem(STORAGE_KEY_SPRITE, type);
+    setShowContextMenu(false);
+  };
+
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const newDisabledState = !isDisabled;
+    setIsDisabled(newDisabledState);
+    if (newDisabledState) {
+      setIdleAnimation('sleeping');
+      setIdleAnimationFrame(0);
+    } else {
+      setIdleAnimation(null);
+      setIdleAnimationFrame(0);
+    }
+    localStorage.setItem(STORAGE_KEY_DISABLED, String(newDisabledState));
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (e.button === 2) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const now = Date.now();
+    const timeSinceLastClick = now - lastClickTime.current;
+    
+    if (tapTimeoutRef.current) {
+      clearTimeout(tapTimeoutRef.current);
+    }
+    
+    if (timeSinceLastClick < 400 && timeSinceLastClick > 0) {
+      clickCount.current += 1;
+    } else {
+      clickCount.current = 1;
+    }
+    
+    lastClickTime.current = now;
+    
+    if (clickCount.current === 2) {
+      e.preventDefault();
+      e.stopPropagation();
+      const newDisabledState = !isDisabled;
+      setIsDisabled(newDisabledState);
+      if (newDisabledState) {
+        setIdleAnimation('sleeping');
+        setIdleAnimationFrame(0);
+      } else {
+        setIdleAnimation(null);
+        setIdleAnimationFrame(0);
+      }
+      localStorage.setItem(STORAGE_KEY_DISABLED, String(newDisabledState));
+      clickCount.current = 0;
+    } else {
+      tapTimeoutRef.current = setTimeout(() => {
+        clickCount.current = 0;
+      }, 400);
+    }
+  };
 
   if (!isVisible) return null;
 
+  const spriteImage = spriteType === 'cat' ? '/oneko.gif' : '/oneko-dog.gif';
+
   return (
-    <div
-      ref={nekoRef}
-      aria-hidden="true"
-      style={{
-        width: '32px',
-        height: '32px',
-        position: 'fixed',
-        pointerEvents: 'none',
-        imageRendering: 'pixelated',
-        left: `${nekoPos.x - 16}px`,
-        top: `${nekoPos.y - 16}px`,
-        zIndex: 9999,
-        backgroundImage: 'url(/oneko.gif)',
-        transition: 'transform 0.1s ease-out',
-        filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
-      }}
-    />
+    <>
+      <div
+        ref={nekoRef}
+        aria-hidden="true"
+        onContextMenu={handleContextMenu}
+        onDoubleClick={handleDoubleClick}
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
+        style={{
+          width: '32px',
+          height: '32px',
+          position: 'fixed',
+          pointerEvents: 'auto',
+          cursor: 'pointer',
+          imageRendering: 'pixelated',
+          left: `${nekoPos.x - 16}px`,
+          top: `${nekoPos.y - 16}px`,
+          zIndex: 9999,
+          backgroundImage: `url(${spriteImage})`,
+          transition: 'transform 0.1s ease-out',
+          filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+          opacity: isDisabled ? 0.5 : 1,
+          touchAction: 'none',
+        }}
+      />
+      {showContextMenu && (
+        <div
+          ref={contextMenuRef}
+          style={{
+            position: 'fixed',
+            left: `${contextMenuPos.x}px`,
+            top: `${contextMenuPos.y}px`,
+            zIndex: 10000,
+            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '8px',
+            padding: '4px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+            minWidth: '150px',
+          }}
+        >
+          <button
+            onClick={() => handleSpriteChange('cat')}
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              textAlign: 'left',
+              background: spriteType === 'cat' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+              border: 'none',
+              color: '#fff',
+              cursor: 'pointer',
+              borderRadius: '4px',
+              fontSize: '14px',
+              fontFamily: 'inherit',
+            }}
+            onMouseEnter={(e) => {
+              if (spriteType !== 'cat') {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (spriteType !== 'cat') {
+                e.currentTarget.style.background = 'transparent';
+              }
+            }}
+          >
+            Oneko Cat
+          </button>
+          <button
+            onClick={() => handleSpriteChange('dog')}
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              textAlign: 'left',
+              background: spriteType === 'dog' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+              border: 'none',
+              color: '#fff',
+              cursor: 'pointer',
+              borderRadius: '4px',
+              fontSize: '14px',
+              fontFamily: 'inherit',
+            }}
+            onMouseEnter={(e) => {
+              if (spriteType !== 'dog') {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (spriteType !== 'dog') {
+                e.currentTarget.style.background = 'transparent';
+              }
+            }}
+          >
+            OnlyCode Dog
+          </button>
+        </div>
+      )}
+    </>
   );
 }

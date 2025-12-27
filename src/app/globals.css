@@ -1,5 +1,24 @@
 @import "tailwindcss";
 
+/* Performance optimizations */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Reduced motion for accessibility and performance */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 :root {
   --background: #0a0a0a;
   --foreground: #ededed;
@@ -149,7 +168,7 @@ body {
 }
 
 @keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
+  from { transform: translateY(10px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
@@ -162,24 +181,24 @@ body {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.5s ease-in-out forwards;
+  animation: fadeIn 0.25s ease-out forwards;
 }
 
 .animate-slide-up {
-  animation: slideUp 0.5s ease-out forwards;
+  animation: slideUp 0.25s ease-out forwards;
 }
 
 .icon-pulse {
   animation: iconPulse 1s ease-in-out;
 }
 
-/* Stagger children animation delays */
-.stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
-.stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
-.stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
-.stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
-.stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
-.stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
+/* Stagger children animation delays - faster for snappier feel */
+.stagger-children > *:nth-child(1) { animation-delay: 0.03s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.06s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.09s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.12s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.18s; }
 
 /* Enhanced card animations */
 @keyframes cardFloat {
@@ -248,12 +267,12 @@ body {
 
 /* Landscape card specific animations */
 @keyframes slideFromLeft {
-  0% { transform: translateX(-30px); opacity: 0; }
+  0% { transform: translateX(-15px); opacity: 0; }
   100% { transform: translateX(0); opacity: 1; }
 }
 
 .slide-from-left {
-  animation: slideFromLeft 0.6s ease-out forwards;
+  animation: slideFromLeft 0.3s ease-out forwards;
 }
 
 /* Enhanced navbar glass effect */
@@ -312,5 +331,11 @@ body {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  transition: all 0.3s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* GPU acceleration hints for animated elements */
+.gpu-accelerated {
+  will-change: transform;
+  transform: translateZ(0);
 }

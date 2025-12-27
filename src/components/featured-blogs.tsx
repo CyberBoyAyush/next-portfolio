@@ -35,10 +35,10 @@ const FeaturedBlogs = ({ blogs }: FeaturedBlogsProps) => {
                     {blogs.slice(0, 2).map((blog, index) => (
                         <motion.div
                             key={blog.slug}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 10 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ delay: index * 0.1 }}
+                            transition={{ duration: 0.25, delay: index * 0.05 }}
                         >
                             <Link href={`/blogs/${blog.slug}`} className="group block h-full">
                                 <article className="h-full bg-gray-900/40 backdrop-blur-sm border border-gray-800/60 hover:border-blue-500/30 transition-all duration-300 hover:shadow-[0_0_20px_-5px_rgba(59,130,246,0.15)] overflow-hidden flex flex-col group-hover:-translate-y-1">

@@ -102,7 +102,8 @@ const Spotlight = () => {
           left: mousePosition.x,
           top: mousePosition.y,
           transform: `translate(-50%, -50%) ${spotlightSize}`,
-          opacity: hoveredElement ? 0.85 : undefined
+          opacity: hoveredElement ? 0.85 : undefined,
+          willChange: 'transform, opacity'
         }}
       />
     </div>

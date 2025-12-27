@@ -21,25 +21,25 @@ const SectionHeading = ({
   const headingRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(headingRef, { once: true, amount: 0.3 });
   
-  // Animation variants
+  // Animation variants - optimized for performance
   const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 10 },
     visible: { 
       opacity: 1, 
       y: 0,
       transition: {
-        duration: 0.6,
-        staggerChildren: 0.2
+        duration: 0.3,
+        staggerChildren: 0.08
       }
     }
   };
   
   const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
+    hidden: { opacity: 0, y: 5 },
     visible: { 
       opacity: 1, 
       y: 0,
-      transition: { duration: 0.5 }
+      transition: { duration: 0.25 }
     }
   };
 

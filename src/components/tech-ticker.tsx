@@ -40,6 +40,7 @@ const TechTicker = () => {
     <div className="w-full overflow-hidden relative py-4 sm:py-6 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
       <motion.div
         className="flex gap-8 sm:gap-12 w-max"
+        style={{ willChange: "transform" }}
         animate={{
           x: ["0%", "-50%"],
         }}

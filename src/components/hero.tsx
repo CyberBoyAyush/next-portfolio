@@ -67,19 +67,19 @@ const Hero = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.08,
-        delayChildren: 0.1,
+        staggerChildren: 0.04,
+        delayChildren: 0,
       },
     },
   };
 
   const itemVariants: Variants = {
-    hidden: { y: 20, opacity: 0 },
+    hidden: { y: 10, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.5,
+        duration: 0.25,
         ease: "easeOut",
       },
     },
@@ -298,10 +298,10 @@ const Hero = () => {
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={currentRoleIndex}
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2 }}
                     className="inline-block ml-2 text-white"
                   >
                     {roles[currentRoleIndex].article} {roles[currentRoleIndex].title}
