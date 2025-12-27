@@ -127,9 +127,7 @@ const Navbar = () => {
               </motion.a>
 
               <motion.a
-                href="https://x.com/cyberboyayush"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/x"
                 className={`flex items-center gap-1 px-3 py-2 transition-all duration-300 group ${
                   isLight 
                     ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
@@ -308,9 +306,7 @@ const Navbar = () => {
               className="flex-1"
             >
               <a
-                href="https://x.com/cyberboyayush"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/x"
                 className={`flex flex-col items-center justify-center py-2.5 px-1 transition-all duration-300 group ${
                   isLight 
                     ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 

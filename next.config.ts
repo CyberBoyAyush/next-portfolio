@@ -86,6 +86,11 @@ const nextConfig: NextConfig = {
         destination: 'https://cal.com/cyberboyayush/30min',
         permanent: false,
       },
+      {
+        source: '/x',
+        destination: 'https://x.com/theayush',
+        permanent: false,
+      },
     ];
   },
 };

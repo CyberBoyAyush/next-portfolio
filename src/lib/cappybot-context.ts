@@ -82,7 +82,7 @@ This portfolio showcases 9 major projects, with 6 AI-focused applications demons
 ### Social Links
 - **GitHub**: https://github.com/cyberboyayush
 - **LinkedIn**: https://linkedin.com/in/cyberboyayush
-- **Twitter**: https://twitter.com/cyberboyayush | X : https://x.com/cyberboyayush
+- **Twitter/X**: https://aysh.me/x
 - **Website**: https://aysh.me
 - **Schedule a Meeting**: https://aysh.me/book (Book a 30-minute 1:1 call with Ayush)
 

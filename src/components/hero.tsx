@@ -380,9 +380,7 @@ const Hero = () => {
             >
               <div className="flex items-center justify-center gap-6 sm:gap-6">
                 <a
-                  href="https://x.com/cyberboyayush"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/x"
                   className="text-gray-400 hover:text-white hover:scale-110 transition-all"
                   aria-label="Twitter"
                 >
