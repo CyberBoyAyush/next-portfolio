@@ -484,9 +484,9 @@ Please fill in all fields before sending.`;
           {isSimpleMode ? (
             /* Minimal Simple Form Mode */
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.25 }}
               className="md:col-span-2"
             >
               <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 shadow-xl overflow-hidden">
@@ -594,9 +594,9 @@ Please fill in all fields before sending.`;
           ) : (
             /* Terminal Mode */
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.25 }}
               className="md:col-span-2"
             >
               <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 shadow-xl overflow-hidden">
@@ -782,9 +782,9 @@ Please fill in all fields before sending.`;
 
           {/* Enhanced Contact Information Sidebar */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 10 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.4 }}
+            transition={{ duration: 0.25, delay: 0.1 }}
             className="flex flex-col justify-between"
           >
             <div className="space-y-6">

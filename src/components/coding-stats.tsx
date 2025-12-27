@@ -192,9 +192,9 @@ const CodingStats = () => {
           />
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.25 }}
           >
             <BentoGrid className="max-w-5xl mx-auto">
               {items.map((item, i) => (

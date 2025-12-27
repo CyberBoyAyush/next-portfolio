@@ -31,10 +31,10 @@ const Portfolio = () => {
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Section Header - Centered */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.25 }}
           className="mb-10 text-center"
         >
           <div className="text-sm text-blue-400 font-semibold mb-2 uppercase tracking-wider">Featured Work</div>
@@ -43,9 +43,9 @@ const Portfolio = () => {
 
         {/* Category Filter - Segmented Control */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.25, delay: 0.05 }}
           className="flex justify-center mb-12"
         >
           <div className="flex p-1 bg-gray-900/60 backdrop-blur-xl border border-gray-800/60 shadow-inner shadow-black/20">
@@ -82,10 +82,10 @@ const Portfolio = () => {
               <motion.div
                 key={project.id}
                 layout
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.2 }}
               >
                 <ProjectCard
                   project={{
@@ -106,9 +106,9 @@ const Portfolio = () => {
 
         {/* View All Projects Button */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.25, delay: 0.1 }}
           className="text-center mt-12"
         >
           <Link
