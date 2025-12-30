@@ -47,7 +47,7 @@ const FeaturedBlogs = ({ blogs }: FeaturedBlogsProps) => {
                                         {blog.frontmatter.imageUrl ? (
                                             <Image
                                                 src={blog.frontmatter.imageUrl}
-                                                alt={blog.frontmatter.title}
+                                                alt={`${blog.frontmatter.title} - Blog cover image`}
                                                 fill
                                                 className="object-cover group-hover:scale-105 transition-transform duration-500"
                                                 sizes="(max-width: 768px) 100vw, 50vw"

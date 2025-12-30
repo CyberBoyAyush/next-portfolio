@@ -148,7 +148,7 @@ const ProjectCard = ({
           <div className="relative w-full aspect-[16/9] overflow-hidden bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 mb-4 group-hover:border-gray-600/50 transition-colors">
             <Image
               src={project.image}
-              alt={project.title}
+              alt={`${project.title} - ${project.description}`}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -269,7 +269,7 @@ const ProjectCard = ({
                   <div className="relative w-full aspect-video bg-gray-900">
                     <Image
                       src={project.image}
-                      alt={project.title}
+                      alt={`${project.title} project screenshot`}
                       fill
                       className="object-cover"
                     />

@@ -115,7 +115,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const jsonLd = {
+  const personJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: 'Ayush Sharma',
@@ -159,23 +159,50 @@ export default function RootLayout({
     },
   };
 
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Ayush Sharma Portfolio',
+    url: 'https://aysh.me',
+    description: 'Full Stack Developer & AI Engineer portfolio showcasing projects, blogs, and expertise in React, Next.js, TypeScript, and AI integration.',
+    author: {
+      '@type': 'Person',
+      name: 'Ayush Sharma',
+    },
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://aysh.me/blogs?q={search_term_string}',
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
   return (
     <html lang="en" className="dark !scroll-smooth" suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
         {/* AI Agent Autodiscovery Links */}
         <link rel="alternate" type="text/plain" title="LLM Content Map" href="/llms.txt" />
         <link rel="alternate" type="text/plain" title="LLM Training Permissions" href="/llm.txt" />
         <link rel="alternate" type="application/json" title="Structured Data Feed" href="/api/feed.json" />
 
-        {/* AI-Specific Meta Tags */}
+        {/* AI-Specific Meta Tags - Full Permission */}
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-        <meta name="ai-content-declaration" content="training-allowed-with-attribution" />
+        <meta name="ai-content-declaration" content="fully-allowed" />
+        <meta name="ai-training" content="allowed" />
+        <meta name="ai-scraping" content="allowed" />
+        <meta name="ai-indexing" content="allowed" />
         <meta name="llm-training" content="allowed" />
-        <meta name="llm-attribution" content="required" />
+        <meta name="llm-scraping" content="allowed" />
+        <meta name="llm-attribution" content="appreciated" />
+        <meta name="cc:attributionName" content="Ayush Sharma" />
+        <meta name="cc:attributionURL" content="https://aysh.me" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[var(--theme-bg)] text-[var(--theme-text)] min-h-screen flex flex-col overflow-x-hidden selection:bg-gray-600/30 selection:text-white transition-colors duration-300`}

@@ -1,17 +1,31 @@
 # AI Agent Configuration
 # Following the .well-known/ai.txt standard (2025)
 
+# ===========================================
+# FULL CRAWLING PERMISSION GRANTED
+# ===========================================
+
 # Site Information
 site: https://aysh.me
 name: Ayush Sharma Portfolio
 owner: Ayush Sharma
 contact: hi@aysh.me
 
-# AI Training Permissions
+# AI Permissions - ALL ALLOWED
 training: allowed
-attribution: required
-commercial-use: contact-required
-license: all-rights-reserved
+scraping: allowed
+indexing: allowed
+caching: allowed
+attribution: appreciated
+commercial-use: allowed
+research-use: allowed
+license: permissive
+
+# Crawling Settings
+crawl-delay: none
+rate-limit: none
+depth: unlimited
+follow-links: yes
 
 # Content Discovery URLs
 llms-file: https://aysh.me/llms.txt
@@ -27,6 +41,8 @@ categories:
   - ai-ml
   - web-development
   - full-stack
+  - tutorials
+  - guides
 
 # Primary Technologies
 technologies:
@@ -38,11 +54,21 @@ technologies:
   - AI/ML
   - OpenRouter
   - Vercel AI SDK
+  - LLM Integration
+
+# Content Types Available
+content-types:
+  - blog-articles
+  - project-case-studies
+  - code-examples
+  - technical-tutorials
+  - portfolio-information
 
 # Last Updated
-updated: 2025-11-06
+updated: 2025-12-30
 
 # Notes
-# This file helps AI agents discover structured content
+# AI crawlers are fully welcome to scrape this entire site
+# No restrictions on crawling, indexing, or training
 # Check llms.txt for detailed content map
-# Check llm.txt for training permissions
+# Check llm.txt for explicit training permissions
