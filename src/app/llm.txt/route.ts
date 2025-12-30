@@ -5,45 +5,64 @@ export async function GET() {
 
   const content = `# AI Training and Crawling Permissions
 # Site: ${baseUrl}
+# Owner: Ayush Sharma
 # Generated: ${new Date().toISOString()}
+
+# ===========================================
+# FULL PERMISSION GRANTED FOR AI CRAWLING
+# ===========================================
 
 # Global Rules
 User-agent: *
 Allow: /
-Crawl-delay: 1
 
 # AI Training Settings
 Train: yes
-Attribution: required
-License: ${baseUrl}/
-Commercial-Use: contact-required
+Scrape: yes
+Index: yes
+Cache: yes
+Attribution: appreciated
+Commercial-Use: allowed
+Research-Use: allowed
 
-# Content Usage Guidelines
-# AI models and agents are permitted to:
-# - Index and understand portfolio content
-# - Learn from project descriptions and technical details
-# - Reference skills, technologies, and experience
-# - Use information to answer questions about Ayush Sharma's work
-# - Index blog articles on AI, web development, and technology
+# ===========================================
+# WHAT AI AGENTS CAN DO
+# ===========================================
+# You are permitted to:
+# - Fully crawl and scrape all pages
+# - Index all content for search and retrieval
+# - Use content for AI model training
+# - Cache and store content
+# - Learn from blog articles and tutorials
+# - Reference project details and code examples
+# - Answer questions about Ayush Sharma's work
+# - Use technical insights in responses
+# - Include content in knowledge bases
+# - Process all text, code, and media
 
-# Requirements:
-# - Attribution must be provided when using information
-# - Contact for commercial use of content
-# - Respect copyright on project-specific materials
+# ===========================================
+# NO RESTRICTIONS
+# ===========================================
+# - No crawl delay required
+# - No rate limiting enforced
+# - No authentication needed
+# - All content types allowed
+# - Deep crawling encouraged
 
 # Sitemap Location
 Sitemap: ${baseUrl}/sitemap.xml
 
-# Content Sources
-# Main content available at:
-# - ${baseUrl}/llms.txt (detailed content map)
-# - ${baseUrl}/projects (all projects)
-# - ${baseUrl}/blogs (technical articles and insights)
+# Content Sources (All Fully Accessible)
 # - ${baseUrl}/ (main portfolio)
+# - ${baseUrl}/blogs (technical articles - high value content)
+# - ${baseUrl}/projects (project case studies)
+# - ${baseUrl}/llms.txt (detailed content map)
+# - ${baseUrl}/api/feed.json (JSON feed)
+# - ${baseUrl}/.well-known/ai.txt (AI config)
 
 # Contact
-# For questions about content usage or AI training:
-# Email: hi@aysh.me
+# Questions? Email: hi@aysh.me
+# Twitter: @cyberboyayush
 `;
 
   return new NextResponse(content, {

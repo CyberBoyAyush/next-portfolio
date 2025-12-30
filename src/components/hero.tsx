@@ -168,7 +168,7 @@ const Hero = () => {
     return (
       <Image
         src="https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPhWVT9F8tcdLGNp9S0ETXmuk4jy87UFaBIrYw"
-        alt="Ayush Sharma"
+        alt="Ayush Sharma - Full Stack Developer and AI Engineer"
         fill
         sizes="(max-width: 768px) 10rem, 12rem"
         className={`object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"

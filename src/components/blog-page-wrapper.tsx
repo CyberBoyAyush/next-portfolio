@@ -246,7 +246,7 @@ export function BlogRelatedCard({
         <div className="relative w-full sm:w-48 md:w-56 h-36 sm:h-32 md:h-36 shrink-0 overflow-hidden rounded-md">
           <img
             src={imageUrl}
-            alt={title}
+            alt={`${title} - Related article thumbnail`}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
           />
         </div>
@@ -363,7 +363,7 @@ export function BlogCoverImage({
     >
       <img
         src={src}
-        alt={alt}
+        alt={`${alt} - Blog cover image`}
         className="w-full h-full object-cover"
       />
     </div>

@@ -129,6 +129,32 @@ export default async function BlogPost({ params }: Props) {
     keywords: frontmatter.tags.join(', '),
     articleSection: 'Technology',
     inLanguage: 'en-US',
+    wordCount: content.split(/\s+/).length,
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: baseUrl,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: `${baseUrl}/blogs`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: frontmatter.title,
+        item: blogUrl,
+      },
+    ],
   };
 
   return (
@@ -136,6 +162,10 @@ export default async function BlogPost({ params }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <BlogPageWrapper>
         <article className="py-8 md:py-16">
