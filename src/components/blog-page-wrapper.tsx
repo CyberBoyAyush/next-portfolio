@@ -3,6 +3,8 @@
 import { useBlogThemeSafe } from "./blog-theme-provider";
 import ThemeSwitcher from "./theme-switcher";
 import { BlogFontControls, BlogZoomControls } from "./blog-content-wrapper";
+import { Share2 } from "lucide-react";
+import { useState } from "react";
 
 interface BlogPageWrapperProps {
   children: React.ReactNode;
@@ -14,7 +16,7 @@ export function BlogPageWrapper({ children }: BlogPageWrapperProps) {
 
   return (
     <main
-      className={`min-h-screen pt-20 md:pt-20 overflow-x-hidden transition-colors duration-300 ${
+      className={`min-h-screen pt-14 md:pt-16 pb-20 md:pb-0 overflow-x-hidden transition-colors duration-300 ${
         isLight ? "bg-white" : "bg-[#0D1117]"
       }`}
     >
@@ -366,6 +368,74 @@ export function BlogCoverImage({
         alt={`${alt} - Blog cover image`}
         className="w-full h-full object-cover"
       />
+    </div>
+  );
+}
+
+export function BlogMobileBottomBar() {
+  const themeContext = useBlogThemeSafe();
+  const isLight = themeContext?.theme === "light";
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    const title = document.title;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, url });
+      } catch {
+        // User cancelled or share failed, fallback to copy
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+    } else {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  return (
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
+      <div className={`backdrop-blur-xl border-t transition-colors duration-300 ${
+        isLight 
+          ? "bg-white/95 border-gray-200" 
+          : "bg-[#0d1117]/95 border-white/10"
+      }`}>
+        <div className="flex items-center justify-between px-4 py-3 gap-2">
+          {/* Theme Switcher */}
+          <div className="flex items-center">
+            <ThemeSwitcher orientation="horizontal" />
+          </div>
+
+          {/* Font & Zoom Controls */}
+          <div className="flex items-center gap-2">
+            <BlogFontControls orientation="horizontal" openDirection="up" />
+            <BlogZoomControls orientation="horizontal" />
+          </div>
+
+          {/* Share Button */}
+          <button
+            onClick={handleShare}
+            className={`flex items-center justify-center p-2 rounded-lg transition-colors ${
+              isLight
+                ? "bg-gray-100 text-gray-600 hover:bg-gray-200 active:bg-gray-300"
+                : "bg-white/5 text-gray-400 hover:bg-white/10 active:bg-white/15"
+            }`}
+            aria-label={copied ? "Link copied" : "Share article"}
+          >
+            {copied ? (
+              <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            ) : (
+              <Share2 size={20} />
+            )}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

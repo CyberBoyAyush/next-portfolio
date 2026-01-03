@@ -32,7 +32,7 @@ export default function BlogsClient({ blogs }: BlogsClientProps) {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#0D1117] pt-20 md:pt-20">
+    <main className="min-h-screen bg-[#0D1117] pt-14 md:pt-16">
       <section ref={sectionRef} className="py-8 md:py-16 relative overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 -z-10 bg-[#0D1117]">

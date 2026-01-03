@@ -137,7 +137,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
             </div>
 
             {/* Desktop Sidebar */}
-            <nav className="hidden lg:block sticky top-24 max-h-[calc(100vh-8rem)] pr-4 overflow-y-auto custom-scrollbar">
+            <nav className="hidden lg:block sticky top-20 max-h-[calc(100vh-6rem)] pr-4 overflow-y-auto custom-scrollbar">
                 <div className="mb-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <List size={18} className={isLight ? 'text-gray-500' : 'text-gray-400'} />
