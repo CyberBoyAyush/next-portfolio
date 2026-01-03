@@ -19,11 +19,11 @@ import {
   BlogPageWrapper,
   BlogHeader,
   BlogBackButton,
-  BlogMobileControls,
   BlogRelatedSection,
   BlogRelatedCard,
   BlogFooterSection,
   BlogCoverImage,
+  BlogMobileBottomBar,
 } from '@/components/blog-page-wrapper';
 
 interface Props {
@@ -171,16 +171,19 @@ export default async function BlogPost({ params }: Props) {
         <article className="py-8 md:py-16">
           <BlogFontWrapper>
             <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
-              {/* Back button, Zoom controls, and Copy Markdown button */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+              {/* Back button and floating controls (desktop only) */}
+              <div className="flex items-center justify-between gap-4 mb-6 sm:mb-8">
                 <BlogBackButton href="/blogs" />
-                <BlogMobileControls>
+                <div className="hidden sm:block">
                   <CopyMarkdownButton content={content} frontmatter={frontmatter} />
-                </BlogMobileControls>
+                </div>
                 <BlogFloatingControls>
                   <CopyMarkdownButton content={content} frontmatter={frontmatter} orientation="vertical" />
                 </BlogFloatingControls>
               </div>
+              
+              {/* Mobile bottom bar with controls */}
+              <BlogMobileBottomBar />
 
               {/* Cover Image */}
               {frontmatter.imageUrl && (
@@ -232,7 +235,7 @@ export default async function BlogPost({ params }: Props) {
 
                 {/* Desktop Sidebar */}
                 <aside className="hidden lg:block">
-                  <div className="sticky top-24">
+                  <div className="sticky top-20">
                     <TableOfContents headings={headings} />
                   </div>
                 </aside>

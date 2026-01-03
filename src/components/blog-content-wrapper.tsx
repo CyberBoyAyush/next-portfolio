@@ -94,7 +94,7 @@ export function Tooltip({
 }
 
 // Font Switcher Component
-export function BlogFontControls({ orientation = 'horizontal' }: { orientation?: 'horizontal' | 'vertical' }) {
+export function BlogFontControls({ orientation = 'horizontal', openDirection = 'down' }: { orientation?: 'horizontal' | 'vertical'; openDirection?: 'up' | 'down' }) {
   const { fontType, setFontType } = useBlogContext();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -118,6 +118,12 @@ export function BlogFontControls({ orientation = 'horizontal' }: { orientation?:
     { type: 'inter', label: 'Interfont', className: inter.className },
   ];
 
+  const getDropdownPosition = () => {
+    if (isVertical) return 'left-full top-0 ml-2';
+    if (openDirection === 'up') return 'bottom-full left-0 mb-2';
+    return 'top-full left-0 mt-2';
+  };
+
   return (
     <div className="relative" ref={menuRef}>
       <Tooltip content="Change Font" orientation={orientation}>
@@ -135,11 +141,7 @@ export function BlogFontControls({ orientation = 'horizontal' }: { orientation?:
       </Tooltip>
 
       {isOpen && (
-        <div className={`absolute w-40 rounded-lg shadow-xl overflow-hidden z-50 backdrop-blur-sm border ${
-          isVertical 
-            ? 'left-full top-0 ml-2'
-            : 'top-full left-0 mt-2'
-        } ${
+        <div className={`absolute w-40 rounded-lg shadow-xl overflow-hidden z-50 backdrop-blur-sm border ${getDropdownPosition()} ${
           isLight 
             ? 'bg-white border-gray-200' 
             : 'bg-[#161b22] border-white/10'
