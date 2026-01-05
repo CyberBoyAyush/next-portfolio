@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { ChevronDown, ChevronUp, List } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBlogThemeSafe } from './blog-theme-provider';
@@ -13,24 +13,98 @@ interface Heading {
 
 interface TableOfContentsProps {
     headings: Heading[];
+    contentTriggerId?: string;
+    contentEndId?: string;
 }
 
-export default function TableOfContents({ headings }: TableOfContentsProps) {
+export default function TableOfContents({ headings, contentTriggerId, contentEndId }: TableOfContentsProps) {
     const [activeId, setActiveId] = useState<string>('');
     const [isMobileOpen, setIsMobileOpen] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
     const themeContext = useBlogThemeSafe();
     const isLight = themeContext?.theme === 'light';
+    
+    // Refs to store DOM elements to avoid repeated lookups
+    const startElementRef = useRef<HTMLElement | null>(null);
+    const endElementRef = useRef<HTMLElement | null>(null);
+    const rafIdRef = useRef<number | null>(null);
+    const tocNavRef = useRef<HTMLElement | null>(null);
 
+    // Memoized scroll handler for TOC visibility
+    const updateVisibility = useCallback(() => {
+        const startEl = startElementRef.current;
+        const endEl = endElementRef.current;
+        
+        if (!startEl) return;
+        
+        const startRect = startEl.getBoundingClientRect();
+        const hasPassedStart = startRect.top < 100;
+        
+        if (endEl) {
+            const endRect = endEl.getBoundingClientRect();
+            // Hide when end element is visible in viewport (before it reaches top)
+            // Using viewport height to hide TOC when engagement section comes into view
+            const hasReachedEnd = endRect.top < window.innerHeight * 0.7;
+            setIsVisible(hasPassedStart && !hasReachedEnd);
+        } else {
+            setIsVisible(hasPassedStart);
+        }
+    }, []);
+
+    // Throttled scroll handler using RAF
+    const handleScroll = useCallback(() => {
+        if (rafIdRef.current) return;
+        
+        rafIdRef.current = requestAnimationFrame(() => {
+            updateVisibility();
+            rafIdRef.current = null;
+        });
+    }, [updateVisibility]);
+
+    // Setup visibility tracking
     useEffect(() => {
+        const startId = contentTriggerId || headings[0]?.id;
+        if (!startId) return;
+
+        // Cache DOM elements
+        startElementRef.current = document.getElementById(startId);
+        endElementRef.current = contentEndId ? document.getElementById(contentEndId) : null;
+        
+        if (!startElementRef.current) return;
+
+        // Initial check
+        updateVisibility();
+        
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            if (rafIdRef.current) {
+                cancelAnimationFrame(rafIdRef.current);
+            }
+        };
+    }, [headings, contentTriggerId, contentEndId, handleScroll, updateVisibility]);
+
+    // Track active heading with IntersectionObserver
+    useEffect(() => {
+        if (headings.length === 0) return;
+        
         const observer = new IntersectionObserver(
             (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        setActiveId(entry.target.id);
-                    }
-                });
+                // Find the entry that's most in view
+                const visibleEntries = entries.filter(entry => entry.isIntersecting);
+                if (visibleEntries.length > 0) {
+                    // Get the one closest to the top
+                    const topEntry = visibleEntries.reduce((prev, curr) => 
+                        prev.boundingClientRect.top < curr.boundingClientRect.top ? prev : curr
+                    );
+                    setActiveId(topEntry.target.id);
+                }
             },
-            { rootMargin: '-100px 0px -40% 0px' }
+            { 
+                rootMargin: '-80px 0px -60% 0px',
+                threshold: 0 
+            }
         );
 
         headings.forEach((heading) => {
@@ -42,6 +116,28 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
 
         return () => observer.disconnect();
     }, [headings]);
+
+    // Auto-scroll TOC to keep active item visible
+    useEffect(() => {
+        if (!activeId || !tocNavRef.current) return;
+        
+        const activeElement = tocNavRef.current.querySelector(`a[href="#${activeId}"]`);
+        if (activeElement) {
+            const navRect = tocNavRef.current.getBoundingClientRect();
+            const activeRect = activeElement.getBoundingClientRect();
+            
+            // Check if active item is outside visible area of TOC
+            const isAbove = activeRect.top < navRect.top + 60; // 60px buffer for header
+            const isBelow = activeRect.bottom > navRect.bottom - 20;
+            
+            if (isAbove || isBelow) {
+                activeElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }
+        }
+    }, [activeId]);
 
     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
         e.preventDefault();
@@ -136,8 +232,15 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
                 )}
             </div>
 
-            {/* Desktop Sidebar */}
-            <nav className="hidden lg:block sticky top-20 max-h-[calc(100vh-6rem)] pr-4 overflow-y-auto custom-scrollbar">
+            {/* Desktop Sidebar - Fixed position, only visible when scrolled to content */}
+            <nav 
+                ref={tocNavRef}
+                className={`hidden lg:block fixed right-8 xl:right-12 2xl:right-16 top-24 w-72 xl:w-80 max-h-[calc(100vh-8rem)] p-4 overflow-y-auto custom-scrollbar transition-all duration-300 z-40 ${
+                    isVisible 
+                        ? 'opacity-100 translate-x-0' 
+                        : 'opacity-0 translate-x-4 pointer-events-none'
+                }`}
+            >
                 <div className="mb-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <List size={18} className={isLight ? 'text-gray-500' : 'text-gray-400'} />

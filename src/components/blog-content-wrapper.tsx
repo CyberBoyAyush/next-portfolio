@@ -246,7 +246,7 @@ export function BlogFloatingControls({ children }: { children: React.ReactNode }
   const isLight = themeContext?.theme === 'light';
   
   return (
-    <div className={`hidden xl:flex fixed left-8 top-1/2 -translate-y-1/2 z-50 flex-col items-center gap-3 p-2 backdrop-blur-xl border rounded-2xl shadow-2xl transition-all ${
+    <div className={`hidden xl:flex fixed left-4 2xl:left-8 top-1/2 -translate-y-1/2 z-50 flex-col items-center gap-3 p-2 backdrop-blur-xl border rounded-2xl shadow-2xl transition-all ${
       isLight 
         ? 'bg-white/95 border-gray-200 hover:border-gray-300 shadow-gray-200/50' 
         : 'bg-[#0d1117]/90 border-white/10 hover:border-white/20'

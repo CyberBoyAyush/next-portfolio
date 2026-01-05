@@ -202,16 +202,28 @@ export default async function BlogPost({ params }: Props) {
                 <BlogShareButton title={frontmatter.title} />
               </BlogHeader>
 
+              {/* Sentinel for TOC visibility - placed right before content starts */}
+              <div id="blog-content-start" className="h-0 w-0" aria-hidden="true" />
+
+              {/* Fixed TOC for Desktop - renders outside the content flow */}
+              <div className="hidden lg:block">
+                <TableOfContents 
+                  headings={headings} 
+                  contentTriggerId="blog-content-start" 
+                  contentEndId="blog-content-end"
+                />
+              </div>
+
               {/* Content Layout */}
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-10 xl:pl-24">
-                <div className="min-w-0">
+              <div className="xl:ml-20 lg:mr-80 xl:mr-96">
+                <div className="max-w-prose lg:max-w-[65ch] xl:max-w-[70ch]">
                   {/* Mobile TOC */}
                   <div className="lg:hidden mb-8">
                     <TableOfContents headings={headings} />
                   </div>
 
                   {/* Content */}
-                  <div className="prose prose-invert prose-base sm:prose-lg max-w-none xl:max-w-3xl mx-auto">
+                  <div className="prose prose-invert prose-base sm:prose-lg max-w-none">
                     <BlogContent>
                       <MDXRemote
                         source={content}
@@ -232,14 +244,10 @@ export default async function BlogPost({ params }: Props) {
                     </BlogContent>
                   </div>
                 </div>
-
-                {/* Desktop Sidebar */}
-                <aside className="hidden lg:block">
-                  <div className="sticky top-20">
-                    <TableOfContents headings={headings} />
-                  </div>
-                </aside>
               </div>
+
+              {/* Sentinel for TOC to hide - placed at end of content */}
+              <div id="blog-content-end" className="h-0 w-0" aria-hidden="true" />
 
               {/* Engagement Section */}
               <BlogEngagementSection slug={slug} />
