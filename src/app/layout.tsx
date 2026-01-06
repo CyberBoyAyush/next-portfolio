@@ -49,26 +49,6 @@ export const metadata: Metadata = {
   creator: "Ayush Sharma",
   publisher: "Ayush Sharma",
   manifest: "/manifest.json",
-  icons: {
-    icon: [
-      {
-        url: '/icon.png',
-        sizes: '32x32',
-        type: 'image/png',
-      },
-      {
-        url: '/favicon/favicon.png',
-        sizes: '192x192',
-        type: 'image/png',
-      },
-    ],
-    apple: {
-      url: '/favicon/favicon.png',
-      sizes: '180x180',
-      type: 'image/png',
-    },
-    shortcut: '/icon.png',
-  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -78,10 +58,10 @@ export const metadata: Metadata = {
     description: 'Full Stack Lead Developer specializing in AI-powered applications, modern web development, and cloud infrastructure. Expert in React, Next.js, TypeScript, and LLM integration.',
     images: [
       {
-        url: '/icon.png',
+        url: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPlhi1W0hsc5pTOzgtJsIUQNxveLu9Gr6FBYjX',
         width: 1200,
-        height: 630,
-        alt: 'Ayush Sharma - Full Stack Developer',
+        height: 600,
+        alt: 'Ayush Sharma - Full Stack Developer & AI Engineer',
       },
     ],
   },
@@ -91,7 +71,7 @@ export const metadata: Metadata = {
     creator: '@cyberboyayush',
     title: 'Ayush Sharma | Full Stack Developer & AI Engineer',
     description: 'Full Stack Lead Developer specializing in AI-powered applications and modern web development.',
-    images: ['/icon.png'],
+    images: ['https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPlhi1W0hsc5pTOzgtJsIUQNxveLu9Gr6FBYjX'],
   },
   robots: {
     index: true,
@@ -120,7 +100,7 @@ export default function RootLayout({
     '@type': 'Person',
     name: 'Ayush Sharma',
     url: 'https://aysh.me',
-    image: 'https://aysh.me/icon.png',
+    image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPlhi1W0hsc5pTOzgtJsIUQNxveLu9Gr6FBYjX',
     jobTitle: 'Full Stack Lead Developer',
     worksFor: {
       '@type': 'Organization',
