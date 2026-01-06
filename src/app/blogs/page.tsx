@@ -13,8 +13,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPpI4L2UUj5BXoEqJIk6cGWnQRgCupb9K7ijPt',
-        width: 1200,
-        height: 600,
+        width: 2250,
+        height: 1125,
         alt: 'Ayush Sharma Blog - Web Development, AI & Technology Articles',
       },
     ],
