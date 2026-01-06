@@ -1,6 +1,6 @@
 "use client";
 
-import { useBlogThemeSafe } from "./blog-theme-provider";
+import { useThemeSafe } from "./theme-provider";
 import ThemeSwitcher from "./theme-switcher";
 import { BlogFontControls, BlogZoomControls } from "./blog-content-wrapper";
 import { Share2 } from "lucide-react";
@@ -11,7 +11,7 @@ interface BlogPageWrapperProps {
 }
 
 export function BlogPageWrapper({ children }: BlogPageWrapperProps) {
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === "light";
 
   return (
@@ -67,7 +67,7 @@ export function BlogHeader({
   tags,
   children,
 }: BlogHeaderProps) {
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === "light";
 
   return (
@@ -144,7 +144,7 @@ export function BlogHeader({
 }
 
 export function BlogBackButton({ href }: { href: string }) {
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === "light";
 
   return (
@@ -192,7 +192,7 @@ interface BlogRelatedSectionProps {
 }
 
 export function BlogRelatedSection({ children }: BlogRelatedSectionProps) {
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === "light";
 
   return (
@@ -232,7 +232,7 @@ export function BlogRelatedCard({
   readingTime,
   tags,
 }: BlogRelatedCardProps) {
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === "light";
 
   return (
@@ -311,7 +311,7 @@ export function BlogRelatedCard({
 }
 
 export function BlogFooterSection() {
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === "light";
 
   return (
@@ -354,7 +354,7 @@ export function BlogCoverImage({
   src: string;
   alt: string;
 }) {
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === "light";
 
   return (
@@ -373,7 +373,7 @@ export function BlogCoverImage({
 }
 
 export function BlogMobileBottomBar() {
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === "light";
   const [copied, setCopied] = useState(false);
 

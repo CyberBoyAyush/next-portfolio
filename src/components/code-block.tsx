@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Check, Copy } from 'lucide-react';
-import { useBlogThemeSafe } from './blog-theme-provider';
+import { useThemeSafe } from './theme-provider';
 
 interface CodeBlockProps {
   children: React.ReactNode;
@@ -12,7 +12,7 @@ export default function CodeBlock({ children }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
   const [language, setLanguage] = useState('');
   const codeRef = useRef<HTMLDivElement>(null);
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === 'light';
 
   useEffect(() => {

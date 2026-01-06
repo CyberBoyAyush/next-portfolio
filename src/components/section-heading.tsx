@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
+import { useThemeSafe } from './theme-provider';
 
 interface SectionHeadingProps {
   subtitle: string;
@@ -20,8 +21,9 @@ const SectionHeading = ({
 }: SectionHeadingProps) => {
   const headingRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(headingRef, { once: true, amount: 0.3 });
+  const themeContext = useThemeSafe();
+  const isLight = themeContext?.theme === 'light';
   
-  // Animation variants - optimized for performance
   const containerVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: { 
@@ -53,29 +55,24 @@ const SectionHeading = ({
     >
       <motion.span 
         variants={itemVariants}
-        className="text-sm text-gray-500 block mb-2 uppercase tracking-wider font-medium"
+        className={`text-sm block mb-2 uppercase tracking-wider font-medium ${isLight ? 'text-gray-500' : 'text-gray-500'}`}
       >
         {subtitle}
       </motion.span>
       
       <motion.h2 
         variants={itemVariants}
-        className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4"
+        className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-4 ${
+          isLight ? 'text-gray-800' : 'text-gray-100'
+        }`}
       >
-        <span style={{ 
-          background: 'linear-gradient(to right, #f3f4f6, #d1d5db)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text'
-        }}>
-          {title}
-        </span>
+        {title}
       </motion.h2>
       
       {description && (
         <motion.p 
           variants={itemVariants}
-          className="mt-4 text-gray-400 max-w-2xl mx-auto text-base sm:text-lg"
+          className={`mt-4 max-w-2xl mx-auto text-base sm:text-lg ${isLight ? 'text-gray-600' : 'text-gray-400'}`}
         >
           {description}
         </motion.p>

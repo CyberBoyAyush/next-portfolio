@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Github, Linkedin, Mail, ArrowUp, Heart } from 'lucide-react';
-import { useBlogThemeSafe } from './blog-theme-provider';
+import { useThemeSafe } from './theme-provider';
 
 // Custom X (Twitter) Icon Component
 const XIcon = ({ size = 18, className = "" }) => (
@@ -21,7 +21,7 @@ const XIcon = ({ size = 18, className = "" }) => (
 
 const Footer = () => {
   const [isMounted, setIsMounted] = useState(false);
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === 'light';
 
   useEffect(() => {

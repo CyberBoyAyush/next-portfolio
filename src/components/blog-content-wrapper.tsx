@@ -2,11 +2,12 @@
 
 import { useState, createContext, useContext, useRef, useEffect } from "react";
 import { Minus, Plus, Check, CaseSensitive } from "lucide-react";
-import { Inter } from "next/font/google";
-import { useBlogThemeSafe } from "./blog-theme-provider";
+import { Inter, JetBrains_Mono } from "next/font/google";
+import { useThemeSafe } from "./theme-provider";
 import ThemeSwitcher from "./theme-switcher";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
 
 type FontType = 'standard' | 'mono' | 'inter';
 
@@ -26,10 +27,11 @@ export function useBlogContext() {
   return context;
 }
 
-// Provider
+// Provider - defaults to Inter for optimal blog readability
 export function BlogProvider({ children }: { children: React.ReactNode }) {
   const [fontSize, setFontSize] = useState(18);
-  const [fontType, setFontType] = useState<FontType>('standard');
+  // Default to 'inter' for best long-form reading experience
+  const [fontType, setFontType] = useState<FontType>('inter');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -50,13 +52,31 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
 export function BlogFontWrapper({ children }: { children: React.ReactNode }) {
   const { fontType } = useBlogContext();
 
-  let fontClass = "";
-  if (fontType === 'mono') fontClass = "font-mono";
-  else if (fontType === 'inter') fontClass = inter.className;
-  // If standard, inherits default
+  // Get font class and inline style based on selected font type
+  const getFontStyles = () => {
+    switch (fontType) {
+      case 'mono':
+        return { 
+          className: jetbrainsMono.className,
+          style: { fontFamily: 'var(--font-jetbrains-mono), monospace' }
+        };
+      case 'inter':
+        return { 
+          className: inter.className,
+          style: { fontFamily: `${inter.style.fontFamily}, system-ui, sans-serif` }
+        };
+      default: // 'standard' - Geist Sans
+        return { 
+          className: '',
+          style: { fontFamily: 'var(--font-geist-sans), system-ui, sans-serif' }
+        };
+    }
+  };
+
+  const { className, style } = getFontStyles();
 
   return (
-    <div className={fontClass}>
+    <div className={`blog-font-wrapper ${className}`} style={style}>
       {children}
     </div>
   );
@@ -72,7 +92,7 @@ export function Tooltip({
   content: string; 
   orientation?: 'horizontal' | 'vertical' 
 }) {
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === 'light';
   
   return (
@@ -99,7 +119,7 @@ export function BlogFontControls({ orientation = 'horizontal', openDirection = '
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const isVertical = orientation === 'vertical';
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === 'light';
 
   useEffect(() => {
@@ -113,9 +133,9 @@ export function BlogFontControls({ orientation = 'horizontal', openDirection = '
   }, []);
 
   const fonts: { type: FontType; label: string; className?: string }[] = [
+    { type: 'inter', label: 'Inter', className: inter.className },
     { type: 'standard', label: 'Geist Sans' },
-    { type: 'mono', label: 'Monophont', className: 'font-mono' },
-    { type: 'inter', label: 'Interfont', className: inter.className },
+    { type: 'mono', label: 'JetBrains', className: jetbrainsMono.className },
   ];
 
   const getDropdownPosition = () => {
@@ -181,7 +201,7 @@ interface BlogZoomControlsProps {
 export function BlogZoomControls({ orientation = 'horizontal' }: BlogZoomControlsProps) {
   const { fontSize, setFontSize } = useBlogContext();
   const isVertical = orientation === 'vertical';
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === 'light';
 
   return (
@@ -242,7 +262,7 @@ export function BlogZoomControls({ orientation = 'horizontal' }: BlogZoomControl
 }
 
 export function BlogFloatingControls({ children }: { children: React.ReactNode }) {
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === 'light';
   
   return (
@@ -270,23 +290,35 @@ export default function BlogContent({
 }) {
   const { fontSize, fontType } = useBlogContext();
 
-  // We also apply the font class here again to ensure specificity for the content,
-  // especially if there are overrides in standard CSS.
-  // And also for the "blog-content" specific styles that might depend on it (like the code block override).
-  let fontClass = "";
-  if (fontType === 'mono') fontClass = "font-mono";
-  else if (fontType === 'inter') fontClass = inter.className;
-
   // Optical adjustment: Mono font is wider/larger, so we reduce the size slightly
-  // to match the visual weight of other fonts.
   const effectiveFontSize = fontType === 'mono' ? fontSize - 2 : fontSize;
+
+  // Get font family based on type
+  const getFontFamily = () => {
+    switch (fontType) {
+      case 'mono':
+        return 'var(--font-jetbrains-mono), monospace';
+      case 'inter':
+        return `${inter.style.fontFamily}, system-ui, sans-serif`;
+      default:
+        return 'var(--font-geist-sans), system-ui, sans-serif';
+    }
+  };
+
+  // Get font class
+  const getFontClass = () => {
+    if (fontType === 'mono') return jetbrainsMono.className;
+    if (fontType === 'inter') return inter.className;
+    return '';
+  };
 
   return (
     <div
-      className={`blog-content ${fontClass}`}
+      className={`blog-content ${getFontClass()}`}
       style={
         {
           "--blog-text-size": `${effectiveFontSize}px`,
+          fontFamily: getFontFamily(),
         } as React.CSSProperties
       }
     >

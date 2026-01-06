@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
@@ -7,7 +7,7 @@ import Spotlight from "../components/spotlight";
 import OnekoCat from "@/components/oneko-cat";
 import CappyBot from "@/components/cappy-bot";
 import Script from "next/script";
-import { BlogThemeProvider } from "@/components/blog-theme-provider";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,6 +16,11 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
 });
 
@@ -185,10 +190,10 @@ export default function RootLayout({
         <meta name="cc:attributionURL" content="https://aysh.me" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[var(--theme-bg)] text-[var(--theme-text)] min-h-screen flex flex-col overflow-x-hidden selection:bg-gray-600/30 selection:text-white transition-colors duration-300`}
+        className={`${geistSans.variable} ${geistMono.variable} ${jetbrainsMono.variable} font-geist antialiased bg-[var(--background)] text-[var(--foreground)] min-h-screen flex flex-col overflow-x-hidden selection:bg-gray-600/30 selection:text-white transition-colors duration-300`}
         suppressHydrationWarning
       >
-        <BlogThemeProvider>
+        <ThemeProvider>
           <Spotlight />
 
           <div className="fixed inset-0 opacity-[0.03] bg-[url('/noise.svg')] pointer-events-none z-[-1]"></div>
@@ -200,7 +205,7 @@ export default function RootLayout({
           <OnekoCat />
           <CappyBot />
           <Footer />
-        </BlogThemeProvider>
+        </ThemeProvider>
         <Script defer src="https://stats.ayush-sharma.in/script.js" data-website-id="da6760a3-fa2d-4b1f-85f6-14ed18ebdf92" />
       </body>
     </html>

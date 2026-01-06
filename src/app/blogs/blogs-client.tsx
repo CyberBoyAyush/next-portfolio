@@ -4,9 +4,10 @@ import { useRef, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Calendar, Clock, Tag, ArrowRight } from 'lucide-react';
+import { Calendar, ArrowRight } from 'lucide-react';
 import SectionHeading from '../../components/section-heading';
 import BlogImagePlaceholder from '../../components/blog-image-placeholder';
+import { useThemeSafe } from '../../components/theme-provider';
 
 interface Blog {
   slug: string;
@@ -26,23 +27,29 @@ interface BlogsClientProps {
 export default function BlogsClient({ blogs }: BlogsClientProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true });
+  const themeContext = useThemeSafe();
+  const isLight = themeContext?.theme === 'light';
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#0D1117] pt-14 md:pt-16">
+    <main className={`min-h-screen pt-14 md:pt-16 transition-colors duration-300 ${isLight ? 'bg-[#fafafa]' : 'bg-[#0D1117]'}`}>
       <section ref={sectionRef} className="py-8 md:py-16 relative overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0 -z-10 bg-[#0D1117]">
-          <div className="absolute top-1/4 left-1/4 w-1/2 h-1/2 bg-gradient-radial from-blue-800/20 to-transparent opacity-50 blur-[100px]" />
+        <div className={`absolute inset-0 -z-10 ${isLight ? 'bg-[#fafafa]' : 'bg-[#0D1117]'}`}>
+          <div className={`absolute top-1/4 left-1/4 w-1/2 h-1/2 bg-gradient-radial opacity-50 blur-[100px] ${
+            isLight ? 'from-gray-200/30 to-transparent' : 'from-blue-800/20 to-transparent'
+          }`} />
         </div>
 
         {/* Grid background */}
-        <div
-          className="absolute inset-0 -z-10 bg-[length:30px_30px] md:bg-[length:40px_40px] lg:bg-[length:50px_50px] [background-image:linear-gradient(rgba(255,255,255,.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.01)_1px,transparent_1px)]"
-        ></div>
+        <div className={`absolute inset-0 -z-10 bg-[length:30px_30px] md:bg-[length:40px_40px] lg:bg-[length:50px_50px] ${
+          isLight 
+            ? '[background-image:linear-gradient(rgba(0,0,0,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,.03)_1px,transparent_1px)]'
+            : '[background-image:linear-gradient(rgba(255,255,255,.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.01)_1px,transparent_1px)]'
+        }`}></div>
 
         <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
           <div className="flex flex-col items-center mb-12 md:mb-20">
@@ -52,14 +59,18 @@ export default function BlogsClient({ blogs }: BlogsClientProps) {
               description="Exploring the world of web development, AI, and modern technology"
               className="mb-6"
             />
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 border border-white/10 text-sm text-gray-400 backdrop-blur-sm">
+            <div className={`inline-flex items-center gap-2 px-4 py-1.5 text-sm backdrop-blur-sm border ${
+              isLight 
+                ? 'bg-white/80 border-gray-200 text-gray-600' 
+                : 'bg-white/5 border-white/10 text-gray-400'
+            }`}>
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               {blogs.length} Articles Published
             </div>
           </div>
 
           {blogs.length === 0 ? (
-            <div className="text-center text-gray-400">
+            <div className={`text-center ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>
               No blog posts available yet. Check back soon!
             </div>
           ) : (
@@ -74,9 +85,13 @@ export default function BlogsClient({ blogs }: BlogsClientProps) {
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
                     <Link href={`/blogs/${blog.slug}`} className="block h-full group">
-                      <article className="flex flex-col h-full bg-[#161b22] border border-gray-800/60 overflow-hidden hover:border-gray-700 transition-all duration-300 hover:shadow-xl hover:shadow-black/20">
+                      <article className={`flex flex-col h-full border overflow-hidden transition-all duration-300 hover:shadow-xl ${
+                        isLight 
+                          ? 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-gray-200/50' 
+                          : 'bg-[#161b22] border-gray-800/60 hover:border-gray-700 hover:shadow-black/20'
+                      }`}>
                         {/* Blog Image */}
-                        <div className="relative aspect-video overflow-hidden bg-gray-900">
+                        <div className={`relative aspect-video overflow-hidden ${isLight ? 'bg-gray-100' : 'bg-gray-900'}`}>
                           {blog.imageUrl ? (
                             <Image
                               src={blog.imageUrl}
@@ -89,18 +104,24 @@ export default function BlogsClient({ blogs }: BlogsClientProps) {
                             <BlogImagePlaceholder title={blog.title} />
                           )}
                           {/* Overlay gradient */}
-                          <div className="absolute inset-0 bg-linear-to-t from-[#161b22] to-transparent opacity-20" />
+                          <div className={`absolute inset-0 bg-linear-to-t to-transparent opacity-20 ${
+                            isLight ? 'from-white' : 'from-[#161b22]'
+                          }`} />
                         </div>
 
                         {/* Content */}
                         <div className="flex flex-col grow p-6">
                           {/* Title */}
-                          <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors line-clamp-2">
+                          <h3 className={`text-xl font-bold mb-3 transition-colors line-clamp-2 ${
+                            isLight 
+                              ? 'text-gray-900 group-hover:text-blue-600' 
+                              : 'text-white group-hover:text-blue-400'
+                          }`}>
                             {blog.title}
                           </h3>
 
                           {/* Description */}
-                          <p className="text-gray-400 text-sm leading-relaxed mb-6 line-clamp-2 grow">
+                          <p className={`text-sm leading-relaxed mb-6 line-clamp-2 grow ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>
                             {blog.description}
                           </p>
 
@@ -109,7 +130,11 @@ export default function BlogsClient({ blogs }: BlogsClientProps) {
                             {blog.tags.slice(0, 3).map((tag, idx) => (
                               <span
                                 key={idx}
-                                className="px-2.5 py-1 bg-[#21262d] text-gray-400 text-xs font-medium border border-gray-700/50"
+                                className={`px-2.5 py-1 text-xs font-medium border ${
+                                  isLight 
+                                    ? 'bg-gray-100 text-gray-600 border-gray-200' 
+                                    : 'bg-[#21262d] text-gray-400 border-gray-700/50'
+                                }`}
                               >
                                 {tag}
                               </span>
@@ -117,7 +142,9 @@ export default function BlogsClient({ blogs }: BlogsClientProps) {
                           </div>
 
                           {/* Footer */}
-                          <div className="pt-4 border-t border-gray-800/60 flex items-center justify-between mt-auto text-xs text-gray-500">
+                          <div className={`pt-4 border-t flex items-center justify-between mt-auto text-xs ${
+                            isLight ? 'border-gray-200 text-gray-500' : 'border-gray-800/60 text-gray-500'
+                          }`}>
                             <div className="flex items-center gap-2">
                               <Calendar size={14} />
                               <time dateTime={blog.date}>
@@ -128,7 +155,9 @@ export default function BlogsClient({ blogs }: BlogsClientProps) {
                                 })}
                               </time>
                             </div>
-                            <div className="flex items-center gap-1 group-hover:text-blue-400 transition-colors">
+                            <div className={`flex items-center gap-1 transition-colors ${
+                              isLight ? 'group-hover:text-blue-600' : 'group-hover:text-blue-400'
+                            }`}>
                               <span>Read Article</span>
                               <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                             </div>
