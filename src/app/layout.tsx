@@ -59,8 +59,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPlhi1W0hsc5pTOzgtJsIUQNxveLu9Gr6FBYjX',
-        width: 1200,
-        height: 600,
+        width: 2400,
+        height: 1200,
         alt: 'Ayush Sharma - Full Stack Developer & AI Engineer',
       },
     ],
