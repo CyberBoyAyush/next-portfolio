@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { QUICK_QUESTIONS } from '@/lib/cappybot-context';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useThemeSafe } from './theme-provider';
 
 export default function CappyBot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,6 +23,8 @@ export default function CappyBot() {
   const inputRef = useRef<HTMLInputElement>(null);
   const lastScrollTime = useRef<number>(0);
   const avatarSrc = '/profile-comp.png';
+  const themeContext = useThemeSafe();
+  const isLight = themeContext?.theme === 'light';
 
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
@@ -149,7 +152,11 @@ export default function CappyBot() {
   if (!mounted) return null;
 
   const isMobileViewport = isMobile === true;
-  const chatWindowClassName = `fixed z-[9998] flex flex-col border border-white/10 bg-[#050608]/95 shadow-[0_35px_80px_rgba(0,0,0,0.75)] ring-1 ring-white/5 backdrop-blur-2xl transition-all duration-300 ${isMobileViewport
+  const chatWindowClassName = `fixed z-[9998] flex flex-col border backdrop-blur-2xl transition-all duration-300 ${
+    isLight 
+      ? 'border-gray-200 bg-white/95 shadow-[0_35px_80px_rgba(0,0,0,0.15)] ring-1 ring-gray-200/50' 
+      : 'border-white/10 bg-[#050608]/95 shadow-[0_35px_80px_rgba(0,0,0,0.75)] ring-1 ring-white/5'
+  } ${isMobileViewport
     ? `${isKeyboardVisible ? 'bottom-2' : 'bottom-20'} left-4 right-4`
     : 'bottom-32 md:bottom-28 right-4 md:right-10 h-[640px] w-[min(440px,calc(100vw-2rem))]'
     }`;
@@ -171,7 +178,11 @@ export default function CappyBot() {
         <div className="flex justify-end">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="pointer-events-auto group flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-[#0A0B12]/90 text-slate-200 shadow-[0_25px_60px_rgba(0,0,0,0.65)] backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-blue-500/60 hover:text-white active:scale-95"
+            className={`pointer-events-auto group flex h-14 w-14 items-center justify-center rounded-full border backdrop-blur-xl transition-all hover:-translate-y-0.5 active:scale-95 ${
+              isLight 
+                ? 'border-gray-200 bg-white/90 text-gray-600 shadow-[0_25px_60px_rgba(0,0,0,0.15)] hover:border-blue-400 hover:text-gray-900' 
+                : 'border-white/10 bg-[#0A0B12]/90 text-slate-200 shadow-[0_25px_60px_rgba(0,0,0,0.65)] hover:border-blue-500/60 hover:text-white'
+            }`}
             aria-label="Toggle CappyBot"
           >
             {isOpen ? (
@@ -195,34 +206,42 @@ export default function CappyBot() {
             style={chatWindowStyle}
           >
             {/* Header */}
-            <div className="relative flex items-center gap-4 border-b border-white/10 px-6 py-4 bg-[#0A0B12]">
+            <div className={`relative flex items-center gap-4 border-b px-6 py-4 ${
+              isLight ? 'border-gray-200 bg-gray-50' : 'border-white/10 bg-[#0A0B12]'
+            }`}>
               <div className="relative h-10 w-10 shrink-0">
                 <Image
                   src={avatarSrc}
                   alt="Ayush Sharma profile thumbnail"
                   fill
                   sizes="40px"
-                  className="rounded-full border border-white/10 object-cover"
+                  className={`rounded-full border object-cover ${isLight ? 'border-gray-200' : 'border-white/10'}`}
                   priority
                 />
-                <span className="absolute -bottom-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 border-[#0A0B12] bg-[#0A0B12]">
+                <span className={`absolute -bottom-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 ${
+                  isLight ? 'border-gray-50 bg-gray-50' : 'border-[#0A0B12] bg-[#0A0B12]'
+                }`}>
                   <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] animate-pulse" />
                 </span>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="text-[14px] font-bold text-white truncate">CappyBot</p>
-                  <span className="flex items-center gap-1 px-1.5 py-0.5 text-[9px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                  <p className={`text-[14px] font-bold truncate ${isLight ? 'text-gray-900' : 'text-white'}`}>CappyBot</p>
+                  <span className={`flex items-center gap-1 px-1.5 py-0.5 text-[9px] font-bold border ${
+                    isLight ? 'bg-blue-100 text-blue-600 border-blue-200' : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                  }`}>
                     <Sparkles size={8} />
                     AI
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400 truncate">Portfolio Assistant</p>
+                <p className={`text-[11px] truncate ${isLight ? 'text-gray-500' : 'text-slate-400'}`}>Portfolio Assistant</p>
               </div>
               <div className="flex items-center gap-1">
                 <button
                   onClick={handleReset}
-                  className="shrink-0 p-2 text-slate-400 transition-all hover:bg-white/5 hover:text-white"
+                  className={`shrink-0 p-2 transition-all ${
+                    isLight ? 'text-gray-400 hover:bg-gray-200 hover:text-gray-700' : 'text-slate-400 hover:bg-white/5 hover:text-white'
+                  }`}
                   aria-label="Reset chat"
                   title="Reset Chat"
                 >
@@ -230,7 +249,9 @@ export default function CappyBot() {
                 </button>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="shrink-0 p-2 text-slate-400 transition-all hover:bg-red-500/10 hover:text-red-400"
+                  className={`shrink-0 p-2 transition-all ${
+                    isLight ? 'text-gray-400 hover:bg-red-100 hover:text-red-500' : 'text-slate-400 hover:bg-red-500/10 hover:text-red-400'
+                  }`}
                   aria-label="Close chat"
                 >
                   <X size={18} />
@@ -241,10 +262,16 @@ export default function CappyBot() {
             {/* Messages */}
             <div
               ref={messagesContainerRef}
-              className="flex-1 overflow-y-auto space-y-6 bg-[#050608] px-5 py-6 cappybot-scrollbar relative scroll-smooth"
+              className={`flex-1 overflow-y-auto space-y-6 px-5 py-6 cappybot-scrollbar relative scroll-smooth ${
+                isLight ? 'bg-white' : 'bg-[#050608]'
+              }`}
             >
               {/* Background Grid */}
-              <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-50" />
+              <div className={`absolute inset-0 bg-[size:40px_40px] pointer-events-none opacity-50 ${
+                isLight 
+                  ? 'bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)]' 
+                  : 'bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)]'
+              }`} />
 
               {displayMessages.map((message, index) => (
                 <motion.div
@@ -256,11 +283,15 @@ export default function CappyBot() {
                 >
                   <div
                     className={`max-w-[85%] px-5 py-4 shadow-sm text-[14.5px] leading-relaxed ${message.role === 'user'
-                      ? 'bg-[#2A2D36] text-white font-medium'
-                      : 'bg-[#0A0B12] border border-white/15 text-slate-200'
+                      ? isLight ? 'bg-blue-600 text-white font-medium' : 'bg-[#2A2D36] text-white font-medium'
+                      : isLight ? 'bg-gray-100 border border-gray-200 text-gray-800' : 'bg-[#0A0B12] border border-white/15 text-slate-200'
                       }`}
                   >
-                    <div className="prose prose-invert prose-sm max-w-none prose-p:my-1.5 prose-strong:text-white prose-headings:text-white prose-ul:text-slate-300 prose-ol:text-slate-300 prose-pre:my-3 prose-pre:bg-[#15171F] prose-pre:border prose-pre:border-white/10">
+                    <div className={`prose prose-sm max-w-none prose-p:my-1.5 prose-pre:my-3 prose-pre:border ${
+                      isLight 
+                        ? 'prose-gray prose-strong:text-gray-900 prose-headings:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700 prose-pre:bg-gray-200 prose-pre:border-gray-300' 
+                        : 'prose-invert prose-strong:text-white prose-headings:text-white prose-ul:text-slate-300 prose-ol:text-slate-300 prose-pre:bg-[#15171F] prose-pre:border-white/10'
+                    }`}>
                       {message.parts?.map((part, i) => {
                         if (part.type === 'text' && part.text) {
                           return (
@@ -269,7 +300,9 @@ export default function CappyBot() {
                               remarkPlugins={[remarkGfm]}
                               components={{
                                 a: ({ node, ...props }) => (
-                                  <a {...props} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline decoration-blue-400/30 hover:decoration-blue-400 transition-all" />
+                                  <a {...props} target="_blank" rel="noopener noreferrer" className={`underline transition-all ${
+                                    isLight ? 'text-blue-600 decoration-blue-600/30 hover:decoration-blue-600' : 'text-blue-400 decoration-blue-400/30 hover:decoration-blue-400'
+                                  }`} />
                                 ),
                               }}
                             >
@@ -281,7 +314,9 @@ export default function CappyBot() {
                           const result = part.output as { success?: boolean; message?: string };
                           if (result?.message) {
                             return (
-                              <div key={i} className="text-slate-500 italic text-xs mt-2 border-t border-white/5 pt-2">
+                              <div key={i} className={`italic text-xs mt-2 border-t pt-2 ${
+                                isLight ? 'text-gray-500 border-gray-200' : 'text-slate-500 border-white/5'
+                              }`}>
                                 {result.message}
                               </div>
                             );
@@ -300,7 +335,7 @@ export default function CappyBot() {
                   animate={{ opacity: 1, y: 0 }}
                   className="flex justify-start"
                 >
-                  <div className="bg-[#0A0B12] border border-white/10 px-4 py-3">
+                  <div className={`border px-4 py-3 ${isLight ? 'bg-gray-100 border-gray-200' : 'bg-[#0A0B12] border-white/10'}`}>
                     <div className="flex items-center gap-1.5">
                       <div className="h-1.5 w-1.5 animate-bounce bg-blue-500 [animation-delay:-0.3s]"></div>
                       <div className="h-1.5 w-1.5 animate-bounce bg-blue-500 [animation-delay:-0.15s]"></div>
@@ -320,10 +355,12 @@ export default function CappyBot() {
                 >
                   <div className="relative mb-4">
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                      <div className="w-full border-t border-white/5"></div>
+                      <div className={`w-full border-t ${isLight ? 'border-gray-200' : 'border-white/5'}`}></div>
                     </div>
                     <div className="relative flex justify-center">
-                      <span className="bg-[#050608] px-3 text-[10px] font-medium uppercase tracking-wider text-slate-500">I can help you with</span>
+                      <span className={`px-3 text-[10px] font-medium uppercase tracking-wider ${
+                        isLight ? 'bg-white text-gray-500' : 'bg-[#050608] text-slate-500'
+                      }`}>I can help you with</span>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 gap-2">
@@ -331,16 +368,28 @@ export default function CappyBot() {
                       <button
                         key={idx}
                         onClick={() => handleQuickQuestion(item.text)}
-                        className="group flex items-center gap-3 w-full border border-white/5 bg-[#0A0B12] p-3 text-left transition-all hover:border-blue-500/20 hover:bg-[#0F111A]"
+                        className={`group flex items-center gap-3 w-full border p-3 text-left transition-all ${
+                          isLight 
+                            ? 'border-gray-200 bg-gray-50 hover:border-blue-300 hover:bg-blue-50' 
+                            : 'border-white/5 bg-[#0A0B12] hover:border-blue-500/20 hover:bg-[#0F111A]'
+                        }`}
                       >
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center bg-white/5 text-slate-400 transition-colors group-hover:bg-blue-500/10 group-hover:text-blue-400">
+                        <div className={`flex h-8 w-8 shrink-0 items-center justify-center transition-colors ${
+                          isLight 
+                            ? 'bg-gray-200 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600' 
+                            : 'bg-white/5 text-slate-400 group-hover:bg-blue-500/10 group-hover:text-blue-400'
+                        }`}>
                           <item.icon size={14} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-[10px] font-medium text-slate-500 mb-0.5">{item.label}</p>
-                          <p className="text-[12px] text-slate-200 truncate group-hover:text-white">{item.text}</p>
+                          <p className={`text-[10px] font-medium mb-0.5 ${isLight ? 'text-gray-500' : 'text-slate-500'}`}>{item.label}</p>
+                          <p className={`text-[12px] truncate ${
+                            isLight ? 'text-gray-700 group-hover:text-gray-900' : 'text-slate-200 group-hover:text-white'
+                          }`}>{item.text}</p>
                         </div>
-                        <ChevronRight size={14} className="text-slate-600 opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0 group-hover:text-blue-400" />
+                        <ChevronRight size={14} className={`opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0 ${
+                          isLight ? 'text-gray-400 group-hover:text-blue-600' : 'text-slate-600 group-hover:text-blue-400'
+                        }`} />
                       </button>
                     ))}
                   </div>
@@ -351,10 +400,16 @@ export default function CappyBot() {
             </div>
 
             {/* Input */}
-            <div className={`border-t border-white/10 bg-[#0A0B12] px-5 ${formPaddingClass}`}>
+            <div className={`border-t px-5 ${formPaddingClass} ${
+              isLight ? 'border-gray-200 bg-gray-50' : 'border-white/10 bg-[#0A0B12]'
+            }`}>
               <form
                 onSubmit={handleSubmit}
-                className={`flex items-center gap-2 border border-white/10 bg-[#15171F] px-2 py-2 transition-all focus-within:border-blue-500/30 focus-within:bg-[#1A1D26] focus-within:shadow-[0_0_20px_-5px_rgba(59,130,246,0.2)]`}
+                className={`flex items-center gap-2 border px-2 py-2 transition-all ${
+                  isLight 
+                    ? 'border-gray-200 bg-white focus-within:border-blue-400 focus-within:shadow-[0_0_20px_-5px_rgba(59,130,246,0.15)]' 
+                    : 'border-white/10 bg-[#15171F] focus-within:border-blue-500/30 focus-within:bg-[#1A1D26] focus-within:shadow-[0_0_20px_-5px_rgba(59,130,246,0.2)]'
+                }`}
               >
                 <input
                   ref={inputRef}
@@ -364,21 +419,25 @@ export default function CappyBot() {
                   onFocus={() => isMobileViewport && setIsKeyboardVisible(true)}
                   onBlur={() => setIsKeyboardVisible(false)}
                   placeholder="Ask anything..."
-                  className={`flex-1 bg-transparent px-3 ${inputTextSizeClass} text-white placeholder:text-slate-500 outline-none min-w-0`}
+                  className={`flex-1 bg-transparent px-3 ${inputTextSizeClass} outline-none min-w-0 ${
+                    isLight ? 'text-gray-900 placeholder:text-gray-400' : 'text-white placeholder:text-slate-500'
+                  }`}
                   disabled={isLoading}
                   maxLength={2000}
                 />
                 <button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  className="flex h-9 w-9 shrink-0 items-center justify-center bg-white text-black shadow-lg transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 ${
+                    isLight ? 'bg-gray-900 text-white' : 'bg-white text-black'
+                  }`}
                   aria-label="Send message"
                 >
                   <Send size={16} className={input.trim() ? 'ml-0.5' : ''} />
                 </button>
               </form>
               <div className="mt-2 text-center">
-                <span className="text-[9px] font-medium text-slate-600 tracking-wide">POWERED BY AI · GEMINI 2.5 FLASH</span>
+                <span className={`text-[9px] font-medium tracking-wide ${isLight ? 'text-gray-400' : 'text-slate-600'}`}>POWERED BY AI · GEMINI 2.5 FLASH</span>
               </div>
             </div>
           </motion.div>

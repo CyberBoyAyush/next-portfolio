@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { MessageSquare, Send, Reply, X, BadgeCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useBlogThemeSafe } from "./blog-theme-provider";
+import { useThemeSafe } from "./theme-provider";
 
 interface Comment {
   id: number;
@@ -28,7 +28,7 @@ export default function BlogComments({ slug }: BlogCommentsProps) {
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === "light";
 
   useEffect(() => {

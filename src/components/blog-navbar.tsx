@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Code2, Github, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useBlogThemeSafe } from './blog-theme-provider';
+import { useThemeSafe } from './theme-provider';
 import ThemeSwitcher from './theme-switcher';
 
 const XIcon = ({ size = 18, className = "" }) => (
@@ -19,9 +19,8 @@ const XIcon = ({ size = 18, className = "" }) => (
 );
 
 export default function BlogNavbar() {
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === 'light';
-  const isBlogDetailPage = themeContext?.isBlogDetailPage;
 
   return (
     <>
@@ -55,12 +54,8 @@ export default function BlogNavbar() {
 
               {/* Right side - Social links + Theme (on detail pages) */}
               <div className="flex items-center gap-1">
-                {isBlogDetailPage && (
-                  <>
-                    <ThemeSwitcher orientation="horizontal" />
-                    <div className={`w-px h-5 mx-2 ${isLight ? 'bg-gray-200' : 'bg-white/10'}`} />
-                  </>
-                )}
+                <ThemeSwitcher orientation="horizontal" />
+                <div className={`w-px h-5 mx-2 ${isLight ? 'bg-gray-200' : 'bg-white/10'}`} />
 
                 <motion.a
                   href="https://github.com/cyberboyayush"

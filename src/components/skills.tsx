@@ -13,8 +13,8 @@ import { DiRedis } from 'react-icons/di';
 import { Code } from 'lucide-react';
 import { OpenRouter } from '@lobehub/icons';
 import SectionHeading from './section-heading';
+import { useThemeSafe } from './theme-provider';
 
-// Tech stack data
 const techStack = [
   { id: 'react', name: 'React', icon: SiReact },
   { id: 'nextjs', name: 'Next.js', icon: SiNextdotjs },
@@ -41,7 +41,6 @@ const techStack = [
   { id: 'bun', name: 'Bun.js', icon: SiBun },
 ];
 
-// Brand Color Map
 const TECH_COLORS: Record<string, string> = {
   'React': '#61DAFB',
   'Next.js': '#ffffff',
@@ -68,10 +67,36 @@ const TECH_COLORS: Record<string, string> = {
   'Bun.js': '#FBF0DF',
 };
 
-const SkillItem = ({ tech }: { tech: typeof techStack[0] }) => {
+const TECH_COLORS_LIGHT: Record<string, string> = {
+  'React': '#087ea4',
+  'Next.js': '#000000',
+  'TypeScript': '#3178C6',
+  'Vercel AI SDK': '#000000',
+  'OpenRouter': '#000000',
+  'JavaScript': '#b8860b',
+  'Tailwind': '#0891b2',
+  'Node.js': '#339933',
+  'Python': '#3776AB',
+  'C': '#555555',
+  'C++': '#00599C',
+  'MongoDB': '#47A248',
+  'PostgreSQL': '#4169E1',
+  'Firebase': '#dd7200',
+  'Appwrite': '#FD366E',
+  'Supabase': '#3ECF8E',
+  'AWS': '#FF9900',
+  'Vercel': '#000000',
+  'Cloudflare': '#F38020',
+  'Docker': '#2496ED',
+  'Git': '#F05032',
+  'Redis': '#DC382D',
+  'Bun.js': '#8B7355',
+};
+
+const SkillItem = ({ tech, isLight }: { tech: typeof techStack[0]; isLight: boolean }) => {
   const [isHovered, setHovered] = useState(false);
   const Icon = tech.icon;
-  const color = TECH_COLORS[tech.name] || '#ffffff';
+  const color = isLight ? TECH_COLORS_LIGHT[tech.name] : TECH_COLORS[tech.name] || '#ffffff';
   const isRedis = tech.id === 'redis';
 
   return (
@@ -89,7 +114,7 @@ const SkillItem = ({ tech }: { tech: typeof techStack[0] }) => {
         className="p-2 sm:p-3 cursor-pointer transition-all duration-300"
       >
         <Icon 
-          className={`transition-colors duration-300 ${isHovered ? '' : 'text-gray-600'} ${
+          className={`transition-colors duration-300 ${isHovered ? '' : isLight ? 'text-gray-400' : 'text-gray-600'} ${
             isRedis 
               ? 'w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16' 
               : 'w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12'
@@ -97,7 +122,6 @@ const SkillItem = ({ tech }: { tech: typeof techStack[0] }) => {
           style={{ color: isHovered ? color : undefined }}
         />
         
-        {/* Glow effect on hover */}
         {isHovered && (
           <motion.div
             layoutId="glow"
@@ -110,7 +134,6 @@ const SkillItem = ({ tech }: { tech: typeof techStack[0] }) => {
         )}
       </motion.div>
 
-      {/* Tooltip */}
       <AnimatePresence>
         {isHovered && (
           <motion.div
@@ -118,11 +141,10 @@ const SkillItem = ({ tech }: { tech: typeof techStack[0] }) => {
             animate={{ opacity: 1, y: -15, scale: 1, x: "-50%" }}
             exit={{ opacity: 0, y: 10, scale: 0.8, x: "-50%" }}
             transition={{ duration: 0.2 }}
-            className="absolute -top-8 left-1/2 z-50 px-3 py-1.5 rounded-lg border border-white/10 bg-gray-900/90 backdrop-blur-md text-xs font-medium text-white whitespace-nowrap shadow-xl pointer-events-none"
+            className={`absolute -top-8 left-1/2 z-50 px-3 py-1.5 rounded-lg border backdrop-blur-md text-xs font-medium whitespace-nowrap shadow-xl pointer-events-none ${isLight ? 'border-gray-200 bg-white/90 text-gray-800' : 'border-white/10 bg-gray-900/90 text-white'}`}
           >
             {tech.name}
-            {/* Tiny Arrow */}
-            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900/90 rotate-45 border-r border-b border-white/10" />
+            <div className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 border-r border-b ${isLight ? 'bg-white/90 border-gray-200' : 'bg-gray-900/90 border-white/10'}`} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -131,11 +153,13 @@ const SkillItem = ({ tech }: { tech: typeof techStack[0] }) => {
 };
 
 const Skills = () => {
+  const themeContext = useThemeSafe();
+  const isLight = themeContext?.theme === 'light';
+
   return (
     <section id="skills" className="py-32 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 -z-10 bg-[#0D1117]" />
-      <div className="absolute inset-0 -z-10 bg-[length:40px_40px] [background-image:linear-gradient(rgba(255,255,255,.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.015)_1px,transparent_1px)]" />
+      <div className={`absolute inset-0 -z-10 transition-colors duration-300 ${isLight ? 'bg-[#fafafa]' : 'bg-[#0D1117]'}`} />
+      <div className={`absolute inset-0 -z-10 bg-[length:40px_40px] ${isLight ? '[background-image:linear-gradient(rgba(0,0,0,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,.03)_1px,transparent_1px)]' : '[background-image:linear-gradient(rgba(255,255,255,.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.015)_1px,transparent_1px)]'}`} />
 
       <div className="container mx-auto px-4 max-w-6xl">
         <SectionHeading
@@ -147,13 +171,12 @@ const Skills = () => {
 
         <div className="flex flex-wrap justify-center gap-x-6 gap-y-6 sm:gap-x-8 sm:gap-y-8 md:gap-x-12 md:gap-y-12 max-w-5xl mx-auto">
           {techStack.map((tech) => (
-            <SkillItem key={tech.id} tech={tech} />
+            <SkillItem key={tech.id} tech={tech} isLight={isLight ?? false} />
           ))}
         </div>
         
-        {/* Footer Stat */}
         <div className="mt-16 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/5 text-sm text-gray-500 hover:text-gray-300 transition-colors">
+          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm transition-colors ${isLight ? 'bg-gray-100 border-gray-200 text-gray-500 hover:text-gray-700' : 'bg-white/5 border-white/5 text-gray-500 hover:text-gray-300'}`}>
             <Code size={14} />
             <span>{techStack.length}+ technologies in my arsenal</span>
           </div>

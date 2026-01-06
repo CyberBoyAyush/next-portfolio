@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Share2, X, Copy, Check, Link as LinkIcon } from "lucide-react";
 import { FaXTwitter, FaLinkedin } from "react-icons/fa6";
 import { AnimatePresence, motion } from "framer-motion";
-import { useBlogThemeSafe } from "./blog-theme-provider";
+import { useThemeSafe } from "./theme-provider";
 
 interface BlogShareButtonProps {
   title: string;
@@ -14,7 +14,7 @@ export default function BlogShareButton({ title }: BlogShareButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === "light";
 
   useEffect(() => {

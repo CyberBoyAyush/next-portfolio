@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useBlogThemeSafe } from "./blog-theme-provider";
+import { useThemeSafe } from "./theme-provider";
 
 interface BlogLikeButtonProps {
   slug: string;
@@ -15,7 +15,7 @@ export default function BlogLikeButton({ slug }: BlogLikeButtonProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isToggling, setIsToggling] = useState(false);
   const [justLiked, setJustLiked] = useState(false);
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === "light";
 
   useEffect(() => {

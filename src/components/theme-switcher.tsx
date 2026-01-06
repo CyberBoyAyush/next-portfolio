@@ -1,7 +1,7 @@
 "use client";
 
 import { Sun, Moon } from "lucide-react";
-import { useBlogTheme } from "./blog-theme-provider";
+import { useTheme } from "./theme-provider";
 import { Tooltip } from "./blog-content-wrapper";
 
 interface ThemeSwitcherProps {
@@ -9,13 +9,7 @@ interface ThemeSwitcherProps {
 }
 
 export default function ThemeSwitcher({ orientation = "horizontal" }: ThemeSwitcherProps) {
-  const { theme, toggleTheme, isBlogDetailPage } = useBlogTheme();
-
-  // Only render on blog detail pages
-  if (!isBlogDetailPage) {
-    return null;
-  }
-
+  const { theme, toggleTheme } = useTheme();
   const isLight = theme === "light";
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useBlogThemeSafe } from "./blog-theme-provider";
+import { useThemeSafe } from "./theme-provider";
 import BlogLikeButton from "./blog-like-button";
 import BlogComments from "./blog-comments";
 
@@ -9,7 +9,7 @@ interface BlogEngagementSectionProps {
 }
 
 export default function BlogEngagementSection({ slug }: BlogEngagementSectionProps) {
-  const themeContext = useBlogThemeSafe();
+  const themeContext = useThemeSafe();
   const isLight = themeContext?.theme === "light";
 
   return (

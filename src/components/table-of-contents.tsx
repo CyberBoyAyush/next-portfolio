@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { ChevronDown, ChevronUp, List } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useBlogThemeSafe } from './blog-theme-provider';
+import { useThemeSafe } from './theme-provider';
 
 interface Heading {
     id: string;
@@ -21,7 +21,7 @@ export default function TableOfContents({ headings, contentTriggerId, contentEnd
     const [activeId, setActiveId] = useState<string>('');
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
-    const themeContext = useBlogThemeSafe();
+    const themeContext = useThemeSafe();
     const isLight = themeContext?.theme === 'light';
     
     // Refs to store DOM elements to avoid repeated lookups

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { useThemeSafe } from './theme-provider';
 
 const Spotlight = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -9,19 +10,18 @@ const Spotlight = () => {
   const [isMobile, setIsMobile] = useState(true);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const rafRef = useRef<number | null>(null);
+  const themeContext = useThemeSafe();
+  const isLight = themeContext?.theme === 'light';
   
-  // Check for mobile on client side
   useEffect(() => {
     setIsMobile(typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0));
   }, []);
   
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    // Cancel previous RAF if pending
     if (rafRef.current) {
       cancelAnimationFrame(rafRef.current);
     }
     
-    // Use RAF for smooth position updates
     rafRef.current = requestAnimationFrame(() => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     });
@@ -87,14 +87,13 @@ const Spotlight = () => {
     };
   }, [isMobile]);
   
-  // Skip rendering on mobile devices
   if (isMobile) return null;
   
   const spotlightSize = hoveredElement ? 'scale(1.3)' : 'scale(1)';
   
   return (
     <div 
-      className={`spotlight ${isActive ? 'spotlight-active' : ''}`}
+      className={`spotlight ${isActive ? 'spotlight-active' : ''} ${isLight ? 'spotlight-light' : ''}`}
     >
       <div 
         className="spotlight-inner"
@@ -103,7 +102,10 @@ const Spotlight = () => {
           top: mousePosition.y,
           transform: `translate(-50%, -50%) ${spotlightSize}`,
           opacity: hoveredElement ? 0.85 : undefined,
-          willChange: 'transform, opacity'
+          willChange: 'transform, opacity',
+          background: isLight 
+            ? 'radial-gradient(circle, rgba(0,0,0,0.03) 0%, transparent 70%)' 
+            : undefined
         }}
       />
     </div>

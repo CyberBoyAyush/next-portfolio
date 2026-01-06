@@ -2,10 +2,9 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
-import { Code2, Home, FolderOpen, BookOpen, Github, ExternalLink } from 'lucide-react';
-import { useBlogThemeSafe } from './blog-theme-provider';
+import { Code2, Home, FolderOpen, BookOpen, Github, ExternalLink, Sun, Moon, Type } from 'lucide-react';
+import { useThemeSafe } from './theme-provider';
 
-// Custom X (Twitter) Icon Component
 const XIcon = ({ size = 18, className = "" }) => (
   <svg
     width={size}
@@ -18,12 +17,35 @@ const XIcon = ({ size = 18, className = "" }) => (
   </svg>
 );
 
+const JetBrainsIcon = ({ size = 18, className = "" }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+  >
+    <text x="3" y="17" fontSize="14" fontWeight="bold" fontFamily="monospace">JB</text>
+  </svg>
+);
+
 const Navbar = () => {
   const { scrollY } = useScroll();
   const headerY = useTransform(scrollY, [0, 100], [0, -20]);
   const headerOpacity = useTransform(scrollY, [0, 50, 100], [1, 0.8, 0.6]);
-  const themeContext = useBlogThemeSafe();
-  const isLight = themeContext?.theme === 'light';
+  const themeContext = useThemeSafe();
+  const theme = themeContext?.theme ?? 'dark';
+  const font = themeContext?.font ?? 'geist';
+  const isLight = theme === 'light';
+  const isJetBrains = font === 'jetbrains';
+
+  const handleThemeToggle = () => {
+    themeContext?.toggleTheme();
+  };
+
+  const handleFontToggle = () => {
+    themeContext?.toggleFont();
+  };
 
   return (
     <>
@@ -36,7 +58,7 @@ const Navbar = () => {
       >
         <div className="container mx-auto px-6">
           <motion.div
-            key={`navbar-${isLight ? 'light' : 'dark'}`}
+            key={`navbar-${theme}`}
             className={`mx-auto flex h-16 max-w-5xl items-center justify-between px-6 shadow-lg backdrop-blur-xl border transition-colors duration-300 ${
               isLight 
                 ? 'bg-white/90 shadow-gray-200/50 border-gray-200' 
@@ -109,6 +131,44 @@ const Navbar = () => {
 
               <div className={`w-px h-6 mx-2 ${isLight ? 'bg-gray-200' : 'bg-white/10'}`} />
 
+              {/* Theme Toggle */}
+              <motion.button
+                onClick={handleThemeToggle}
+                className={`flex items-center justify-center w-9 h-9 transition-all duration-300 ${
+                  isLight 
+                    ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                aria-label={isLight ? "Switch to dark mode" : "Switch to light mode"}
+                title={isLight ? "Dark Mode" : "Light Mode"}
+              >
+                {isLight ? <Moon size={18} /> : <Sun size={18} />}
+              </motion.button>
+
+              {/* Font Toggle */}
+              <motion.button
+                onClick={handleFontToggle}
+                className={`flex items-center justify-center w-9 h-9 transition-all duration-300 ${
+                  isJetBrains
+                    ? isLight 
+                      ? 'text-purple-600 bg-purple-50 hover:bg-purple-100' 
+                      : 'text-purple-400 bg-purple-500/10 hover:bg-purple-500/20'
+                    : isLight 
+                      ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
+                      : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                aria-label={isJetBrains ? "Switch to Geist font" : "Switch to JetBrains Mono font"}
+                title={isJetBrains ? "Geist Sans" : "JetBrains Mono"}
+              >
+                {isJetBrains ? <JetBrainsIcon size={18} /> : <Type size={18} />}
+              </motion.button>
+
+              <div className={`w-px h-6 mx-1 ${isLight ? 'bg-gray-200' : 'bg-white/10'}`} />
+
               <motion.a
                 href="https://github.com/cyberboyayush"
                 target="_blank"
@@ -154,7 +214,7 @@ const Navbar = () => {
         className="md:hidden fixed top-4 left-0 right-0 z-50 px-4"
       >
         <motion.div
-          key={`mobile-header-${isLight ? 'light' : 'dark'}`}
+          key={`mobile-header-${theme}`}
           className={`backdrop-blur-xl border px-3 py-2 shadow-lg transition-colors duration-300 ${
             isLight 
               ? 'bg-white/90 border-gray-200 shadow-gray-200/50' 
@@ -275,52 +335,54 @@ const Navbar = () => {
             {/* Divider */}
             <div className={`h-6 w-px mx-0.5 ${isLight ? 'bg-gray-200' : 'bg-white/10'}`} />
 
-            {/* GitHub */}
+            {/* Theme Toggle */}
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="flex-1"
             >
-              <a
-                href="https://github.com/cyberboyayush"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`flex flex-col items-center justify-center py-2.5 px-1 transition-all duration-300 group ${
+              <button
+                onClick={handleThemeToggle}
+                className={`flex flex-col items-center justify-center py-2.5 px-1 transition-all duration-300 group w-full ${
                   isLight 
                     ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
                     : 'text-gray-400 hover:text-white hover:bg-white/10'
                 }`}
-                aria-label="GitHub"
+                aria-label={isLight ? "Switch to dark mode" : "Switch to light mode"}
               >
                 <div className="relative">
                   <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isLight ? 'bg-gray-100' : 'bg-white/5'}`} />
-                  <Github size={18} className="relative group-hover:scale-110 transition-transform duration-300" />
+                  {isLight ? <Moon size={18} className="relative group-hover:scale-110 transition-transform duration-300" /> : <Sun size={18} className="relative group-hover:scale-110 transition-transform duration-300" />}
                 </div>
-                <span className="text-xs mt-1 font-medium">GitHub</span>
-              </a>
+                <span className="text-xs mt-1 font-medium">{isLight ? 'Dark' : 'Light'}</span>
+              </button>
             </motion.div>
 
-            {/* X (Twitter) */}
+            {/* Font Toggle */}
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="flex-1"
             >
-              <a
-                href="/x"
-                className={`flex flex-col items-center justify-center py-2.5 px-1 transition-all duration-300 group ${
-                  isLight 
-                    ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
-                    : 'text-gray-400 hover:text-white hover:bg-white/10'
+              <button
+                onClick={handleFontToggle}
+                className={`flex flex-col items-center justify-center py-2.5 px-1 transition-all duration-300 group w-full ${
+                  isJetBrains
+                    ? isLight 
+                      ? 'text-purple-600 hover:bg-purple-50' 
+                      : 'text-purple-400 hover:bg-purple-500/10'
+                    : isLight 
+                      ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' 
+                      : 'text-gray-400 hover:text-white hover:bg-white/10'
                 }`}
-                aria-label="X (Twitter)"
+                aria-label={isJetBrains ? "Switch to Geist font" : "Switch to JetBrains Mono font"}
               >
                 <div className="relative">
                   <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isLight ? 'bg-gray-100' : 'bg-white/5'}`} />
-                  <XIcon size={18} className="relative group-hover:scale-110 transition-transform duration-300" />
+                  {isJetBrains ? <JetBrainsIcon size={18} className="relative group-hover:scale-110 transition-transform duration-300" /> : <Type size={18} className="relative group-hover:scale-110 transition-transform duration-300" />}
                 </div>
-                <span className="text-xs mt-1 font-medium">X</span>
-              </a>
+                <span className="text-xs mt-1 font-medium">{isJetBrains ? 'JB' : 'Aa'}</span>
+              </button>
             </motion.div>
           </div>
         </div>

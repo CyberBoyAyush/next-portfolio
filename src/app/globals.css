@@ -21,30 +21,70 @@ html {
 
 :root {
   --background: #0a0a0a;
+  --background-secondary: #0D1117;
+  --background-elevated: #161b22;
   --foreground: #ededed;
+  --foreground-muted: #9ca3af;
+  --foreground-subtle: #6b7280;
   --primary: #8B5CF6;
   --primary-light: #A78BFA;
   --primary-dark: #7C3AED;
   --secondary: #3B82F6;
   --accent: #F472B6;
-  --border: #27272a;
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.2);
   --ring: #8B5CF6;
   --muted: #71717a;
   --muted-foreground: #a1a1aa;
+  --card-bg: rgba(22, 27, 34, 0.8);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --card-hover-border: rgba(255, 255, 255, 0.2);
+  --selection-bg: rgba(75, 85, 99, 0.3);
+  --grid-color: rgba(255, 255, 255, 0.015);
 }
 
 [data-theme="light"] {
-  --background: #ffffff;
+  --background: #fafafa;
+  --background-secondary: #ffffff;
+  --background-elevated: #ffffff;
   --foreground: #171717;
+  --foreground-muted: #6b7280;
+  --foreground-subtle: #9ca3af;
   --primary: #7C3AED;
   --primary-light: #8B5CF6;
   --primary-dark: #6D28D9;
   --secondary: #2563EB;
   --accent: #EC4899;
-  --border: #e5e7eb;
+  --border: rgba(0, 0, 0, 0.1);
+  --border-strong: rgba(0, 0, 0, 0.15);
   --ring: #7C3AED;
   --muted: #6b7280;
   --muted-foreground: #9ca3af;
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --card-border: rgba(0, 0, 0, 0.1);
+  --card-hover-border: rgba(0, 0, 0, 0.15);
+  --selection-bg: rgba(124, 58, 237, 0.15);
+  --grid-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Font classes for global font switching */
+.font-geist {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+.font-jetbrains {
+  font-family: var(--font-jetbrains-mono), monospace;
+}
+
+/* Blog font wrapper - allows blog-specific font overrides */
+.blog-font-wrapper * {
+  font-family: inherit;
+}
+
+/* Exception for code blocks in blog - always use mono */
+.blog-font-wrapper pre,
+.blog-font-wrapper code {
+  font-family: var(--font-jetbrains-mono), var(--font-geist-mono), monospace !important;
 }
 
 /* Global Scrollbar Styles - Dark Mode (default) */
@@ -118,8 +158,14 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, sans-serif;
+  font-family: inherit;
   transition: background-color 0.3s, color 0.3s;
+}
+
+/* Theme-aware selection */
+::selection {
+  background: var(--selection-bg);
+  color: var(--foreground);
 }
 
 @keyframes shine {
@@ -275,7 +321,7 @@ body {
   animation: slideFromLeft 0.3s ease-out forwards;
 }
 
-/* Enhanced navbar glass effect */
+/* Enhanced navbar glass effect - Dark mode */
 .navbar-glass {
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(20px);
@@ -286,6 +332,17 @@ body {
 .navbar-glass:hover {
   background: rgba(0, 0, 0, 0.5);
   border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Navbar glass effect - Light mode */
+[data-theme="light"] .navbar-glass {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .navbar-glass:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.12);
 }
 
 /* Subtle glow for navbar icons */
@@ -332,6 +389,11 @@ body {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+[data-theme="light"] .mobile-header-scroll {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 /* GPU acceleration hints for animated elements */
