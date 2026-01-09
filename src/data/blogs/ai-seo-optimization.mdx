@@ -1,0 +1,206 @@
+---
+title: "Making Your Website Visible to AI: A Practical Guide to LLM SEO"
+description: "Learn how AI systems like ChatGPT and Perplexity find and cite websites. Understand robots.txt, llms.txt, sitemaps, and content structure to get your site featured in AI-generated answers."
+date: "2026-01-09"
+author: "Ayush Sharma"
+tags: ["SEO", "AI", "LLM", "robots.txt", "llms.txt", "Web Development"]
+readingTime: "10 min read"
+featured: true
+imageUrl: "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPSeiTZfFAbeB0Lldhftp2149k387sncPgFoJi"
+---
+
+You ask ChatGPT a question. It gives you an answer with sources at the bottom. Sometimes your competitor's website is there. Sometimes it is not.
+
+What decides this? And more importantly, how do you make sure YOUR site shows up?
+
+That is what this guide is about. We will cover how AI systems find content, what files you need, and how to structure your pages so AI actually cites them.
+
+## How AI Actually Finds Your Content
+
+This is different from how Google works. Let me explain.
+
+![How AI Answers Your Questions](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPyuSAZxoEDeUo3XJ0zRAdWNGj9hns5b6fBcZC)
+
+When you ask ChatGPT something, it does not just pull from memory. Modern AI uses something called RAG (Retrieval-Augmented Generation). Here is what happens:
+
+1. You ask a question
+2. The AI searches the web for relevant pages
+3. It grabs content from those pages
+4. It generates an answer using that content
+5. It cites the sources
+
+Think of it like a research assistant. They do not know everything by heart. They search, read, summarize, and tell you where they found the information.
+
+The key insight: **your content needs to be findable and easy to extract.** If the AI cannot reach your page or understand what is on it, you are invisible.
+
+## The Bots That Crawl Your Site
+
+Different companies have different bots. Here are the main ones you should know:
+
+**OpenAI** runs three bots:
+- GPTBot (for training)
+- ChatGPT-User (when users browse)
+- OAI-SearchBot (for search features)
+
+**Anthropic** runs ClaudeBot and anthropic-ai.
+
+**Perplexity** runs PerplexityBot.
+
+**Google** runs Google-Extended for Gemini.
+
+There are others too: Applebot-Extended, Bytespider (TikTok), Amazonbot, Meta-ExternalAgent, and CCBot (Common Crawl).
+
+Here is an important distinction: some bots are for **training** (they collect data to improve models), and some are for **search** (they fetch content when users ask questions). You can allow one while blocking the other.
+
+## Setting Up Your robots.txt
+
+The robots.txt file lives at your website root. It tells bots what they can and cannot access.
+
+Here is a simple setup that allows AI crawlers:
+
+```txt
+User-agent: *
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+Sitemap: https://yoursite.com/sitemap.xml
+```
+
+That is it. Nothing fancy.
+
+Want to block training bots but allow search bots? Do this:
+
+```txt
+User-agent: ChatGPT-User
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: GPTBot
+Disallow: /
+```
+
+Now ChatGPT can cite you in answers, but your content will not be used for training.
+
+![Your AI Optimization Stack](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPRqBqg4bUXBJDNsC5iPZHT482KSbkML3t1VmU)
+
+**Quick note on crawl-delay:** Most AI bots ignore it. If you need rate limiting, use Cloudflare or your server settings instead.
+
+## The llms.txt File
+
+While robots.txt controls access, llms.txt helps AI **understand** your content. Think of it as a treasure map pointing to your best pages.
+
+![robots.txt vs llms.txt](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPmpykVVCONoLlxBOsWJwGkdgPX4SVCim0e3Ht)
+
+It is a markdown file at your domain root. Here is what it looks like:
+
+```markdown
+# Your Site Name
+
+> Brief description of what your site is about.
+
+## Key Pages
+
+- [Home](https://yoursite.com/): Main landing page
+- [Blog](https://yoursite.com/blog): Technical articles
+- [Docs](https://yoursite.com/docs): Documentation
+
+## Popular Articles
+
+- [How X Works](https://yoursite.com/blog/how-x-works): Explains X in detail
+- [Guide to Y](https://yoursite.com/blog/guide-to-y): Complete Y tutorial
+
+Last Updated: 2026-01-09
+```
+
+Keep it short. 10-20 of your best pages. Not a dump of everything on your site.
+
+The goal is simple: when an AI needs information about something you cover, this file tells it exactly where to look.
+
+**A note on adoption:** llms.txt is a newer spec with growing support. Not all AI systems use it yet. Think of it as forward-looking optimization. Your robots.txt and content structure are the proven foundations.
+
+## Your Sitemap
+
+Your sitemap.xml helps AI discover all your pages. Nothing special here, just make sure it exists and is up to date.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://yoursite.com/</loc>
+    <lastmod>2026-01-09</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://yoursite.com/blog/article</loc>
+    <lastmod>2026-01-08</lastmod>
+    <priority>0.8</priority>
+  </url>
+</urlset>
+```
+
+Two things matter:
+1. **Include your llms.txt** in the sitemap
+2. **Use real dates** for lastmod, not just today's date
+
+Reference it in your robots.txt with `Sitemap: https://yoursite.com/sitemap.xml`.
+
+## How to Structure Your Content
+
+This is where most people mess up. You can have all the right files, but if your content is hard to parse, AI will skip it.
+
+**Use clear headings.** H1 for title, H2 for sections, H3 for subsections. AI uses this to understand what your page covers.
+
+**Keep paragraphs short.** 2-4 sentences max. Long blocks of text are hard to extract.
+
+**Answer questions directly.** If your page is about "What is X?", the answer should be in the first paragraph. Not buried in the middle somewhere.
+
+**Use server-side rendering.** Many AI bots do not run JavaScript. If your content loads client-side, they see an empty page. This is critical for React/Next.js apps. To check: view your page source. If you see your actual text in the HTML, you are good. If you see mostly JavaScript and no content, AI bots see an empty page.
+
+## What Actually Gets You Cited
+
+Technical setup is table stakes. Here is what makes AI actually choose your content over someone else's:
+
+**Be specific.** Generic content does not get cited. Detailed explanations with examples do. Compare "React is a JavaScript library" versus "React uses a virtual DOM that batches updates, reducing direct DOM manipulation significantly in typical apps." The second one answers real questions.
+
+**Be accurate.** AI increasingly cross-checks facts. Wrong information gets filtered out.
+
+**Be fresh.** Recent publication dates help. Keep your important pages updated.
+
+**Be authoritative.** Publish under real names. Link to credentials. Cite your sources.
+
+## The Quick Checklist
+
+Here is what to do, in order:
+
+1. Check your robots.txt is not blocking AI bots
+2. Make sure your content renders server-side (view page source to verify)
+3. Create an llms.txt with your top pages
+4. Verify your sitemap exists and is referenced in robots.txt
+5. Structure your content with clear headings and short paragraphs
+6. Test by asking AI assistants questions about topics you cover
+
+That last step is important. Ask ChatGPT or Perplexity something your site answers. Does it cite you? If not, figure out why.
+
+## The Bottom Line
+
+AI search is not replacing Google. It is adding a new channel. Some users will keep googling. Others will ask AI directly. You want to show up in both.
+
+The good news: most of this is just good web practice anyway. Clear structure, fast loading, accurate content. Things you should be doing regardless.
+
+Start with the basics. Create your llms.txt, fix your robots.txt, check your rendering. Then test and iterate.
+
+Your content deserves to be found. Make sure AI can find it.
+
+## Further Reading
+
+- [llms.txt Specification](https://llmstxt.org)
+- [OpenAI Crawler Docs](https://platform.openai.com/docs/gptbot)
+- [Perplexity Bot Docs](https://docs.perplexity.ai/guides/bots)
