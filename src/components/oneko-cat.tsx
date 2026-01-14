@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 
 interface Position {
   x: number;
@@ -40,6 +41,7 @@ const STORAGE_KEY_SPRITE = 'oneko-sprite-type';
 type SpriteType = 'cat' | 'dog';
 
 export default function OnekoCat() {
+  const pathname = usePathname();
   const nekoRef = useRef<HTMLDivElement>(null);
   const [nekoPos, setNekoPos] = useState<Position>({ x: 32, y: 32 });
   const [mousePos, setMousePos] = useState<Position>({ x: 0, y: 0 });
@@ -387,7 +389,9 @@ export default function OnekoCat() {
     touchStartPos.current = null;
   };
 
-  if (!isVisible) return null;
+  // Hide on blog pages
+  const isBlogPage = pathname?.startsWith('/blog');
+  if (!isVisible || isBlogPage) return null;
 
   const spriteImage = spriteType === 'cat' ? '/oneko.gif' : '/oneko-dog.gif';
 
