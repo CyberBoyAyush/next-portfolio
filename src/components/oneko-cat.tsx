@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 interface Position {
   x: number;
@@ -32,6 +32,7 @@ const SPRITE_SETS: SpriteSet = {
 };
 
 const NEKO_SPEED = 12;
+const LONG_PRESS_DURATION = 500;
 
 const STORAGE_KEY_DISABLED = 'oneko-cat-disabled';
 const STORAGE_KEY_SPRITE = 'oneko-sprite-type';
@@ -54,9 +55,11 @@ export default function OnekoCat() {
   const contextMenuRef = useRef<HTMLDivElement>(null);
   const lastFrameTimestamp = useRef<number | null>(null);
   const animationFrameId = useRef<number | null>(null);
-  const lastClickTime = useRef<number>(0);
-  const clickCount = useRef<number>(0);
+  const lastTapTime = useRef<number>(0);
+  const tapCount = useRef<number>(0);
   const tapTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const longPressTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const touchStartPos = useRef<Position | null>(null);
 
   const setSprite = (name: string, frame: number) => {
     if (!nekoRef.current) return;
@@ -172,10 +175,15 @@ export default function OnekoCat() {
     if (storedSprite === 'cat' || storedSprite === 'dog') {
       setSpriteType(storedSprite);
     }
+    
+    return () => {
+      if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current);
+      if (longPressTimeoutRef.current) clearTimeout(longPressTimeoutRef.current);
+    };
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       if (contextMenuRef.current && !contextMenuRef.current.contains(e.target as Node)) {
         setShowContextMenu(false);
       }
@@ -183,8 +191,10 @@ export default function OnekoCat() {
 
     if (showContextMenu) {
       document.addEventListener('click', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
       return () => {
         document.removeEventListener('click', handleClickOutside);
+        document.removeEventListener('touchstart', handleClickOutside);
       };
     }
   }, [showContextMenu]);
@@ -251,8 +261,7 @@ export default function OnekoCat() {
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setContextMenuPos({ x: e.clientX, y: e.clientY });
-    setShowContextMenu(true);
+    showContextMenuAtPosition(e.clientX, e.clientY);
   };
 
   const handleSpriteChange = (type: SpriteType) => {
@@ -283,41 +292,99 @@ export default function OnekoCat() {
     }
   };
 
+  const clearLongPressTimeout = useCallback(() => {
+    if (longPressTimeoutRef.current) {
+      clearTimeout(longPressTimeoutRef.current);
+      longPressTimeoutRef.current = null;
+    }
+  }, []);
+
+  const toggleDisabledState = useCallback(() => {
+    const newDisabledState = !isDisabled;
+    setIsDisabled(newDisabledState);
+    if (newDisabledState) {
+      setIdleAnimation('sleeping');
+      setIdleAnimationFrame(0);
+    } else {
+      setIdleAnimation(null);
+      setIdleAnimationFrame(0);
+    }
+    localStorage.setItem(STORAGE_KEY_DISABLED, String(newDisabledState));
+  }, [isDisabled]);
+
+  const showContextMenuAtPosition = useCallback((x: number, y: number) => {
+    const menuWidth = 150;
+    const menuHeight = 80;
+    const padding = 8;
+    
+    const adjustedX = Math.min(x, window.innerWidth - menuWidth - padding);
+    const adjustedY = Math.min(y, window.innerHeight - menuHeight - padding);
+    
+    setContextMenuPos({ 
+      x: Math.max(padding, adjustedX), 
+      y: Math.max(padding, adjustedY) 
+    });
+    setShowContextMenu(true);
+  }, []);
+
   const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const touch = e.touches[0];
     const now = Date.now();
-    const timeSinceLastClick = now - lastClickTime.current;
+    const timeSinceLastTap = now - lastTapTime.current;
+    
+    touchStartPos.current = { x: touch.clientX, y: touch.clientY };
     
     if (tapTimeoutRef.current) {
       clearTimeout(tapTimeoutRef.current);
     }
+    clearLongPressTimeout();
     
-    if (timeSinceLastClick < 400 && timeSinceLastClick > 0) {
-      clickCount.current += 1;
+    if (timeSinceLastTap < 300 && timeSinceLastTap > 0) {
+      tapCount.current += 1;
     } else {
-      clickCount.current = 1;
+      tapCount.current = 1;
     }
     
-    lastClickTime.current = now;
+    lastTapTime.current = now;
     
-    if (clickCount.current === 2) {
-      e.preventDefault();
-      e.stopPropagation();
-      const newDisabledState = !isDisabled;
-      setIsDisabled(newDisabledState);
-      if (newDisabledState) {
-        setIdleAnimation('sleeping');
-        setIdleAnimationFrame(0);
-      } else {
-        setIdleAnimation(null);
-        setIdleAnimationFrame(0);
-      }
-      localStorage.setItem(STORAGE_KEY_DISABLED, String(newDisabledState));
-      clickCount.current = 0;
+    if (tapCount.current === 2) {
+      toggleDisabledState();
+      tapCount.current = 0;
     } else {
+      longPressTimeoutRef.current = setTimeout(() => {
+        if (touchStartPos.current) {
+          showContextMenuAtPosition(touchStartPos.current.x, touchStartPos.current.y);
+        }
+        tapCount.current = 0;
+      }, LONG_PRESS_DURATION);
+      
       tapTimeoutRef.current = setTimeout(() => {
-        clickCount.current = 0;
-      }, 400);
+        tapCount.current = 0;
+      }, 300);
     }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    e.preventDefault();
+    clearLongPressTimeout();
+    
+    const touch = e.touches[0];
+    if (touchStartPos.current) {
+      const dx = touch.clientX - touchStartPos.current.x;
+      const dy = touch.clientY - touchStartPos.current.y;
+      if (Math.sqrt(dx * dx + dy * dy) > 10) {
+        tapCount.current = 0;
+      }
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
+    clearLongPressTimeout();
+    touchStartPos.current = null;
   };
 
   if (!isVisible) return null;
@@ -333,6 +400,8 @@ export default function OnekoCat() {
         onDoubleClick={handleDoubleClick}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         style={{
           width: '32px',
           height: '32px',
@@ -348,6 +417,9 @@ export default function OnekoCat() {
           filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
           opacity: isDisabled ? 0.5 : 1,
           touchAction: 'none',
+          userSelect: 'none',
+          WebkitUserSelect: 'none',
+          WebkitTouchCallout: 'none',
         }}
       />
       {showContextMenu && (
