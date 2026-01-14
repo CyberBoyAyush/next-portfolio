@@ -304,6 +304,19 @@ body {
   }
 }
 
+/* Mobile touch optimizations - ensure reliable tap behavior */
+@media (hover: none) and (pointer: coarse) {
+  a, button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Remove hover-sticky states on touch devices */
+  .group:active .group-hover\:scale-105 {
+    transform: scale(1.02);
+  }
+}
+
 /* Tablet optimizations */
 @media (min-width: 641px) and (max-width: 1024px) {
   .project-grid {
