@@ -84,8 +84,12 @@ export default function BlogsClient({ blogs }: BlogsClientProps) {
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
-                    <Link href={`/blogs/${blog.slug}`} className="block h-full group">
-                      <article className={`flex flex-col h-full border overflow-hidden transition-all duration-300 hover:shadow-xl ${
+                    <Link 
+                      href={`/blogs/${blog.slug}`} 
+                      className="block h-full group touch-manipulation select-none"
+                      style={{ WebkitTapHighlightColor: 'transparent' }}
+                    >
+                      <article className={`flex flex-col h-full border overflow-hidden transition-[color,background-color,border-color,box-shadow] duration-300 hover:shadow-xl ${
                         isLight 
                           ? 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-gray-200/50' 
                           : 'bg-[#161b22] border-gray-800/60 hover:border-gray-700 hover:shadow-black/20'
