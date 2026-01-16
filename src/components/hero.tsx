@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import TechTicker from "./tech-ticker";
+import TerminalCommand from "./terminal-command";
 import { getCalApi } from "@calcom/embed-react";
 import { useThemeSafe } from "./theme-provider";
 
@@ -415,7 +416,11 @@ const Hero = () => {
                 <ChevronDown size={24} />
               </a>
             </motion.div>
+
           </motion.div>
+
+          {/* Terminal Command - Fixed Bottom Right (Desktop Only) */}
+          <TerminalCommand />
         </div>
       </div>
     </section>
