@@ -20,10 +20,11 @@ import {
   SiGooglegemini,
   SiGoogle,
   SiMeta,
-  SiGooglechrome
+  SiGooglechrome,
+  SiBun
 } from 'react-icons/si';
 import Image from 'next/image';
-import { OpenRouter, Groq as GroqIcon } from '@lobehub/icons';
+import { OpenRouter, Groq as GroqIcon, MCP } from '@lobehub/icons';
 import { useThemeSafe } from './theme-provider';
 
 interface Project {
@@ -50,11 +51,22 @@ interface ProjectCardProps {
   variant?: 'default' | 'compact';
 }
 
+const OpenCodeIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M24 32H8V16H24V32Z" fill="#4B4646" />
+    <path d="M24 8H8V32H24V8ZM32 40H0V0H32V40Z" fill="currentColor" />
+  </svg>
+);
+
 const getTechIcon = (tech: string) => {
   const techLower = tech.toLowerCase();
   const iconSize = 14;
   const iconClass = "w-3.5 h-3.5";
 
+  if (techLower.includes('opencode')) return <OpenCodeIcon className={iconClass} />;
+  if (techLower.includes('mcp')) return <MCP size={iconSize} />;
+  if (techLower.includes('bun')) return <SiBun className={iconClass} />;
+  if (techLower.includes('ai agent')) return <Sparkles className={iconClass} />;
   if (techLower.includes('next')) return <SiNextdotjs className={iconClass} />;
   if (techLower.includes('prisma')) return <SiPrisma className={iconClass} />;
   if (techLower.includes('postgres')) return <SiPostgresql className={iconClass} />;

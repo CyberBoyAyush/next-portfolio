@@ -21,6 +21,32 @@ export interface Project {
 export const projects: Project[] = [
   {
     id: 1,
+    title: "Zenox",
+    description:
+      "OpenCode plugin for intelligent agent orchestration with specialized subagents and parallel background tasks.",
+    image:
+      "https://res.cloudinary.com/dyetf2h9n/image/upload/v1768073623/ZENOX_e4boob.png",
+    tags: ["TypeScript", "OpenCode", "AI Agents", "MCP", "Bun"],
+    demoLink: "https://www.npmjs.com/package/zenox",
+    githubLink: "https://github.com/CyberBoyAyush/zenox",
+    featured: true,
+    year: "2026",
+    duration: "5 Days",
+    color: "from-cyan-600 to-blue-600",
+    slug: "zenox",
+    detailedDescription:
+      "Zenox supercharges OpenCode with specialized AI agents that handle different aspects of development. Instead of one agent doing everything, you get a team of experts — each optimized for their domain. Features 4 specialized agents (Explorer for codebase grep, Librarian for docs research, Oracle for strategic decisions, UI Planner for visual design), background tasks for parallel execution, thinking mode variants, keyword triggers like 'ultrawork' and 'deep research', session history querying, code intelligence via LSP, and todo continuation. Includes MCP servers for Exa web search, grep_app for GitHub search, and sequential-thinking for complex reasoning.",
+    challenges: [
+      "Designing intelligent delegation patterns that automatically route tasks to the right specialized agent",
+      "Implementing parallel background task execution with proper notification and result retrieval",
+      "Building thinking mode variants with configurable reasoning levels (high, xhigh, max) per agent",
+      "Creating keyword trigger system for special modes like ultrawork and deep research",
+      "Integrating multiple MCP servers (Exa, grep_app, sequential-thinking) seamlessly",
+    ],
+    category: "AI",
+  },
+  {
+    id: 2,
     title: "Plnr",
     description:
       "AI-powered CLI tool for intelligent codebase planning and context-aware implementation assistance",
@@ -47,7 +73,7 @@ export const projects: Project[] = [
     videoUrl: "https://www.youtube.com/embed/8VMi3AoLEz4?si=b5JoXW31UPcFPfLj",
   },
   {
-    id: 2,
+    id: 3,
     title: "CappyChat",
     description:
       "Fastest LLM chat on the planet right now, Multi Model and Realtime Sync too.",
@@ -80,7 +106,7 @@ export const projects: Project[] = [
     category: "AI",
   },
   {
-    id: 3,
+    id: 4,
     title: "Bucket Buddy",
     description: "Modern Cloud Storage Management",
     image:
@@ -104,7 +130,7 @@ export const projects: Project[] = [
     category: "Others",
   },
   {
-    id: 4,
+    id: 5,
     title: "TuduAI",
     description:
       " An AI-powered productivity app with natural language task creation, collaborative workspaces, and a minimalist UI for effortless planning.",
@@ -136,7 +162,7 @@ export const projects: Project[] = [
     category: "AI",
   },
   {
-    id: 5,
+    id: 6,
     title: "QuickBang",
     description: "Lightning-fast search shortcuts to enhance your workflow.",
     image:
@@ -160,7 +186,7 @@ export const projects: Project[] = [
     category: "Others",
   },
   {
-    id: 6,
+    id: 7,
     title: "Effisense",
     description:
       "Experience the future of productivity with AI-powered task scheduling, smart prioritization, and intelligent workload balancing.",
@@ -193,7 +219,7 @@ export const projects: Project[] = [
     category: "AI",
   },
   {
-    id: 7,
+    id: 8,
     title: "SkillCompass",
     description:
       "Unlock your potential with AI-powered personalized learning paths, interactive content, and real-time progress tracking.",
@@ -220,7 +246,7 @@ export const projects: Project[] = [
     category: "AI",
   },
   {
-    id: 8,
+    id: 9,
     title: "PortDev",
     description: "Create Devloper Portfolio in Minutes.",
     image:
@@ -244,7 +270,7 @@ export const projects: Project[] = [
     category: "Others",
   },
   {
-    id: 9,
+    id: 10,
     title: "React Portfolio",
     description: "Personal Portfolio Website using React Js",
     image:

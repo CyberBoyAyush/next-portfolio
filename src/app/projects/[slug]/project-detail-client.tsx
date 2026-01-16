@@ -5,22 +5,33 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Project, projects } from '@/data/projects';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowLeft, ExternalLink, Github, Calendar, Clock, ArrowRight, CheckCircle2, Layers, Trophy } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Github, Calendar, Clock, ArrowRight, CheckCircle2, Layers, Trophy, Sparkles } from 'lucide-react';
 import {
   SiNextdotjs, SiPrisma, SiPostgresql, SiTailwindcss, SiReact,
   SiTypescript, SiAppwrite, SiVercel, SiJavascript, SiOpenai,
-  SiAmazon, SiGooglegemini, SiGoogle, SiMeta, SiGooglechrome
+  SiAmazon, SiGooglegemini, SiGoogle, SiMeta, SiGooglechrome, SiBun
 } from 'react-icons/si';
 import { Server, Calendar as CalendarIcon, Bot, Database } from 'lucide-react';
-import { OpenRouter, Groq as GroqIcon } from '@lobehub/icons';
+import { OpenRouter, Groq as GroqIcon, MCP } from '@lobehub/icons';
 import { useRef } from 'react';
 import { useThemeSafe } from '@/components/theme-provider';
+
+const OpenCodeIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M24 32H8V16H24V32Z" fill="#4B4646" />
+    <path d="M24 8H8V32H24V8ZM32 40H0V0H32V40Z" fill="currentColor" />
+  </svg>
+);
 
 const getTechIcon = (tech: string) => {
   const techLower = tech.toLowerCase();
   const iconSize = 18;
   const iconClass = "w-5 h-5";
 
+  if (techLower.includes('opencode')) return <OpenCodeIcon className={iconClass} />;
+  if (techLower.includes('mcp')) return <MCP size={iconSize} />;
+  if (techLower.includes('bun')) return <SiBun className={iconClass} />;
+  if (techLower.includes('ai agent')) return <Sparkles className={iconClass} />;
   if (techLower.includes('next')) return <SiNextdotjs className={iconClass} />;
   if (techLower.includes('prisma')) return <SiPrisma className={iconClass} />;
   if (techLower.includes('postgres')) return <SiPostgresql className={iconClass} />;
