@@ -135,7 +135,7 @@ CREATE UNIQUE INDEX idx_users_email ON users(email);
 
 This is where things get a bit confusing, but stay with me.
 
-**Clustered index:** The table data itself is physically organized according to the index order. There can only be one clustered index per table because you can only sort physical data one way. In MySQL InnoDB, the primary key is always the clustered index. In PostgreSQL, tables are "heaps" by default (no clustering), but you can create clustered indexes.
+**Clustered index:** The table data itself is physically organized according to the index order. There can only be one clustered index per table because you can only sort physical data one way. In MySQL InnoDB, the primary key is always the clustered index and this clustering is maintained automatically. PostgreSQL works differently - tables are "heaps" by default (no clustering). You can run `CLUSTER table_name USING index_name` to physically reorder the table once, but PostgreSQL does not maintain this order as new rows are inserted or updated. You would need to re-run `CLUSTER` periodically if you want to maintain the physical ordering.
 
 **Non-clustered index:** A separate structure that points to the table rows. You can have many non-clustered indexes on a single table. The data in the actual table stays in its original order (or no particular order).
 
@@ -208,7 +208,7 @@ Instead of a tree structure, hash indexes use a **hash function**. A hash functi
 CREATE INDEX idx_users_email ON users USING HASH (email);
 ```
 
-Hash indexes answer "find the row where email equals X" in O(1) time (constant time, regardless of table size). But they cannot answer "find all emails starting with A" or "find emails between A and M" because hashing destroys the sort order.
+Hash indexes answer "find the row where email equals X" in average-case O(1) time (constant time). In practice, performance can vary due to hash collisions and disk I/O, but lookups are still very fast. The key limitation: they cannot answer "find all emails starting with A" or "find emails between A and M" because hashing destroys the sort order.
 
 **When to use hash indexes:** Almost never in practice. B-tree indexes handle equality lookups well enough, and they also support range queries. Hash indexes are a niche optimization for specific workloads where you only ever do exact equality lookups and need the absolute fastest possible performance.
 
@@ -721,7 +721,7 @@ Indexes with zero or very low `idx_scan` counts are candidates for removal.
 
 **Not analyzing query patterns.** Add indexes based on actual queries, not hypothetical ones.
 
-**Forgetting about LIKE queries.** `LIKE 'bob%'` can use an index. `LIKE '%bob%'` cannot (it requires scanning everything).
+**Forgetting about LIKE queries.** `LIKE 'bob%'` can use a B-tree index. `LIKE '%bob%'` cannot use a standard B-tree index (it requires scanning everything). However, PostgreSQL's `pg_trgm` extension with a GIN index can accelerate leading-wildcard patterns if you need them.
 
 ---
 
