@@ -1,0 +1,772 @@
+---
+title: "Database Indexes Explained: How They Work and When to Use Them"
+description: "A comprehensive guide to understanding database indexes. Learn how they work under the hood, when to create them, and when they hurt more than they help. From B-trees to covering indexes, with practical SQL and Drizzle examples."
+date: "2026-01-20"
+author: "Ayush Sharma"
+tags: ["Database", "Indexes", "SQL", "PostgreSQL", "Performance", "System Design", "Drizzle"]
+readingTime: "16 min read"
+featured: true
+imageUrl: "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPVvJ6pCrcNxyaDIXvUZRYwfisnEQjVmoLuqd2"
+---
+
+Your query takes 3 seconds. You add an index. Now it takes 3 milliseconds.
+
+That is a 1000x improvement from a single line of SQL. Indexes are the closest thing to magic in database performance. But like most magic tricks, once you understand how they work, you realize it is just clever engineering.
+
+The problem is, most developers treat indexes as a black box. "Just add an index" becomes the answer to every slow query. Sometimes that works. Sometimes it makes things worse. And without understanding what is actually happening, you are just guessing.
+
+I spent a lot of time figuring this out - reading docs, watching queries slow down for no apparent reason, and wondering why some indexes helped while others did nothing. This guide is everything I wish I had when I started.
+
+By the end, you will understand exactly how indexes work, when they help, when they hurt, and how to make informed decisions instead of hoping for the best.
+
+![Fig 1: Query without index vs with index comparison - Show full table scan O(n) vs index lookup O(log n)](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPiBDU8bfLSeCsIaE1NktK9ur3Tyv6x4QMqg8z)
+
+---
+
+## The Library Analogy
+
+Before we dive into the technical details, let us build some intuition. Trust me, this analogy will make everything click.
+
+Imagine a library with a million books. You need to find "Database Internals" by Alex Petrov. Without any organization system, you would have to walk through every shelf, check every book title, until you find it. In the worst case, you check all million books. In the average case, you check 500,000.
+
+Now imagine the library has a card catalog. You look up "P" for Petrov, then "Pe", then "Pet", narrowing down until you find the exact card. That card tells you: Shelf 847, Row 3, Position 12. You walk directly to the book.
+
+That card catalog is an index.
+
+The key insight: **you traded space for speed**. The card catalog takes up physical space in the library. It contains duplicate information (the book titles already exist on the books themselves). But this redundancy lets you find any book in seconds instead of hours.
+
+Database indexes work the same way. They are separate data structures that contain copies of specific columns, organized for fast lookup. They point back to the actual rows in your table.
+
+---
+
+## What is an Index, Really?
+
+An index is a data structure separate from your table that holds a sorted copy of one or more columns, along with pointers back to the original rows.
+
+When you run:
+
+```sql
+CREATE INDEX idx_users_email ON users(email);
+```
+
+The database creates a new structure that looks conceptually like this:
+
+| Email (sorted)           | Pointer to Row |
+|--------------------------|----------------|
+| ayush@company.com        | Row 127        |
+| hi@aysh.me               | Row 4892       |
+| zara@startup.io          | Row 8401       |
+| ...                      | ...            |
+
+The emails are sorted alphabetically. Each entry points to the actual row in the users table.
+
+When you query `WHERE email = 'hi@aysh.me'`, the database does not scan the entire users table. It goes to the index, uses an efficient search algorithm to find "hi@aysh.me" in the sorted list, gets the pointer (Row 4892), and fetches only that row.
+
+**Without an index:** Check every row. O(n) complexity means the time grows linearly with data size.  
+**With an index:** Binary search through sorted data. O(log n) complexity means the time grows logarithmically, which is much slower growth.
+
+To put this in perspective: for a table with a million rows, that is the difference between potentially checking 1,000,000 rows versus checking about 20. If each check takes 1 microsecond, that is 1 second versus 0.00002 seconds.
+
+![Fig 2: Index structure diagram - Show index as sorted list with pointers to table rows](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPxleLhVn0lnWVhyZtiOH7BPKjCE3dFDIGkgQM)
+
+---
+
+## How Indexes Work Under the Hood
+
+Okay, "sorted list with pointers" is a simplified view. If you just want to use indexes effectively, you can skip this section. But if you want to really understand what is happening (and impress in interviews), keep reading.
+
+### The B-Tree Structure
+
+Most indexes use a data structure called a **B-tree** (or its variant, **B+ tree**). The "B" stands for "balanced", not "binary".
+
+A **node** in this context is simply a block of data that can hold multiple keys and pointers. Think of nodes as boxes that contain sorted values and directions to other boxes.
+
+Think of it as a multi-level hierarchy. At the top is a **root node** (the starting point). Below it are **branch nodes** (intermediate navigation points). At the bottom are **leaf nodes** containing the actual index entries that point to your table rows.
+
+Here is why this matters. In a simple sorted list, inserting a new entry might require shifting millions of existing entries. B-trees are designed to handle inserts and deletes efficiently while staying balanced. No matter how much data you add, the tree stays roughly the same height.
+
+A B-tree with a million entries typically has only 3-4 levels. Finding any value requires reading at most 4 pages from disk. That is why index lookups feel instant even on massive tables.
+
+![Fig 3: B-tree structure - Show root, branch, and leaf nodes with values flowing down](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPrq8i4xWth1kSNc09gszYmnUiT6bIafV5e3dw)
+
+### How a Lookup Works
+
+When you query `WHERE email = 'hi@aysh.me'`:
+
+1. Start at the root node
+2. Compare your value against the keys in the node (is "hi" before or after "M"?)
+3. Follow the appropriate pointer to the next level (go left for A-M, right for N-Z)
+4. Repeat until you reach a leaf node
+5. The leaf contains the pointer to the actual table row
+6. Fetch the row from the table
+
+**Example walkthrough:** Looking for "hi@aysh.me" in a user table:
+- Root says: "emails A-M go left, N-Z go right" → go left
+- Branch says: "A-F go left, G-M go right" → go right (H comes after G)
+- Leaf contains: "hi@aysh.me → Row 4892" → found it!
+
+The beauty is that each level eliminates a huge portion of the data. If each node can hold 100 keys, one level can distinguish between 100 different ranges, two levels can handle 10,000, three levels can handle 1,000,000.
+
+### Leaf Nodes Are Linked
+
+In a B+ tree (what most databases actually use), all the leaf nodes are connected in a doubly linked list. This is crucial for range queries.
+
+When you query `WHERE email > 'a' AND email < 'c'`, the database finds the starting point in the tree, then simply walks through the linked leaf nodes collecting all matching entries. No need to traverse back up and down the tree.
+
+---
+
+## Types of Indexes
+
+Not all indexes are created equal. Different types serve different purposes. You do not need to memorize all of these - B-tree handles 90% of cases. But knowing the others exist will help when you hit edge cases.
+
+### Primary Key Index
+
+Every table should have a primary key, and most databases automatically create an index on it. In PostgreSQL and MySQL, this is typically a B-tree index. The primary key index ensures uniqueness and provides fast lookups by ID.
+
+### Unique Index
+
+Similar to a primary key index, but for non-primary columns that must be unique. When you add a unique constraint, the database creates a unique index behind the scenes.
+
+```sql
+CREATE UNIQUE INDEX idx_users_email ON users(email);
+```
+
+### Clustered vs Non-Clustered
+
+This is where things get a bit confusing, but stay with me.
+
+**Clustered index:** The table data itself is physically organized according to the index order. There can only be one clustered index per table because you can only sort physical data one way. In MySQL InnoDB, the primary key is always the clustered index. In PostgreSQL, tables are "heaps" by default (no clustering), but you can create clustered indexes.
+
+**Non-clustered index:** A separate structure that points to the table rows. You can have many non-clustered indexes on a single table. The data in the actual table stays in its original order (or no particular order).
+
+The practical difference: clustered indexes are faster for range queries on the indexed column because related rows are physically stored together. Non-clustered indexes require an extra step to fetch the actual row after finding it in the index.
+
+![Fig 4: Clustered vs Non-clustered index - Show physical data organization difference](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPwxsjvelbNOAPvh6i4Gfzqa5WDmRltJyT72VU)
+
+### Composite (Multi-Column) Index
+
+An index on multiple columns. The order matters.
+
+```sql
+CREATE INDEX idx_orders_user_date ON orders(user_id, created_at);
+```
+
+This index is useful for:
+- Queries filtering by `user_id` only
+- Queries filtering by `user_id` AND `created_at`
+- Queries filtering by `user_id` and sorting by `created_at`
+
+But it is **not useful** for:
+- Queries filtering only by `created_at`
+
+This is called the **leftmost prefix rule**. A composite index can be used for any query that uses a prefix of the indexed columns, starting from the left.
+
+Think of it like a phone book sorted by last name, then first name. You can find all the Smiths easily. You can find John Smith easily. But finding all the Johns (regardless of last name) requires scanning the entire book.
+
+### Covering Index
+
+A covering index includes all the columns a query needs. The database can answer the query entirely from the index without touching the table at all.
+
+```sql
+-- If you frequently run this query:
+SELECT email, created_at FROM users WHERE email = 'hi@aysh.me';
+
+-- A covering index would be:
+CREATE INDEX idx_users_email_created ON users(email, created_at);
+```
+
+Since both `email` and `created_at` are in the index, the database never needs to read the actual table row. This is called an **index-only scan** and it is significantly faster.
+
+**Why is this faster?** Normally, after finding the row pointer in the index, the database must do a second lookup to fetch the actual row from the table (called a "heap fetch"). With a covering index, there is no second lookup. All the data needed is right there in the index.
+
+PostgreSQL also supports the `INCLUDE` clause for adding non-searchable columns to an index:
+
+```sql
+-- email is searchable, name and created_at are just payload
+CREATE INDEX idx_users_email ON users(email) INCLUDE (name, created_at);
+```
+
+The difference: columns in `INCLUDE` are stored in the index but not used for searching or sorting. This keeps the index smaller while still enabling index-only scans.
+
+### Partial Index
+
+An index on a subset of rows. Useful when you only query certain data frequently.
+
+```sql
+CREATE INDEX idx_orders_pending ON orders(created_at) WHERE status = 'pending';
+```
+
+This index only includes rows where status is 'pending'. It is smaller than a full index and faster to update. Perfect when you have a "hot" subset of data you query often.
+
+**Real-world example:** Imagine an orders table with 10 million rows. Only 50,000 are pending at any time. A full index on `created_at` indexes all 10 million rows. A partial index only indexes the 50,000 pending ones. That is 200x smaller, faster to search, and faster to update.
+
+### Hash Index
+
+Instead of a tree structure, hash indexes use a **hash function**. A hash function takes any input and converts it to a fixed-size number. Think of it like a fingerprint for data.
+
+```sql
+CREATE INDEX idx_users_email ON users USING HASH (email);
+```
+
+Hash indexes answer "find the row where email equals X" in O(1) time (constant time, regardless of table size). But they cannot answer "find all emails starting with A" or "find emails between A and M" because hashing destroys the sort order.
+
+**When to use hash indexes:** Almost never in practice. B-tree indexes handle equality lookups well enough, and they also support range queries. Hash indexes are a niche optimization for specific workloads where you only ever do exact equality lookups and need the absolute fastest possible performance.
+
+### Full-Text Index (GIN)
+
+For searching text content. Instead of sorting words, these indexes map each word to all the documents containing it.
+
+```sql
+CREATE INDEX idx_posts_content ON posts USING GIN (to_tsvector('english', content));
+```
+
+This enables fast full-text search queries like finding all posts containing "database" and "performance".
+
+### GiST Index
+
+**GiST** stands for Generalized Search Tree. It is a flexible index framework used for geometric data, full-text search, and custom data types. If you are doing geospatial queries (find all restaurants within 5 miles), you probably want a GiST index.
+
+```sql
+-- Index for geographic points (requires PostGIS)
+CREATE INDEX idx_locations_geo ON locations USING GIST (coordinates);
+
+-- Then query: find places within 10km of a point
+SELECT * FROM locations 
+WHERE ST_DWithin(coordinates, ST_MakePoint(-73.99, 40.73), 10000);
+```
+
+### HNSW Index (Vector Search)
+
+This one is newer and increasingly important if you are working with AI. With the rise of embeddings and semantic search, **vector indexes** have become essential. **HNSW** (Hierarchical Navigable Small Worlds) is the go-to index for similarity search in vector databases like pgvector.
+
+**What are vectors?** When you use AI models like OpenAI's embeddings, text gets converted into arrays of numbers (vectors) like `[0.1, -0.3, 0.8, ...]` with hundreds or thousands of dimensions. Similar meanings produce similar vectors. "I love dogs" and "I adore puppies" would have vectors that are close together, while "quantum physics equations" would be far away.
+
+**The problem with traditional indexes:** B-trees work great for exact matches and ranges, but vectors need **similarity search**. You are not looking for an exact match. You are looking for the closest neighbors. With millions of vectors, comparing your query against every single one is impossibly slow.
+
+**How HNSW works:** Imagine you are trying to find someone in a city. You could knock on every door (sequential scan), or you could use a smarter approach:
+
+1. Start by asking people in different neighborhoods: "Do you know someone similar to this description?"
+2. They point you to the right general area
+3. In that area, you ask more people who give you more specific directions
+4. You progressively narrow down until you find the closest matches
+
+HNSW builds a multi-layered graph that works exactly like this:
+
+- **Top layer:** Few nodes with long-range connections (like knowing people across the city)
+- **Middle layers:** More nodes with medium-range connections (like knowing people in your district)
+- **Bottom layer:** All nodes with short-range connections (like knowing your immediate neighbors)
+
+When searching, you start at the top layer and "greedily" move toward nodes that are closer to your query. At each layer, you descend and refine your search until you reach the bottom.
+
+![Fig 5: HNSW multi-layer graph structure - Show layers with decreasing nodes and connections](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPpBhu1Nj5BXoEqJIk6cGWnQRgCupb9K7ijPt1)
+
+**The tradeoff:** HNSW gives you **approximate nearest neighbor (ANN)** search. You might not get the absolute closest match every time, but you get very close matches extremely fast. For most AI applications like semantic search, recommendation systems, and RAG (Retrieval Augmented Generation), this tradeoff is perfect. Getting 95% accuracy in 5ms beats 100% accuracy in 5 seconds.
+
+**Key parameters that affect performance:**
+- **m:** Number of connections per node. Higher values mean better recall (finding the true nearest neighbors) but slower index builds and more memory usage.
+- **ef_construction:** How many candidates to consider when building the index. Higher values create a better quality index but take longer to build.
+- **ef_search:** How many candidates to consider during search. Higher values improve recall but slow down queries.
+
+---
+
+## When to Create an Index
+
+This is the practical part. Not every column needs an index, and adding them blindly can actually hurt performance. Here are the situations where indexes genuinely help.
+
+### Columns in WHERE Clauses
+
+If you frequently filter by a column, index it. This is the most common reason to create an index.
+
+**Real-world example:** Your e-commerce site has a "My Orders" page. Every time a user visits, you run:
+
+```sql
+SELECT * FROM orders WHERE user_id = 'usr_abc123';
+```
+
+Without an index on `user_id`, the database scans all 10 million orders to find the 15 belonging to this user. With an index, it jumps directly to those 15 rows.
+
+### Columns in JOIN Conditions
+
+Foreign keys should almost always be indexed. When you join tables, the database needs to match rows quickly.
+
+**Real-world example:** Your dashboard shows users with their order counts:
+
+```sql
+SELECT users.name, COUNT(orders.id) as order_count
+FROM users 
+JOIN orders ON users.id = orders.user_id
+GROUP BY users.id;
+```
+
+For each of your 100,000 users, the database needs to find their orders. Without an index on `orders.user_id`, that is 100,000 full scans of the orders table. With an index, each lookup is instant.
+
+### Columns in ORDER BY
+
+If you frequently sort by a column, an index can avoid expensive sorting operations.
+
+**Real-world example:** Your blog shows the 10 most recent posts:
+
+```sql
+SELECT * FROM posts ORDER BY published_at DESC LIMIT 10;
+```
+
+Without an index, the database loads all 50,000 posts, sorts them by date, then returns the top 10. With an index on `published_at`, it reads the first 10 entries directly from the already-sorted index.
+
+### Columns with High Cardinality
+
+**Cardinality** means the number of distinct values in a column. High cardinality = many unique values. Low cardinality = few unique values.
+
+Think of it this way: an `email` column has high cardinality because every user has a unique email. A `status` column has low cardinality because there are only a few possible values like "pending", "active", "deleted".
+
+**Why does cardinality matter?** An index helps when it narrows down the search significantly. If you search `WHERE is_active = true` and 90% of rows are active, the database still needs to look at 90% of the data. The index overhead is not worth it. But searching by email? That narrows it down to exactly one row.
+
+### Columns Used in Unique Constraints
+
+When you add a unique constraint, the database automatically creates a unique index behind the scenes:
+
+```sql
+-- This automatically creates an index
+ALTER TABLE users ADD CONSTRAINT unique_email UNIQUE (email);
+
+-- Equivalent to:
+CREATE UNIQUE INDEX idx_users_email ON users(email);
+```
+
+### Quick Decision Framework
+
+Ask yourself these questions:
+
+1. **Is this column frequently in WHERE clauses?** → Consider an index
+2. **Is this a foreign key used in JOINs?** → Definitely index it
+3. **Do queries sort by this column with LIMIT?** → Consider an index
+4. **Does the column have high cardinality?** → Index is more effective
+5. **Is the table write-heavy?** → Be more conservative with indexes
+
+---
+
+## When NOT to Create an Index
+
+Here is the part most tutorials skip. Indexes are not free. They have real costs that can outweigh benefits.
+
+**Small tables.** If your table has 1,000 rows, a full table scan is fast. Modern SSDs can scan small tables in milliseconds. The overhead of maintaining an index is not worth it.
+
+**Write-heavy tables.** Every INSERT, UPDATE, and DELETE must update all indexes on the table. If you have 10 indexes and insert 1 million rows per day, you are also doing 10 million index updates per day.
+
+**Real-world example:** A logging table that receives 10,000 writes per second but is only queried for reports once a day. Adding indexes would slow down every single write for a benefit you use once daily. Better to scan the table during the nightly report.
+
+**Low cardinality columns.** An index on a boolean column (true/false) rarely helps. The database might scan half the table anyway.
+
+**Columns rarely used in queries.** If nobody queries by `middle_name`, do not index it. Every unused index is pure overhead.
+
+**Expressions or functions on columns.** If your queries use `WHERE LOWER(email) = 'hi@aysh.me'`, a regular index on email will not help. The database cannot use the index because it stores original values, not lowercased ones. You need an **expression index** (also called a functional index):
+
+```sql
+-- Regular index on email will NOT be used for LOWER(email) queries
+CREATE INDEX idx_users_email ON users(email);
+
+-- Expression index specifically for lowercase lookups
+CREATE INDEX idx_users_email_lower ON users(LOWER(email));
+
+-- Now this query uses the index
+SELECT * FROM users WHERE LOWER(email) = 'hi@aysh.me';
+```
+
+---
+
+## The Write Performance Trade-off
+
+Here is the core trade-off that every developer should understand.
+
+**Indexes speed up reads but slow down writes.**
+
+When you INSERT a row, the database must:
+1. Insert the row into the table
+2. Update every index on that table
+
+When you UPDATE an indexed column, the database must:
+1. Update the row in the table
+2. Remove the old value from the index
+3. Insert the new value into the index
+
+When you DELETE a row, the database must:
+1. Mark the row as deleted
+2. Update every index
+
+A table with 10 indexes means every write operation does 11 things instead of 1.
+
+This is why "just add more indexes" is not always the answer. There is always a balance between read performance and write performance.
+
+**Rule of thumb:** For read-heavy workloads (most web applications), favor more indexes. For write-heavy workloads (logging systems, high-volume event tracking), be conservative with indexes.
+
+---
+
+## How the Query Planner Uses Indexes
+
+Creating an index does not guarantee it gets used. The query planner (also called query optimizer) decides whether an index helps for each specific query.
+
+The planner considers:
+- Table size
+- Index selectivity (what percentage of rows match)
+- Available memory
+- Disk I/O costs
+
+Sometimes a full table scan is actually faster than an index lookup. If your WHERE clause matches 80% of rows, the database might decide scanning everything is cheaper than doing 800,000 index lookups followed by 800,000 row fetches.
+
+You can see what the planner decides using EXPLAIN:
+
+```sql
+EXPLAIN ANALYZE SELECT * FROM users WHERE email = 'hi@aysh.me';
+```
+
+This shows you whether the index is being used and what the query plan looks like. The `ANALYZE` keyword actually runs the query and shows real execution times, not just estimates.
+
+**Reading EXPLAIN output:**
+
+```sql
+-- Good: Index is being used
+Index Scan using idx_users_email on users (cost=0.42..8.44 rows=1)
+  Index Cond: (email = 'hi@aysh.me')
+  
+-- Bad: Full table scan (no index used)
+Seq Scan on users (cost=0.00..1234.00 rows=50000)
+  Filter: (email = 'hi@aysh.me')
+```
+
+Key terms in EXPLAIN output:
+- **Index Scan**: Good. Using the index to find rows.
+- **Seq Scan** (Sequential Scan): Reading every row in the table. Might be fine for small tables, concerning for large ones.
+- **Bitmap Index Scan**: Using index to build a list of rows, then fetching them. Common for queries returning many rows.
+- **Index Only Scan**: Best case. Answering the query entirely from the index without touching the table.
+
+![Fig 6: Query execution flow - Show query planner decision tree and index usage](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPuv2tDJILjGC7RxNs1WqaPXeldA0nz3E968kD)
+
+---
+
+## Practical Examples
+
+Let us see indexes in action with SQL and Drizzle ORM. Each example shows both the SQL and Drizzle equivalent.
+
+### Basic Index
+
+**Use case:** Speed up lookups by email address.
+
+```sql
+-- SQL
+CREATE INDEX idx_users_email ON users(email);
+
+-- Query that benefits
+SELECT * FROM users WHERE email = 'hi@aysh.me';
+```
+
+```typescript
+// Drizzle ORM
+import { pgTable, text, index } from "drizzle-orm/pg-core";
+
+export const users = pgTable("users", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull(),
+  name: text("name"),
+}, (table) => [
+  index("idx_users_email").on(table.email),
+]);
+```
+
+### Unique Index
+
+**Use case:** Ensure no duplicate emails while also making lookups fast.
+
+```sql
+-- SQL
+CREATE UNIQUE INDEX idx_users_email ON users(email);
+
+-- This will fail if email already exists
+INSERT INTO users (email) VALUES ('hi@aysh.me');
+```
+
+```typescript
+// Drizzle ORM
+import { pgTable, text, uniqueIndex } from "drizzle-orm/pg-core";
+
+export const users = pgTable("users", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull(),
+}, (table) => [
+  uniqueIndex("idx_users_email").on(table.email),
+]);
+```
+
+### Composite Index
+
+**Use case:** E-commerce site filtering orders by user and status.
+
+```sql
+-- SQL
+CREATE INDEX idx_orders_user_status ON orders(user_id, status);
+
+-- Queries that benefit (leftmost prefix rule)
+SELECT * FROM orders WHERE user_id = 'usr_123';                    -- Uses index
+SELECT * FROM orders WHERE user_id = 'usr_123' AND status = 'pending';  -- Uses index
+SELECT * FROM orders WHERE status = 'pending';                     -- Does NOT use index
+```
+
+```typescript
+// Drizzle ORM
+import { pgTable, text, index, timestamp } from "drizzle-orm/pg-core";
+
+export const orders = pgTable("orders", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  status: text("status").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => [
+  index("idx_orders_user_status").on(table.userId, table.status),
+]);
+```
+
+### Partial Index
+
+**Use case:** Job queue where you only care about pending jobs.
+
+```sql
+-- SQL: Only index pending orders (much smaller index)
+CREATE INDEX idx_orders_pending ON orders(created_at)
+WHERE status = 'pending';
+
+-- This query uses the partial index
+SELECT * FROM orders WHERE status = 'pending' ORDER BY created_at;
+
+-- This query does NOT use the partial index (different status)
+SELECT * FROM orders WHERE status = 'completed' ORDER BY created_at;
+```
+
+```typescript
+// Drizzle ORM
+import { sql } from "drizzle-orm";
+import { pgTable, text, index, timestamp } from "drizzle-orm/pg-core";
+
+export const orders = pgTable("orders", {
+  id: text("id").primaryKey(),
+  status: text("status").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => [
+  index("idx_orders_pending")
+    .on(table.createdAt)
+    .where(sql`status = 'pending'`),
+]);
+```
+
+### Covering Index
+
+**Use case:** Dashboard showing user names and signup dates, queried by email.
+
+```sql
+-- SQL: Include extra columns in the index
+CREATE INDEX idx_users_lookup ON users(email)
+INCLUDE (name, created_at);
+
+-- This query never touches the table (index-only scan)
+SELECT name, created_at FROM users WHERE email = 'hi@aysh.me';
+```
+
+### GIN Index for Full-Text Search
+
+**Use case:** Blog search feature.
+
+```sql
+-- SQL
+CREATE INDEX idx_posts_search ON posts 
+USING GIN (to_tsvector('english', content));
+
+-- Full-text search query
+SELECT * FROM posts 
+WHERE to_tsvector('english', content) @@ to_tsquery('english', 'database & performance');
+```
+
+```typescript
+// Drizzle ORM
+import { sql } from "drizzle-orm";
+import { pgTable, text, serial, index } from "drizzle-orm/pg-core";
+
+export const posts = pgTable("posts", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  content: text("content"),
+}, (table) => [
+  index("idx_posts_search")
+    .using("gin", sql`to_tsvector('english', ${table.content})`),
+]);
+```
+
+### GIN Index for JSONB
+
+**Use case:** Filtering products by attributes stored as JSON.
+
+```sql
+-- SQL
+CREATE INDEX idx_products_attrs ON products USING GIN (attributes);
+
+-- Query products with specific attribute
+SELECT * FROM products WHERE attributes @> '{"color": "red"}';
+```
+
+```typescript
+// Drizzle ORM
+import { pgTable, text, serial, jsonb, index } from "drizzle-orm/pg-core";
+
+export const products = pgTable("products", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  attributes: jsonb("attributes"),
+}, (table) => [
+  index("idx_products_attrs").using("gin", table.attributes),
+]);
+```
+
+### HNSW Index for Vector Search
+
+**Use case:** AI-powered semantic search finding similar documents based on meaning, not just keywords.
+
+```sql
+-- SQL: First enable pgvector extension
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- Create table with vector column (1536 dimensions for OpenAI embeddings)
+CREATE TABLE documents (
+  id SERIAL PRIMARY KEY,
+  content TEXT,
+  embedding vector(1536)
+);
+
+-- Create HNSW index for fast similarity search
+CREATE INDEX idx_documents_embedding ON documents 
+USING hnsw (embedding vector_cosine_ops);
+
+-- Find 5 most similar documents to a query embedding
+SELECT content, embedding <=> '[0.1, 0.2, ...]'::vector AS distance
+FROM documents
+ORDER BY embedding <=> '[0.1, 0.2, ...]'::vector
+LIMIT 5;
+```
+
+```sql
+-- HNSW with custom parameters for better recall
+CREATE INDEX idx_embeddings ON documents 
+USING hnsw (embedding vector_cosine_ops) 
+WITH (m = 24, ef_construction = 100);
+```
+
+```typescript
+// Drizzle ORM
+import { sql } from "drizzle-orm";
+import { pgTable, serial, text, index, vector } from "drizzle-orm/pg-core";
+
+export const documents = pgTable("documents", {
+  id: serial("id").primaryKey(),
+  content: text("content"),
+  embedding: vector("embedding", { dimensions: 1536 }),
+}, (table) => [
+  index("idx_documents_embedding")
+    .using("hnsw", sql`${table.embedding} vector_cosine_ops`),
+]);
+```
+
+---
+
+## Index Maintenance
+
+Indexes are not "set and forget". They need maintenance.
+
+### Index Bloat
+
+As you insert, update, and delete rows, indexes can become "bloated". **Bloat** refers to dead entries that accumulate in the index structure. These are remnants of deleted or updated rows that have not been cleaned up yet. The index grows larger than necessary and queries slow down because the database has to skip over these dead entries.
+
+PostgreSQL handles this with VACUUM and REINDEX:
+
+```sql
+-- Regular maintenance
+VACUUM ANALYZE users;
+
+-- Rebuild an index
+REINDEX INDEX idx_users_email;
+```
+
+Most managed databases handle this automatically, but it is good to know what is happening behind the scenes.
+
+### Unused Indexes
+
+Over time, some indexes stop being useful. Query patterns change. That index you created for a feature nobody uses anymore is still slowing down every write.
+
+PostgreSQL tracks index usage:
+
+```sql
+SELECT indexrelname, idx_scan
+FROM pg_stat_user_indexes
+WHERE schemaname = 'public'
+ORDER BY idx_scan ASC;
+```
+
+Indexes with zero or very low `idx_scan` counts are candidates for removal.
+
+---
+
+## Common Index Mistakes
+
+**Over-indexing.** Creating an index for every column. Write performance suffers. Most indexes go unused.
+
+**Under-indexing.** Having no indexes except the primary key. Every query is a full table scan.
+
+**Wrong column order in composite indexes.** Remember the leftmost prefix rule. If you query by `status` alone, an index on `(user_id, status)` will not help.
+
+**Indexing low-cardinality columns.** An index on a boolean column rarely helps.
+
+**Not analyzing query patterns.** Add indexes based on actual queries, not hypothetical ones.
+
+**Forgetting about LIKE queries.** `LIKE 'bob%'` can use an index. `LIKE '%bob%'` cannot (it requires scanning everything).
+
+---
+
+## Quick Reference
+
+| Index Type | Best For | Cannot Do |
+|------------|----------|-----------|
+| B-tree | Equality, ranges, sorting | Full-text search |
+| Hash | Exact equality only | Ranges, sorting |
+| GIN | Arrays, full-text, JSONB | Simple equality |
+| GiST | Geometric, nearest neighbor | Exact equality |
+| HNSW | Vector similarity search (AI) | Exact matches |
+| Partial | Subset of frequently queried data | Full table queries |
+| Covering | Queries needing specific columns | Nothing extra |
+
+---
+
+## Key Takeaways
+
+1. **Indexes trade space for speed.** They are separate data structures that make reads faster but writes slower.
+
+2. **B-trees are the default.** They handle equality, ranges, and sorting efficiently. Most indexes you create will be B-trees.
+
+3. **Column order matters in composite indexes.** The leftmost prefix rule determines which queries can use the index. An index on `(a, b)` helps queries on `a` or `(a, b)`, but not queries on `b` alone.
+
+4. **Covering indexes are powerful.** If the index contains all needed columns, the database never touches the table. This is called an index-only scan.
+
+5. **Every index has a cost.** Writes get slower. Disk usage increases. Only index what you actually query.
+
+6. **The query planner decides.** Creating an index does not guarantee it gets used. Use `EXPLAIN ANALYZE` to verify your indexes are actually being used.
+
+7. **Specialized indexes exist for specialized data.** GIN for full-text and JSONB. GiST for geometric data. HNSW for vector embeddings. Use the right tool for the job.
+
+8. **Monitor and maintain.** Check for unused indexes. Watch for bloat. Remove what you do not need.
+
+Indexes are one of the most powerful tools for database performance. Now that you understand how they work, you can use them intentionally instead of hoping for the best.
+
+---
+
+## Further Reading
+
+- [Use The Index, Luke](https://use-the-index-luke.com/) - The definitive guide to SQL indexing
+- [PostgreSQL Index Types Documentation](https://www.postgresql.org/docs/current/indexes-types.html)
+- [MySQL Index Documentation](https://dev.mysql.com/doc/refman/8.0/en/mysql-indexes.html)
+- [Drizzle ORM Indexes and Constraints](https://orm.drizzle.team/docs/indexes-constraints)
+- [PlanetScale: How Do Database Indexes Work](https://planetscale.com/blog/how-do-database-indexes-work)
+- [pgvector: Vector Similarity Search for PostgreSQL](https://github.com/pgvector/pgvector)
+- [Understanding HNSW Index with pgvector](https://neon.tech/blog/understanding-vector-search-and-hnsw-index-with-pgvector)
