@@ -131,7 +131,7 @@ const Footer = () => {
 
             {/* Copyright - Now positioned below the logo */}
             <div className="flex items-center gap-1 mt-2">
-              <span className={`text-sm ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>© 2025 Built with</span>
+              <span className={`text-sm ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>© 2026 Built with</span>
               {isMounted ? (
                 <motion.span
                   whileHover={{ scale: 1.2 }}

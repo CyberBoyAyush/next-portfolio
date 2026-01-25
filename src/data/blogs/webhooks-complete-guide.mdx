@@ -1,0 +1,467 @@
+---
+title: "Webhooks Explained: What They Are, When to Use Them, and How to Build Them Right"
+description: "The complete guide to understanding webhooks. Learn how they work, when to use them, and the production patterns that prevent data loss. From basic concepts to transactional outbox patterns, with practical testing strategies."
+date: "2026-01-25"
+author: "Ayush Sharma"
+tags: ["Webhooks", "Backend", "System Design", "APIs", "Integration"]
+readingTime: "15 min read"
+featured: true
+imageUrl: "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPxNmOVUn0lnWVhyZtiOH7BPKjCE3dFDIGkgQM"
+---
+
+Your user completes a payment on Stripe. Within milliseconds, your application knows about it, sends a confirmation email, and updates the order status. No polling. No delays. Instant.
+
+That is the power of webhooks.
+
+Yet despite being everywhere in modern software, webhooks remain poorly understood. Developers know they exist, use them through copy-pasted code, but rarely grasp what is actually happening under the hood. This leads to missed events, duplicate processing, and the dreaded "the webhook fired but nothing happened" debugging sessions.
+
+This guide will change that. We will cover what webhooks actually are, how they work internally, when you should use them, and most importantly, how to build them correctly in production systems where reliability actually matters.
+
+---
+
+## What is a Webhook?
+
+A webhook is an automated HTTP request that one system sends to another when a specific event occurs.
+
+That is it. No magic. Just an HTTP POST request with some data.
+
+The term "webhook" was coined by Jeff Lindsay in 2007, combining "web" (HTTP) and "hook" (a programming concept where you intercept or respond to events). Think of it as a callback over HTTP.
+
+**The key insight:** Instead of your application constantly asking "did anything happen?" (polling), the other system tells you when something happens (pushing). This fundamental shift from pull to push is what makes webhooks powerful.
+
+### The Doorbell Analogy
+
+Imagine you are expecting a package delivery. You have two options.
+
+**Option 1 (Polling):** Walk to your front door every 5 minutes, open it, and check if a package is there. Most of the time, nothing is there. You waste energy. But eventually, you find your package.
+
+**Option 2 (Webhooks):** Install a doorbell. When the delivery person arrives, they press the button, and you are instantly notified. No wasted trips to the door. You know exactly when it happens.
+
+Webhooks are the doorbell. They notify you the moment something happens, without you having to ask.
+
+---
+
+## Webhooks vs Traditional APIs
+
+Before diving deeper, let us clarify a common confusion. Webhooks and APIs are not opposites. Webhooks use APIs. The difference is in who initiates the communication and when.
+
+### Traditional API (Pull Model)
+
+Your application asks for data when it wants it.
+
+1. Your app sends a request: "Give me the latest orders"
+2. The server responds with the data
+3. Your app processes it
+4. Repeat whenever you need fresh data
+
+This works fine when you control the timing. Need user profile data? Call the API. Need to create a new record? Call the API.
+
+But what about events that happen unpredictably? A user completes a payment. A new comment is posted. A deployment finishes. You have no idea when these will occur.
+
+### Webhooks (Push Model)
+
+The other system tells you when something happens.
+
+1. You register a URL with the service: "When X happens, POST to this URL"
+2. You wait
+3. Event X occurs
+4. The service immediately sends an HTTP POST to your URL with event data
+5. You process it
+
+No wasted requests. No polling intervals. Instant notification.
+
+![Push vs Pull Comparison](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPM9AKAShNiUjfFE9P4KOBoIpRytl1AGDsLZw2)
+
+### When to Use Each
+
+**Use traditional APIs when:**
+- You need data on-demand (user requests their profile)
+- You control when data is needed
+- Real-time updates are not critical
+- You are fetching large datasets or running queries
+
+**Use webhooks when:**
+- You need to react to events as they happen
+- Events occur unpredictably
+- Real-time or near-real-time processing matters
+- You want to avoid wasting resources on polling
+
+Many systems use both. You might use webhooks to get notified of new orders, then use the API to fetch full order details.
+
+---
+
+## How Webhooks Work: A Real Example
+
+Let us follow a real webhook from start to finish. Say you are running an online store, and a customer just paid for their order through Stripe.
+
+![Webhook Flow Diagram](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPTHZkOjycUSIoCWuYNQrjLtkpBsz1d2vi0ZGH)
+
+### Registration: Setting Up the Connection
+
+Before any webhooks can flow, you need to tell Stripe where to send them. In Stripe's dashboard, you register your endpoint URL (something like `https://yourstore.com/webhooks/stripe`) and select which events you care about. Maybe you want `payment_intent.succeeded`, `payment_intent.failed`, and `charge.refunded`.
+
+Your endpoint needs to be publicly accessible over HTTPS. Stripe cannot send webhooks to `localhost:3000`. We will cover how to handle this during development later.
+
+### The Trigger: Something Happens
+
+The customer enters their card details and clicks "Pay Now." Stripe processes the payment. The charge succeeds.
+
+At this moment, Stripe looks up all the webhook endpoints registered for `payment_intent.succeeded` events on your account. Yours is on the list.
+
+### The Payload: Packaging the Data
+
+Stripe builds an HTTP POST request. The body contains everything you need to know about what happened:
+
+```json
+{
+  "id": "evt_1234567890",
+  "type": "payment_intent.succeeded",
+  "created": 1706097600,
+  "data": {
+    "object": {
+      "id": "pi_abc123",
+      "amount": 2000,
+      "currency": "usd",
+      "status": "succeeded",
+      "customer": "cus_xyz789",
+      "metadata": {
+        "order_id": "order_456"
+      }
+    }
+  }
+}
+```
+
+Stripe also computes a signature using a secret key that only you and Stripe know. This signature goes in the `Stripe-Signature` header. More on why this matters in the security section.
+
+### The Delivery: HTTP POST
+
+Stripe sends the POST request to your URL. From your server's perspective, this looks like any other incoming HTTP request. The only difference is that you did not initiate it.
+
+Your server receives the request, and now it is your turn.
+
+### Your Response: Fast Acknowledgment
+
+Here is where many developers get it wrong. Your webhook handler should do three things:
+
+1. Verify the signature (is this really from Stripe?)
+2. Store the event somewhere safe (database or queue)
+3. Return `200 OK`
+
+That is it. Return the 200 within a few seconds. Stripe is waiting. If you take too long or return an error, Stripe assumes delivery failed and will retry. Retries mean potential duplicates, which means potential double-processing.
+
+The actual work (updating order status, sending confirmation emails, notifying your warehouse) happens after you have acknowledged receipt. Decouple receiving from processing.
+
+### The Processing: Doing the Real Work
+
+A background worker picks up the stored event and handles the business logic. Update the order to "paid." Send the customer their receipt. Notify the fulfillment system. If any of this fails, you can retry from your queue without worrying about Stripe's timeout.
+
+This separation is the key to reliable webhook handling.
+
+---
+
+## Real-World Webhook Examples
+
+Webhooks power countless integrations. Here are the patterns you will encounter most often.
+
+### Payment Processing (Stripe, PayPal)
+
+When money moves, you need to know immediately. Payment processors send webhooks for successful charges, failed payments, refunds, and disputes.
+
+When Stripe sends a `payment_intent.succeeded` webhook, you fulfill the order. When `charge.disputed` arrives, you pause shipment and gather evidence. This is not optional. Relying solely on client-side payment confirmation is how you get fraud.
+
+### CI/CD Pipelines (GitHub, GitLab)
+
+Every time you push code, GitHub sends a webhook. CI systems like GitHub Actions, Jenkins, and CircleCI listen for these to trigger builds automatically.
+
+The `push` event contains the commit SHA, branch name, and changed files. The CI system uses this to decide what tests to run. No polling for new commits. The build starts within seconds of your push.
+
+### Communication Platforms (Slack, Discord)
+
+Slack webhooks work in two directions. Incoming webhooks let you post messages to channels programmatically. When your deployment succeeds, your script sends a webhook to Slack announcing it.
+
+Outgoing webhooks notify your app when specific keywords appear in messages. Build a bot that responds when someone types `/deploy` without running a full Slack app.
+
+### E-commerce Order Flow
+
+When a customer places an order on Shopify, webhooks notify your fulfillment system, your inventory tracker, and your accounting software simultaneously. Each system reacts independently. No central coordinator needed.
+
+The `orders/create` webhook fires the moment checkout completes. Your warehouse management system can start picking items before the customer finishes reading the confirmation page.
+
+---
+
+## Building Webhooks in Production
+
+Here is where most tutorials fail you. They show you how to receive a webhook but skip the hard parts. In production, webhooks are unreliable by nature. Networks fail. Servers restart. Bugs cause exceptions. If you do not design for these realities, you will lose data.
+
+### The Golden Rule: Acknowledge Fast, Process Later
+
+The most common mistake is doing too much work in the webhook handler. You receive a payment webhook and immediately update the database, send emails, call other APIs, generate PDFs. If any of this takes too long or fails, the provider considers the delivery failed and retries.
+
+**The correct pattern:**
+
+1. Receive the webhook
+2. Verify the signature
+3. Store the raw payload in a queue or database
+4. Return 200 OK (within 2-3 seconds)
+5. Process the event asynchronously
+
+This decouples receipt from processing. The provider knows you got it. You can process at your own pace, retry if needed, and never lose the event.
+
+### Idempotency: Why Duplicates Will Happen
+
+Webhooks are delivered "at least once." This means you will receive the same webhook multiple times. Not might. Will.
+
+**Here is a real scenario:** Stripe sends a webhook. Your server processes it but takes 8 seconds to respond. Stripe's timeout is 5 seconds. Stripe assumes failure and retries. Now you have processed the same payment twice.
+
+**Without idempotency:** Customer pays once, gets charged once, but receives two confirmation emails and two shipments. You eat the cost of the extra shipment. Customer is confused.
+
+**With idempotency:** Same scenario, but before processing, you check: "Have I seen event `evt_1234567890` before?" Yes, you have. Skip processing, return 200. Customer gets one email, one shipment. Everyone is happy.
+
+**How to implement it:**
+
+1. Extract the unique event ID from the webhook
+2. Before processing, check if this ID exists in your "processed events" table
+3. If yes, skip and return 200
+4. If no, process the event and record the ID
+
+```
+// Pseudocode
+eventId = webhook.body.id
+if (database.hasProcessed(eventId)) {
+  return 200 // Already handled, skip
+}
+
+processWebhook(webhook)
+database.markProcessed(eventId)
+return 200
+```
+
+Treat every webhook as if it might be a duplicate, because eventually, it will be.
+
+### The Critical Rule: Only Fire Webhooks After Database Commits
+
+This section is crucial and rarely discussed. If you are building a system that sends webhooks (not just receives them), pay attention.
+
+**The problem:** Your app creates an order, then immediately sends a webhook to a fulfillment partner saying "new order created." But then something goes wrong, the database transaction rolls back, and the order never actually persists. The fulfillment partner is now trying to ship an order that does not exist.
+
+**Why does this happen?** Because you sent the webhook from inside the transaction, before knowing if the transaction would succeed.
+
+The solution is called the **Transactional Outbox** pattern. The idea is simple: make the webhook part of your transaction, but do not actually send it until after the commit succeeds.
+
+1. Inside your database transaction, write BOTH the order data AND an "outbox" record that says "send this webhook"
+2. Commit the transaction
+3. A separate background worker reads pending outbox records and sends the webhooks
+4. Mark the outbox record as sent
+
+![Production Webhook Architecture](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPmHAkwHONoLlxBOsWJwGkdgPX4SVCim0e3Ht8)
+
+If the transaction rolls back, the outbox record never exists, and no webhook gets sent. You only notify external systems about data that actually persisted.
+
+```
+// Pseudocode for the pattern
+transaction.begin()
+  order = createOrder(data)
+  outbox.insert({
+    event: "order.created",
+    payload: order,
+    status: "pending"
+  })
+transaction.commit()
+
+// Separate async worker
+while true:
+  record = outbox.findPending()
+  sendWebhook(record.payload)
+  outbox.markProcessed(record.id)
+```
+
+### Security: Signature Verification
+
+Never trust incoming requests blindly. Anyone who discovers your webhook URL could send fake events. Imagine someone crafting a fake `payment_intent.succeeded` event. Without verification, your system fulfills orders that were never actually paid for.
+
+Most providers sign their webhooks using HMAC with a shared secret:
+
+1. When you register the webhook, the provider gives you a secret key
+2. For each delivery, the provider computes a signature from the payload using this secret
+3. They include this signature in a header
+4. You compute the same signature with your copy of the secret and compare
+
+If the signatures match, the request is authentic. If not, reject it immediately. No exceptions.
+
+### Retry Behavior: Know Your Provider
+
+When you return a non-2xx response, providers retry. But policies vary wildly:
+
+- **Stripe** retries up to 25 times over 3 days with exponential backoff
+- **GitHub** does not automatically retry failed deliveries. You must manually redeliver via the dashboard or use their API to fetch and retry failed events yourself
+- **Shopify** retries up to 19 times over 48 hours with exponential backoff, then deletes the webhook if all attempts fail
+
+Design your system assuming retries will happen (for providers that support them). Combined with idempotency, retries become harmless rather than dangerous.
+
+---
+
+## Testing Webhooks
+
+Testing webhooks is uniquely challenging. The external service needs to send requests to your server, but during development, your server is probably running on `localhost:3000`. Stripe cannot reach that.
+
+Several tools solve this problem.
+
+![Testing Flow](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPsfHiUCM5IKWmQ4hToSfHcD2uAy0z1GgL6dXp)
+
+### Start with cURL
+
+Before involving external services, test your webhook endpoint locally. cURL lets you simulate exactly what a webhook provider would send.
+
+**Basic webhook test:**
+
+```bash
+curl -X POST http://localhost:3000/webhooks/stripe \
+  -H "Content-Type: application/json" \
+  -d '{"id": "evt_test_123", "type": "payment_intent.succeeded", "data": {"object": {"id": "pi_123", "amount": 2000}}}'
+```
+
+**With a signature header (example placeholder, will not verify):**
+
+```bash
+curl -X POST http://localhost:3000/webhooks/stripe \
+  -H "Content-Type: application/json" \
+  -H "Stripe-Signature: t=1706097600,v1=your_computed_signature_here" \
+  -d '{"id": "evt_test_123", "type": "payment_intent.succeeded"}'
+```
+
+**Testing error handling:**
+
+```bash
+curl -X POST http://localhost:3000/webhooks/stripe \
+  -H "Content-Type: application/json" \
+  -d 'not valid json'
+```
+
+**Check response status and headers:**
+
+```bash
+curl -i -X POST http://localhost:3000/webhooks/stripe \
+  -H "Content-Type: application/json" \
+  -d '{"id": "evt_test_123", "type": "payment_intent.succeeded"}'
+```
+
+The `-i` flag shows response headers. Verify your endpoint returns the correct status code.
+
+### Inspect Real Payloads
+
+Before writing handler code, you often want to see what a provider actually sends. Tools like [Webhook.cool](https://webhook.cool) and [Webhook.site](https://webhook.site) give you an instant, unique URL. Point your provider to this URL, trigger an event, and inspect the full request including headers and body.
+
+No signup required. Perfect for understanding payload structure before you write a single line of code.
+
+### Test Your Actual Handler
+
+Inspection tools show you what arrives, but they cannot test your code. For that, you need to forward webhooks to your local machine.
+
+**ngrok** creates a public URL that tunnels to localhost:
+
+```bash
+ngrok http 3000
+```
+
+You get a URL like `https://abc123.ngrok.io` that forwards to your local port 3000. Register this with your webhook provider, and requests flow directly to your development server.
+
+**Provider CLIs** offer even tighter integration. Stripe's CLI is particularly good:
+
+```bash
+stripe listen --forward-to localhost:3000/webhooks/stripe
+```
+
+You can even trigger test events on demand:
+
+```bash
+stripe trigger payment_intent.succeeded
+```
+
+### Testing Strategy
+
+1. **Start with cURL** to verify your endpoint handles payloads correctly
+2. **Use inspection tools** to see real payloads from providers
+3. **Switch to ngrok or provider CLIs** to test the full flow
+4. **Write automated tests** that simulate webhook payloads against your handler
+
+---
+
+## Common Pitfalls and How to Avoid Them
+
+Building webhooks seems straightforward until you hit production. These are the mistakes that bite hardest.
+
+### Doing too much in the handler
+
+You receive a payment webhook. Great, time to update the database, send a confirmation email, generate an invoice PDF, notify the warehouse, and sync with accounting software. Fifteen seconds later, the webhook provider times out and marks delivery as failed. Now it retries. You process everything again.
+
+Your webhook handler should do exactly three things: verify the signature, save the raw event to a queue, and return 200. Everything else happens asynchronously. Think of your handler as a receptionist. Their job is to accept the package and put it in the mailroom, not to open it, read it, draft a response, and mail it back while the delivery person waits.
+
+### Not handling duplicates
+
+Stripe sends a webhook. Your server is slow. Stripe does not get a response in time, assumes failure, and retries. Now you have processed the same payment twice. The customer gets charged once but receives two confirmation emails and two shipments.
+
+Every webhook has a unique ID. Before processing, check if you have seen this ID before. If yes, skip processing and return 200. If no, process it and record the ID. This is idempotency, and it is non-negotiable for production systems. Treat every webhook as if it might be a duplicate, because eventually, it will be.
+
+### Sending webhooks before the database commits
+
+Your app creates an order, sends a webhook to the fulfillment partner, then the database transaction fails and rolls back. The fulfillment partner starts packing an order that does not exist in your system.
+
+Never send external notifications from inside a transaction. Use the transactional outbox pattern. Write both your data and a "pending notification" record in the same transaction. A separate worker picks up pending notifications after they are committed. If the transaction rolls back, the notification record never exists, and nothing gets sent.
+
+### Skipping signature verification
+
+Your webhook endpoint accepts requests from anyone. A malicious actor discovers the URL, crafts fake payment success events, and suddenly orders are being fulfilled without actual payments.
+
+Every legitimate webhook provider signs their payloads with a secret only you and they know. Verify this signature on every single request before doing anything else. If the signature does not match, reject the request immediately. No exceptions. No "we will add this later." Do it from day one.
+
+### No logging or monitoring
+
+Webhooks arrive, processing fails, and nobody knows. Days later, a customer complains that their order never shipped despite successful payment. You dig through logs and find the webhook handler crashed with an unhandled exception.
+
+Log everything. Every webhook received, every processing attempt, every success, every failure. Set up alerts for elevated error rates. Build a dashboard showing webhook volume and processing status. When something breaks at 2 AM, you want to know before your customers do.
+
+### Returning wrong error codes
+
+Your webhook handler returns a 500 error when processing fails. The provider retries. It fails again. Retries continue for 48 hours. By the time you fix the bug, you have a backlog of hundreds of duplicate events, all of which will now be processed simultaneously.
+
+Distinguish between retriable and non-retriable errors. If the payload is malformed, return 400. The provider will not retry, which is correct because retrying bad data will never work. If your database is temporarily down, return 503. The provider will retry later when things are hopefully working again. And always, always implement idempotency so that when retries do flood in, you handle them gracefully.
+
+---
+
+## Key Takeaways
+
+1. **Webhooks are just HTTP POST requests** triggered by events. Nothing magical about them.
+
+2. **Push beats pull for event-driven systems.** Webhooks eliminate polling overhead and enable real-time reactions.
+
+3. **Acknowledge fast, process later.** Return 200 OK immediately and handle business logic asynchronously.
+
+4. **Never fire webhooks before database commits.** Use the transactional outbox pattern to ensure consistency.
+
+5. **Design for duplicates.** Implement idempotency because "at least once" delivery means retries will happen.
+
+6. **Always verify signatures.** Never trust incoming requests without cryptographic verification.
+
+7. **Test locally with cURL first**, then use tools like webhook.cool or ngrok for integration testing.
+
+8. **Understand your provider's retry policy.** Design your system to handle retries gracefully.
+
+---
+
+The next time you integrate with Stripe, GitHub, or Shopify, you will know exactly what is happening when that HTTP POST arrives. More importantly, you will know how to handle it without losing sleep over missed events, duplicate charges, or phantom orders.
+
+Webhooks are simple in concept but demand respect in production. Build them right from the start, and they will serve you reliably. Cut corners, and they will bite you at the worst possible moment.
+
+Now go build something.
+
+---
+
+## Further Reading
+
+- [Stripe Webhooks Documentation](https://stripe.com/docs/webhooks) - Excellent reference for webhook best practices
+- [GitHub Webhooks Guide](https://docs.github.com/en/webhooks) - Comprehensive documentation with payload examples
+- [Hookdeck Webhooks Guide](https://hookdeck.com/webhooks/guides/what-are-webhooks-how-they-work) - Deep dive into webhook mechanics
+- [Webhook.cool](https://webhook.cool) - Free instant webhook URL for testing
+- [Webhook.site](https://webhook.site) - Free tool for inspecting webhook payloads
+- [ngrok](https://ngrok.com) - Tunnel local servers for webhook testing
