@@ -1,0 +1,386 @@
+---
+title: "How Video Calling Actually Works: WebRTC and the Architecture Behind Real-Time Communication"
+description: "A deep dive into how apps like WhatsApp, Discord, and Zoom handle video calls. Learn how WebRTC works, what signaling and ICE servers do, and understand the differences between Peer-to-Peer, Mesh, MCU, and SFU architectures."
+date: "2026-03-06"
+author: "Ayush Sharma"
+tags: ["WebRTC", "System Design", "Video Conferencing", "Real-Time", "Backend", "Networking"]
+readingTime: "12 min read"
+featured: true
+imageUrl: "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPFEL1wW5FxlZUcq1BwOub9PyMKG7d26vQfaTC"
+---
+
+You open WhatsApp, tap the video call button, and within two seconds you are looking at your friend's face. You join a Discord call with five people, and everyone can see and hear each other simultaneously. You hop on a Zoom meeting with 50 colleagues, and somehow it all just works.
+
+But have you ever stopped and wondered what is actually happening behind the scenes? How does video from your camera travel across the internet and show up on someone else's screen in real time? How does a group call with 50 people even function without melting the internet?
+
+The answer to all of this starts with a technology called **WebRTC**. And the deeper you go, the more interesting it gets.
+
+This guide will take you through the entire journey. From how two browsers establish a direct connection, to how large-scale conferencing platforms handle hundreds of participants at once. No fluff, no unnecessary code. Just a clear, thorough explanation of how video calling actually works.
+
+---
+
+## What is WebRTC?
+
+**WebRTC** stands for **Web Real-Time Communication**. It is an open-source project and set of standards that allows browsers and mobile apps to exchange audio, video, and data directly with each other, without needing to install plugins or extra software.
+
+Before WebRTC existed, if you wanted real-time video in a browser, you needed Flash or a native plugin. WebRTC changed that completely. It is built directly into modern browsers like Chrome, Firefox, Safari, and Edge. You open a web page, grant camera and microphone permissions, and you are ready to go.
+
+Here is the important part: **WebRTC is designed for peer-to-peer communication**. The goal is for your video and audio data to travel directly from your device to the other person's device, without passing through a server in between.
+
+This is fundamentally different from how most of the web works. When you load a website, your browser sends a request to a server, the server responds, and that is it. With WebRTC, the server helps set things up, but the actual media (your video, your voice) flows directly between the two devices.
+
+Think of it like this. A mutual friend introduces you to someone at a party. After the introduction, you two talk directly. The friend does not stand between you and relay every sentence. WebRTC works the same way. A server handles the introduction, but after that, the data flows peer-to-peer.
+
+But setting up that direct connection is not as simple as it sounds. Your devices are behind routers, firewalls, and network layers that make direct communication surprisingly difficult.
+
+---
+
+## The Connection Problem: Why Two Browsers Cannot Just Talk
+
+Here is a question that seems simple: if two people want to video call each other, why can not their browsers just connect directly?
+
+The answer: **NAT**.
+
+**NAT (Network Address Translation)** is how your home router works. Your laptop, phone, and smart speaker all have private IP addresses like `192.168.1.5`. But the outside world only sees your router's single public IP address. When your device sends data to the internet, the router translates the private address to its public one. When data comes back, the router translates it again and sends it to the right device.
+
+This works great for browsing the web. You send a request, the server responds to the same connection. Done.
+
+But for peer-to-peer connections, NAT creates a wall. Your browser does not know its own public IP address. It only knows its private address, which is useless to the person on the other side. And even if the other person knew your public IP, your router would block unsolicited incoming traffic because it has no idea which internal device should receive it.
+
+So two browsers sitting behind two different routers cannot just find each other and start talking. They need help.
+
+This is where the **signaling server** and **ICE server** come in.
+
+---
+
+## Step 1: Signaling and SDP
+
+Before any video data flows, the two browsers need to agree on how to communicate. What video codecs do they support? What audio format will they use? What network paths are available?
+
+This negotiation happens through something called **SDP (Session Description Protocol)**. SDP is just a text format that describes a media session. It includes information like supported video codecs (VP8, H.264), audio codecs (Opus), encryption parameters, and network connection details.
+
+The process works like this:
+
+1. **Ayush wants to call Rahul.** Ayush's browser creates an **SDP Offer**. This is essentially a message saying: "Here is what I can do. I support these video formats, these audio formats, and here is how you can reach me."
+
+2. **The offer is sent to Rahul through a signaling server.** This is any server that can pass messages between two users. It could be a WebSocket server, a REST API, anything that can deliver a message from one user to another. WebRTC does not define how signaling works. It just requires that it happens.
+
+3. **Rahul receives the offer.** His browser looks at it and creates an **SDP Answer**. This says: "Great, here is what I can do. Let us use Opus for audio and VP8 for video. Here is my network information."
+
+4. **The answer goes back to Ayush through the signaling server.**
+
+Now both browsers know what formats they will use and have shared their initial network details.
+
+**The key thing to understand:** the signaling server is only used for this initial coordination. It passes messages back and forth so the two browsers can find each other and agree on settings. The actual audio and video data never touches the signaling server. It is just a matchmaker. Once the introduction is done, it steps aside.
+
+![Diagram 1: WebRTC Signaling and SDP Exchange](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPDw0JeOM2iu3DCn2fKoPIv9VMXLb1kHcNxmRh)
+
+---
+
+## Step 2: Finding Each Other with ICE
+
+After the SDP exchange, both browsers know what media formats to use. But they still need to find a network path to actually send data to each other. Remember, both devices are behind routers (NAT), and neither knows how to reach the other directly.
+
+This is where the **ICE server** comes in. And honestly, the concept is simpler than the name makes it sound.
+
+### What is an ICE Server?
+
+Think of it like this. Your browser knows its own private IP address (`192.168.1.5`), but that address is useless to someone outside your network. It is like knowing your room number but not your building's street address. You need to figure out what your public-facing address looks like.
+
+An **ICE server** is just a server that your browser contacts and asks: **"Hey, what is my public IP address?"**
+
+That is literally it. Your browser sends a request to the ICE server, and the ICE server responds with: "From where I am sitting, you look like you are at `203.0.113.5:62000`." Now your browser knows its public address and can share it with the other person so they know where to send data.
+
+Google runs free ICE servers that pretty much every WebRTC app uses during development:
+
+`stun:stun.l.google.com:19302`
+
+`stun:stun1.l.google.com:19302`
+
+You will see these in almost every WebRTC tutorial and many production apps too. They are lightweight, fast, and handle the "what is my IP" question without any fuss.
+
+### How the Connection Actually Happens
+
+Once both browsers know their public addresses (thanks to the ICE server), they share this information with each other through the signaling server. Then they try to connect directly. In most cases, this works. The two browsers punch through their respective NATs and establish a direct connection. This is called **NAT hole punching**.
+
+But sometimes, direct connection is not possible. Corporate firewalls, strict network configurations, or certain types of NATs block all peer-to-peer traffic. For those cases, there are special relay servers called **TURN servers** that act as middlemen. Both browsers send their media to the TURN server, and it forwards the data to the other side. This adds some latency and costs more (since the server is relaying all that video), but it works in nearly every network scenario.
+
+The good news: only about 10-15% of connections actually need TURN relaying. The vast majority connect directly using just the ICE server.
+
+The whole process is automatic. Your users do not need to know or care about any of this. They click "Call" and it just connects. WebRTC tries every possible path and picks the best one.
+
+![Diagram 2: ICE Server Role in Connection Establishment](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPu6Cv7dILjGC7RxNs1WqaPXeldA0nz3E968kD)
+
+---
+
+## Peer-to-Peer: The Simplest Case
+
+Once the signaling is done and ICE finds a working path, the actual media flows directly between the two browsers. No server in the middle. This is pure **peer-to-peer (P2P)** communication.
+
+For a one-on-one call (Ayush calls Rahul), this is the ideal setup:
+
+- Ayush's video and audio go directly to Rahul.
+- Rahul's video and audio go directly to Ayush.
+- Latency is minimal because data takes the shortest possible path.
+- No server costs for media relay (assuming the ICE server was sufficient to discover addresses).
+
+One thing worth noting here: the actual video and audio data travels over **UDP**, not TCP. UDP is faster because it does not wait around for confirmation that every single packet arrived. If a video frame gets lost in transit, there is no point retransmitting it because by the time it arrives, the conversation has already moved on. This is why video calls can feel slightly choppy on a bad connection but never "buffer" the way a YouTube video does. The browser handles all of this natively. You do not need any special framework or library for the transport itself. WebRTC uses UDP under the hood, and the browser takes care of sending and receiving packets directly.
+
+This is how WhatsApp handles one-on-one video calls. Your phone connects directly to your friend's phone. The only servers involved are the signaling server (to set up the call) and briefly an ICE server (to discover public addresses). After that, the actual video and voice data goes straight from device to device over UDP. No server in the loop.
+
+**P2P is perfect for 1-on-1 calls.** Low latency, low cost, high privacy since the data does not pass through any server.
+
+But what happens when you add a third person? Or a tenth? Or a fiftieth?
+
+---
+
+## The Scaling Problem
+
+Let us say Ayush, Rahul, and Raghav are in a group call. In a pure peer-to-peer setup, every participant needs a direct connection to every other participant.
+
+With 3 people, each person maintains 2 connections. That is 3 total connections. Manageable.
+
+With 5 people, each person maintains 4 connections. That is 10 total connections.
+
+With 10 people, each person maintains 9 connections. That is 45 total connections.
+
+The formula is `n * (n - 1) / 2` where n is the number of participants.
+
+But the connection count is not even the real problem. The real problem is **bandwidth**.
+
+Each participant has to **upload** their video stream once for every other participant. If Ayush is in a call with 9 other people, he has to upload his video 9 times simultaneously. And he has to download 9 different video streams.
+
+If each video stream is 1.5 Mbps (a reasonable HD quality), Ayush needs:
+
+- **Upload:** 9 x 1.5 = 13.5 Mbps
+- **Download:** 9 x 1.5 = 13.5 Mbps
+
+Most home internet connections can handle the download. But 13.5 Mbps upload? Many residential connections top out at 5-10 Mbps upload. The call would stutter, freeze, or fail entirely.
+
+This is why pure peer-to-peer does not scale beyond a handful of participants. You need a different architecture.
+
+---
+
+## Architecture 1: Mesh
+
+**Mesh** is the name for the peer-to-peer approach applied to group calls. Every participant connects directly to every other participant. There is no central server handling media.
+
+### How It Works
+
+Each person sends their audio and video to every other person individually. If there are 4 people in the call, each person has 3 outgoing streams and 3 incoming streams.
+
+### Where It Makes Sense
+
+Mesh works well for small group calls with 2 to 4 participants. Some WebRTC applications use mesh for small meetings because it keeps things simple and avoids the need for a media server. No server to maintain, no infrastructure cost for media. Just direct connections.
+
+### Where It Falls Apart
+
+As we just calculated, the bandwidth and CPU requirements explode with each additional participant. Your device has to encode and send the same video multiple times, and decode multiple incoming streams simultaneously. Phones especially struggle with this.
+
+Mesh is great for small group calls where simplicity and zero server cost matter. But once you go beyond 4 or 5 participants, the upload bandwidth becomes the bottleneck, and you need something smarter.
+
+---
+
+## Architecture 2: MCU (Multipoint Control Unit)
+
+The problem with mesh is clear: too many connections, too much bandwidth. So the first idea that came along was simple in concept. What if we put a powerful server in the middle that takes everyone's video, combines it all into one stream, and sends that single stream back to each person?
+
+That is exactly what an **MCU** does.
+
+### How It Works
+
+Each participant sends their audio and video to the MCU server. The MCU then:
+
+1. **Decodes** every incoming video and audio stream.
+2. **Combines (mixes)** all the video streams into a single composite video. Think of a grid layout with everyone's face arranged in boxes, but that grid is rendered entirely on the server.
+3. **Mixes** all the audio streams into a single audio track.
+4. **Re-encodes** this combined stream.
+5. **Sends one single stream** back to each participant.
+
+So regardless of whether there are 5 or 50 people in the call, every participant downloads exactly **one** video stream and **one** audio stream. From the client's perspective, it feels like watching a single video.
+
+### Why MCU Was Attractive
+
+For low-powered devices, this was a game changer. Your phone or old laptop only needs to decode one video stream and one audio stream. That is it. The server does all the heavy lifting. Bandwidth is predictable too. It does not matter if there are 3 people or 30 people in the call, the download stays the same.
+
+MCU also played well with legacy systems. Older video conferencing hardware (SIP phones, H.323 endpoints from Cisco and Polycom) could not handle multiple streams. MCU gave them a single composite to work with.
+
+### Why MCU Lost Ground
+
+Here is the catch: MCU is insanely expensive to run.
+
+The server has to decode every single participant's stream, composite them into a layout, and then re-encode the result. Video encoding is one of the most CPU-intensive operations in computing. For a 20-person call, the MCU is doing 20 decodes, compositing, and then encoding a unique output for each participant (since you would not want to see your own face in the grid, each person gets a slightly different composite).
+
+On top of that, the decode-mix-reencode pipeline adds noticeable latency. And the layout is fixed. The server decides the grid. If you want to pin a specific speaker or rearrange your view, you are out of luck. Everyone sees the same thing.
+
+There is another problem that is easy to overlook. Say Raghav is being noisy and you want to mute him just for yourself. With an MCU, you cannot do that. The server has already mixed everyone's audio into a single track before sending it to you. There is no way to separate Raghav's voice from that combined stream on your end. The same goes for video. You cannot hide or resize a specific person's feed because you are not receiving individual streams. You are receiving one pre-mixed output. Features like per-person mute, per-person volume control, or hiding someone's video are simply not possible with MCU. This is one of the reasons the industry moved towards SFU, where each stream arrives separately and the client has full control over what to do with it.
+
+Scaling this up is brutal. MCU servers need powerful hardware, often with dedicated video encoding chips. Running MCU for hundreds of concurrent meetings requires massive infrastructure investment.
+
+### Where MCU Still Lives
+
+You will still find MCU in traditional enterprise conferencing systems (Cisco, Polycom), broadcasting scenarios where you need a single combined output (like a live TV production with multiple camera feeds), and certain specialized use cases where client devices are extremely constrained.
+
+But for the modern web? MCU was too heavy. The industry needed something better.
+
+---
+
+## Architecture 3: SFU (Selective Forwarding Unit)
+
+The **SFU** is the architecture that most modern video conferencing platforms settled on, and for good reason. It takes the best ideas from both mesh and MCU while avoiding their worst problems.
+
+### How It Works
+
+An SFU is a server that sits in the middle. But unlike an MCU, it does **not** process or modify the video in any way. It just **forwards** it.
+
+Each participant sends their audio and video to the SFU once. The SFU then forwards each participant's stream to all the other participants. That is it. No encoding, no decoding, no mixing. Just smart forwarding.
+
+Going back to our 10-person call:
+
+**Without SFU (Mesh):**
+- Each person uploads 9 streams.
+- Upload per person: 9 x 1.5 = 13.5 Mbps.
+
+**With SFU:**
+- Each person uploads 1 stream to the SFU.
+- Upload per person: 1.5 Mbps.
+- The SFU handles distributing to everyone else.
+
+The upload requirement dropped from 13.5 Mbps to 1.5 Mbps. That is a massive difference.
+
+The download side is the same in both cases. Each person still receives 9 streams (one from each other participant). But download bandwidth is rarely the bottleneck on modern internet connections.
+
+### Simulcast: Making SFU Even Smarter
+
+Most SFUs support something called **simulcast**. Instead of sending just one video stream, the sender's browser encodes the video at multiple quality levels simultaneously. For example: high (720p), medium (360p), and low (180p).
+
+The SFU then decides which quality to forward to each participant based on factors like available bandwidth, which speaker is currently active, and how large their video tile is on screen.
+
+This is how Google Meet shows you one high-quality video of the person who is speaking while displaying everyone else as smaller, lower-quality thumbnails. The SFU is making these forwarding decisions in real time, and the user never notices.
+
+### Why SFU Won
+
+**Compared to Mesh:** Upload bandwidth drops dramatically. Instead of uploading N-1 streams, you upload just one. This is what makes 10, 20, or 50 person calls possible.
+
+**Compared to MCU:** Server CPU load is way lower because the SFU is just forwarding packets, not decoding and re-encoding video. Latency is lower too since there is no transcoding step. And the layout is entirely flexible. Each client can choose how to display the received streams. Pin someone, use grid view, use speaker view. It is all up to the client.
+
+The tradeoffs are reasonable. Download bandwidth still scales linearly (each participant downloads N-1 streams), and the client device has to decode multiple incoming streams. But modern devices and internet connections handle this well enough for calls of up to 100+ people.
+
+### Where SFU Falls Short
+
+For very large calls (hundreds of participants with video on), the download bandwidth can get heavy. And low-powered devices might struggle to decode 20+ video streams simultaneously. But most platforms handle this by only sending video for the few participants who are actively visible on screen, and muting the video of everyone else.
+
+![Diagram 3: Mesh vs MCU vs SFU Architecture Comparison](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPudovbqILjGC7RxNs1WqaPXeldA0nz3E968kD)
+
+---
+
+## So, Which Architecture Should You Use?
+
+The honest answer: **SFU for almost everything.**
+
+If you are building a 1-on-1 calling feature (like a customer support video call), pure P2P works perfectly and you save on server costs.
+
+If you have a very small group call scenario (3-4 people max), mesh keeps things simple with no media server needed.
+
+If you are building a modern video conferencing product that needs to scale to 5, 10, 50, or more participants, SFU is the answer. It is what the entire industry converged on.
+
+MCU only makes sense if you are dealing with legacy hardware that cannot handle multiple streams, or if you specifically need a single composite output for recording or broadcasting purposes.
+
+---
+
+## Real-World SFU Frameworks
+
+If you are building a video conferencing feature, you do not need to write an SFU from scratch. There are mature, battle-tested open-source frameworks available.
+
+### mediasoup
+
+[mediasoup](https://mediasoup.org/) is a Node.js and Rust library that gives you a powerful, low-level SFU. It describes itself as a "cutting edge WebRTC video conferencing" library. The key thing about mediasoup is that it is not a standalone server. It is a building block. You integrate it into your own Node.js or Rust application and build your own signaling and room management around it.
+
+It supports simulcast, SVC (Scalable Video Coding), and bandwidth estimation out of the box. It comes with mediasoup-client for the browser side and libmediasoupclient for native C++ applications. If you want full control over every aspect of how your video platform works, mediasoup is the go-to choice.
+
+### LiveKit
+
+[LiveKit](https://docs.livekit.io/) is an open-source platform that describes itself as "the platform for voice, video, and physical AI agents." Unlike mediasoup, LiveKit gives you a complete solution: an SFU server written in Go, client SDKs for JavaScript, Swift, Android, Flutter, and more, plus server SDKs for Go, Node.js, Python, and Ruby.
+
+LiveKit has become especially popular in the AI space. Their agent framework lets you build AI-powered voice and video applications, which is why you will see it used in telehealth platforms, virtual classrooms, and AI voice agent products. If you want to move fast and need a batteries-included solution, LiveKit is a strong pick.
+
+### Janus
+
+[Janus](https://janus.conf.meetecho.com/) is a general-purpose WebRTC server developed by Meetecho. It is written in C for a small footprint and uses a plugin architecture. The core handles WebRTC, and plugins handle specific functionality: video rooms, SIP gateways, streaming, recording, and more.
+
+Janus is the go-to when you need to bridge WebRTC with traditional telephony. If your project involves SIP, PSTN, Asterisk, or FreeSWITCH integration, Janus handles that natively through its SIP gateway plugin.
+
+---
+
+## What Do Real Apps Use?
+
+This is where it gets interesting. Knowing what powers the apps you use every day makes all of this feel much more real.
+
+**WhatsApp** uses peer-to-peer for one-on-one calls. Your video goes directly from your phone to the other person's phone. For group calls (which support up to 32 people), WhatsApp uses a server-based relay infrastructure. Meta's engineering team at the @Scale conference described how their "calling relay infrastructure" has been responsible for transmitting voice and video data since the 2015 launch, starting with one-on-one audio and expanding to video and group calls over time. ([Source: @Scale Conference, "Calling Relay Infrastructure at WhatsApp Scale"](https://atscaleconference.com/calling-relay-infrastructure-at-whatsapp-scale/))
+
+**Discord** uses a client-server (SFU) architecture for all voice and video. Their engineering team wrote about this explicitly: "Supporting large group channels (we have seen 1000 people taking turns speaking) requires client-server networking architecture because peer-to-peer networking becomes prohibitively expensive as the number of participants increases." They use WebRTC under the hood, with their own media servers handling the forwarding. ([Source: Discord Engineering Blog, "How Discord Handles Two and Half Million Concurrent Voice Users using WebRTC"](https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc))
+
+**Google Meet** uses an SFU with virtual media streams. Google's own Meet Media API documentation confirms this: "Virtual Media Streams, in the context of WebRTC conferencing, are media streams generated by a Selective Forwarding Unit (SFU) to aggregate and distribute media from multiple participants." The SFU dynamically decides which streams to forward based on speaker activity and tile assignment. ([Source: Google Meet Media API Documentation](https://developers.google.com/workspace/meet/media-api/guides/virtual-streams))
+
+**Zoom** uses a primarily SFU-based architecture, though they also have MCU capabilities for specific scenarios like gallery view compositing and connecting to traditional conference room hardware via H.323/SIP systems. Their architecture routes media through their own data centers for optimization and quality control.
+
+**Microsoft Teams** uses an SFU approach with smart simulcast and bandwidth estimation. It adjusts quality per participant and supports large meetings (up to 1,000 participants in view-only mode) through selective stream subscription.
+
+---
+
+## The Complete Picture: How a Video Call Really Works
+
+Let us bring it all together by tracing what happens when you join a Google Meet call with 8 other people.
+
+1. **You open the meeting link.** Your browser requests camera and microphone access. Once granted, it captures your local video and audio.
+
+2. **Signaling begins.** Your browser connects to Google's signaling server (likely over WebSockets). It creates an SDP Offer describing your media capabilities and sends it to the server.
+
+3. **ICE does its thing.** Your browser contacts Google's ICE servers to discover your public IP address. It figures out how to reach Google's SFU server from your network.
+
+4. **Connection is established.** The signaling server coordinates the SDP and ICE exchange between your browser and Google's SFU server. Note: you are connecting to the SFU, not directly to other participants.
+
+5. **Media flows.** Your browser sends one video stream (in multiple quality levels via simulcast) and one audio stream to the SFU.
+
+6. **SFU distributes.** The SFU forwards appropriate streams from all 8 other participants to your browser. The active speaker gets the high-quality stream. Others get lower quality based on their tile size on your screen.
+
+7. **Continuous optimization.** Throughout the call, the SFU monitors bandwidth and adjusts which quality level to forward. If your connection dips, you get lower quality video but the call keeps going.
+
+8. **Someone leaves, someone joins.** The signaling server manages room state. When participants change, new SDP negotiations happen seamlessly in the background.
+
+This entire process, from clicking the link to seeing everyone's faces, takes about 2 to 3 seconds.
+
+![Diagram 4: End-to-End WebRTC Call Flow](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPnO2Y8T9fPwqz2yRAE5aiG6T4otWDKUJskgYN)
+
+---
+
+## Key Takeaways
+
+1. **WebRTC enables real-time communication in browsers** without plugins. It powers everything from one-on-one WhatsApp calls to 100-person Zoom meetings.
+
+2. **A server is always needed for the initial setup**, but not necessarily for the actual media. The signaling server coordinates the SDP exchange and ICE helps discover public addresses. After that, media can flow peer-to-peer.
+
+3. **An ICE server is basically a "what is my IP" server.** Your browser asks it for its public address, shares that with the other person, and then they connect directly. Google provides free ICE servers that most WebRTC apps use.
+
+4. **Peer-to-peer works great for 1-on-1 calls.** Low latency, no server costs, high privacy. WhatsApp uses this for individual calls.
+
+5. **Mesh (everyone connects to everyone) breaks down beyond 4-5 people** because upload bandwidth requirements grow with each participant.
+
+6. **MCU mixes all streams into one composite** which is great for constrained clients but costs a lot in server resources and adds latency. It is mainly used for legacy systems and broadcasting.
+
+7. **SFU is the industry standard for group calls.** Each person uploads once, the server forwards to everyone else. Google Meet, Discord, Teams, and Zoom all use this approach.
+
+8. **For building your own:** mediasoup gives you low-level control, LiveKit gives you a complete platform with AI agent support, and Janus bridges WebRTC with telephony systems.
+
+---
+
+## Further Reading
+
+- [WebRTC Official Site](https://webrtc.org/)
+- [MDN WebRTC API Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API)
+- [mediasoup Documentation](https://mediasoup.org/documentation/)
+- [LiveKit Documentation](https://docs.livekit.io/)
+- [Janus WebRTC Server](https://janus.conf.meetecho.com/)
+- [Discord Engineering: WebRTC at Scale](https://discord.com/blog/how-discord-handles-two-and-half-million-concurrent-voice-users-using-webrtc)
+- [Google Meet Media API: Virtual Streams (SFU)](https://developers.google.com/workspace/meet/media-api/guides/virtual-streams)
+- [High Performance Browser Networking: WebRTC Chapter](https://hpbn.co/webrtc/)
