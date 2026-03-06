@@ -87,9 +87,9 @@ This is where the **ICE server** comes in. And honestly, the concept is simpler 
 
 Think of it like this. Your browser knows its own private IP address (`192.168.1.5`), but that address is useless to someone outside your network. It is like knowing your room number but not your building's street address. You need to figure out what your public-facing address looks like.
 
-An **ICE server** is just a server that your browser contacts and asks: **"Hey, what is my public IP address?"**
+An **ICE server** (technically called a **STUN server** under the ICE framework) is just a server that your browser contacts and asks: **"Hey, what is my public IP address?"**
 
-That is literally it. Your browser sends a request to the ICE server, and the ICE server responds with: "From where I am sitting, you look like you are at `203.0.113.5:62000`." Now your browser knows its public address and can share it with the other person so they know where to send data.
+That is literally it. Your browser sends a request to the ICE server, and it responds with: "From where I am sitting, you look like you are at `203.0.113.5:62000`." Now your browser knows its public address and can share it with the other person so they know where to send data.
 
 Google runs free ICE servers that pretty much every WebRTC app uses during development:
 
@@ -105,7 +105,7 @@ Once both browsers know their public addresses (thanks to the ICE server), they 
 
 But sometimes, direct connection is not possible. Corporate firewalls, strict network configurations, or certain types of NATs block all peer-to-peer traffic. For those cases, there are special relay servers called **TURN servers** that act as middlemen. Both browsers send their media to the TURN server, and it forwards the data to the other side. This adds some latency and costs more (since the server is relaying all that video), but it works in nearly every network scenario.
 
-The good news: only about 10-15% of connections actually need TURN relaying. The vast majority connect directly using just the ICE server.
+The good news: in most consumer scenarios, the majority of connections work directly without needing TURN. Relay is the fallback, not the norm.
 
 The whole process is automatic. Your users do not need to know or care about any of this. They click "Call" and it just connects. WebRTC tries every possible path and picks the best one.
 
@@ -124,9 +124,9 @@ For a one-on-one call (Ayush calls Rahul), this is the ideal setup:
 - Latency is minimal because data takes the shortest possible path.
 - No server costs for media relay (assuming the ICE server was sufficient to discover addresses).
 
-One thing worth noting here: the actual video and audio data travels over **UDP**, not TCP. UDP is faster because it does not wait around for confirmation that every single packet arrived. If a video frame gets lost in transit, there is no point retransmitting it because by the time it arrives, the conversation has already moved on. This is why video calls can feel slightly choppy on a bad connection but never "buffer" the way a YouTube video does. The browser handles all of this natively. You do not need any special framework or library for the transport itself. WebRTC uses UDP under the hood, and the browser takes care of sending and receiving packets directly.
+One thing worth noting here: the actual video and audio data primarily travels over **UDP**, not TCP. UDP is faster because it does not wait around for confirmation that every single packet arrived. If a video frame gets lost in transit, there is generally no point retransmitting it because by the time it arrives, the conversation has already moved on. There are some loss-recovery mechanisms at the protocol level, but the core idea holds: speed matters more than perfect delivery for real-time media. This is why video calls can feel slightly choppy on a bad connection but never "buffer" the way a YouTube video does. The browser handles all of this natively. You do not need any special framework or library for the transport itself. WebRTC handles UDP under the hood, and the browser takes care of sending and receiving packets directly.
 
-This is how WhatsApp handles one-on-one video calls. Your phone connects directly to your friend's phone. The only servers involved are the signaling server (to set up the call) and briefly an ICE server (to discover public addresses). After that, the actual video and voice data goes straight from device to device over UDP. No server in the loop.
+This is how WhatsApp handles one-on-one video calls. Your phone connects directly to your friend's phone whenever possible. The only servers involved are the signaling server (to set up the call) and briefly an ICE server (to discover public addresses). If a direct connection works, the actual video and voice data goes straight from device to device over UDP. WhatsApp does maintain relay servers as a fallback for when direct connection fails, but the goal is always P2P first.
 
 **P2P is perfect for 1-on-1 calls.** Low latency, low cost, high privacy since the data does not pass through any server.
 
