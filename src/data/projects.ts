@@ -21,6 +21,46 @@ export interface Project {
 export const projects: Project[] = [
   {
     id: 1,
+    title: "MemContext",
+    description:
+      "Persistent memory layer for AI coding agents — save once, retrieve forever across all sessions.",
+    image:
+      "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPuFUBv7VILjGC7RxNs1WqaPXeldA0nz3E968k",
+    tags: [
+      "TypeScript",
+      "Hono",
+      "Next.js",
+      "React",
+      "TailwindCSS",
+      "Drizzle",
+      "Neon",
+      "PostgreSQL",
+      "MCP",
+      "Turborepo",
+      "Upstash Redis",
+      "OpenRouter",
+      "Vercel AI SDK",
+    ],
+    demoLink: "https://memcontext.in",
+    githubLink: "https://github.com/CyberBoyAyush/memcontext",
+    featured: true,
+    year: "2026",
+    duration: "2 Months",
+    color: "from-violet-600 to-indigo-600",
+    slug: "memcontext",
+    detailedDescription:
+      "MemContext is a persistent memory layer for AI coding agents that solves the problem of AI assistants forgetting everything between sessions. It provides automatic memory saving and semantic retrieval via the Model Context Protocol (MCP). Features include intelligent memory with automatic save and retrieve, semantic search using 1536-dimensional vector embeddings for meaning-based retrieval, cross-tool sync across Claude, Cursor, Windsurf, Cline, Codex and more, auto-updating memories that evolve without duplicates, encrypted and private storage, and project-scoped memory organization. Built as a Turborepo monorepo with a Hono API backend, Next.js dashboard, MCP server, and marketing website — all sharing types via a packages layer.",
+    challenges: [
+      "Implementing semantic search with 1536-dim vector embeddings for meaning-based memory retrieval instead of keyword matching",
+      "Building automatic memory deduplication and relation classification (saved, updated, extended) using AI",
+      "Designing cross-tool memory sync that works across Claude, Cursor, Windsurf, Cline, and other MCP-compatible clients",
+      "Architecting a Turborepo monorepo with clean separation between API, MCP server, dashboard, and website apps",
+      "Implementing rate limiting, secure API key authentication, and encrypted storage for user privacy",
+    ],
+    category: "AI",
+  },
+  {
+    id: 2,
     title: "Zenox",
     description:
       "OpenCode plugin for intelligent agent orchestration with specialized subagents and parallel background tasks.",
@@ -46,7 +86,7 @@ export const projects: Project[] = [
     category: "AI",
   },
   {
-    id: 2,
+    id: 3,
     title: "Plnr",
     description:
       "AI-powered CLI tool for intelligent codebase planning and context-aware implementation assistance",
@@ -73,7 +113,7 @@ export const projects: Project[] = [
     videoUrl: "https://www.youtube.com/embed/8VMi3AoLEz4?si=b5JoXW31UPcFPfLj",
   },
   {
-    id: 3,
+    id: 4,
     title: "CappyChat",
     description:
       "Fastest LLM chat on the planet right now, Multi Model and Realtime Sync too.",
@@ -106,7 +146,7 @@ export const projects: Project[] = [
     category: "AI",
   },
   {
-    id: 4,
+    id: 5,
     title: "Bucket Buddy",
     description: "Modern Cloud Storage Management",
     image:
@@ -130,7 +170,7 @@ export const projects: Project[] = [
     category: "Others",
   },
   {
-    id: 5,
+    id: 6,
     title: "TuduAI",
     description:
       " An AI-powered productivity app with natural language task creation, collaborative workspaces, and a minimalist UI for effortless planning.",
@@ -162,7 +202,7 @@ export const projects: Project[] = [
     category: "AI",
   },
   {
-    id: 6,
+    id: 7,
     title: "QuickBang",
     description: "Lightning-fast search shortcuts to enhance your workflow.",
     image:
@@ -186,7 +226,7 @@ export const projects: Project[] = [
     category: "Others",
   },
   {
-    id: 7,
+    id: 8,
     title: "Effisense",
     description:
       "Experience the future of productivity with AI-powered task scheduling, smart prioritization, and intelligent workload balancing.",
@@ -219,7 +259,7 @@ export const projects: Project[] = [
     category: "AI",
   },
   {
-    id: 8,
+    id: 9,
     title: "SkillCompass",
     description:
       "Unlock your potential with AI-powered personalized learning paths, interactive content, and real-time progress tracking.",
@@ -246,7 +286,7 @@ export const projects: Project[] = [
     category: "AI",
   },
   {
-    id: 9,
+    id: 10,
     title: "PortDev",
     description: "Create Devloper Portfolio in Minutes.",
     image:
@@ -270,7 +310,7 @@ export const projects: Project[] = [
     category: "Others",
   },
   {
-    id: 10,
+    id: 11,
     title: "React Portfolio",
     description: "Personal Portfolio Website using React Js",
     image:
