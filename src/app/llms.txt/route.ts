@@ -41,7 +41,7 @@ Ayush Sharma is the Chief Technology Officer at Kakiyo OÜ and a Full Stack Deve
 
 ### AI Projects
 
- - [MemContext](${baseUrl}/projects/memcontext): Persistent, evolving memory layer for AI coding agents with MCP-native integrations, hybrid retrieval, and cross-session recall
+- [MemContext](${baseUrl}/projects/memcontext): Persistent, evolving memory layer for AI coding agents with MCP-native integrations, hybrid retrieval, and cross-session recall
 - [Zenox](${baseUrl}/projects/zenox): Agent orchestration plugin for OpenCode with specialized subagents, background tasks, and multi-agent workflows
 - [Plnr](${baseUrl}/projects/plnr): AI planning and security CLI for codebases with framework detection, architecture-aware planning, and security analysis
 - [CappyChat](${baseUrl}/projects/cappychat): Production AI chat workspace with multi-model routing, realtime sync, tool calling, and a local-first UX
