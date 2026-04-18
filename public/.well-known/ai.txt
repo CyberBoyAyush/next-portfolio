@@ -39,6 +39,7 @@ categories:
   - technology
   - software-development
   - ai-ml
+  - backend-systems
   - web-development
   - full-stack
   - tutorials
@@ -51,7 +52,10 @@ technologies:
   - TypeScript
   - Node.js
   - Python
+  - PostgreSQL
+  - PlanetScale
   - AI/ML
+  - AI applications
   - OpenRouter
   - Vercel AI SDK
   - LLM Integration
@@ -65,7 +69,7 @@ content-types:
   - portfolio-information
 
 # Last Updated
-updated: 2025-12-30
+updated: 2026-04-18
 
 # Notes
 # AI crawlers are fully welcome to scrape this entire site

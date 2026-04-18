@@ -48,6 +48,7 @@ const Hero = () => {
     { title: "Full Stack Developer", article: "a" },
     { title: "AI Engineer", article: "an" },
     { title: "AI + Backend Guy", article: "an" },
+    { title: "Backend-Heavy Builder", article: "a" },
   ];
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
 
@@ -317,12 +318,12 @@ const Hero = () => {
                   <TrendingUp size={14} />
                   Scalable
                 </span>
-                , high-performance AI applications and modern web solutions with a focus on exceptional{" "}
+                , backend-heavy AI applications and products engineered for real-world scale, low latency, and strong infrastructure. I focus on applied AI, end-to-end execution, and exceptional{" "}
                 <span className={`inline-flex items-center gap-1.5 px-3 py-1 font-medium text-sm align-middle transition-colors ${isLight ? 'bg-blue-100 text-blue-700 border border-blue-200 hover:bg-blue-200' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20'}`}>
                   <Sparkles size={14} />
                   User Experience
                 </span>{" "}
-                and robust{" "}
+                paired with robust{" "}
                 <span className={`inline-flex items-center gap-1.5 px-3 py-1 font-medium text-sm align-middle transition-colors ${isLight ? 'bg-purple-100 text-purple-700 border border-purple-200 hover:bg-purple-200' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20 hover:bg-purple-500/20'}`}>
                   <Network size={14} />
                   System Design

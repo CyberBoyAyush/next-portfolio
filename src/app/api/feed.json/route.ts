@@ -20,13 +20,14 @@ export async function GET() {
 
     // Professional Information
     professional: {
-      title: 'Full Stack Lead Developer',
+      title: 'Chief Technology Officer',
       company: 'Kakiyo OÜ',
       location: 'Remote',
       specialization: [
-        'AI-powered applications',
         'Full Stack Development',
-        'Cloud Architecture',
+        'AI applications',
+        'Backend-heavy systems',
+        'Scalable architecture',
         'LLM Integration',
       ],
     },
@@ -44,9 +45,8 @@ export async function GET() {
       backend: [
         'Node.js',
         'Python',
-        'C',
-        'C++',
         'PostgreSQL',
+        'PlanetScale',
         'MongoDB',
         'Firebase',
         'Appwrite',

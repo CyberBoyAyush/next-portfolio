@@ -30,11 +30,12 @@ export const metadata: Metadata = {
     default: "Ayush Sharma | Full Stack Developer & AI Engineer",
     template: "%s | Ayush Sharma"
   },
-  description: "Full Stack Lead Developer specializing in AI-powered applications, modern web development with React, Next.js, TypeScript, and cloud infrastructure. Building scalable solutions with OpenRouter, Vercel AI SDK, and advanced LLM integration.",
+  description: "Full Stack Developer and AI Engineer, currently Chief Technology Officer at Kakiyo OÜ, building backend-heavy AI applications, scalable systems, and modern web products with React, Next.js, TypeScript, Node.js, and production AI integrations.",
   keywords: [
     "Ayush Sharma",
-    "Full Stack Developer",
-    "AI Engineer",
+    "AI Applications Engineer",
+    "Backend Engineer",
+    "Chief Technology Officer",
     "React Developer",
     "Next.js",
     "TypeScript",
@@ -60,13 +61,13 @@ export const metadata: Metadata = {
     url: 'https://aysh.me',
     siteName: 'Ayush Sharma Portfolio',
     title: 'Ayush Sharma | Full Stack Developer & AI Engineer',
-    description: 'Full Stack Lead Developer specializing in AI-powered applications, modern web development, and cloud infrastructure. Expert in React, Next.js, TypeScript, and LLM integration.',
+    description: 'Full Stack Developer and AI Engineer, currently Chief Technology Officer at Kakiyo OÜ, building backend-heavy AI applications, scalable systems, and modern web products with React, Next.js, TypeScript, and production AI integrations.',
     images: [
       {
         url: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPlhi1W0hsc5pTOzgtJsIUQNxveLu9Gr6FBYjX',
         width: 2400,
         height: 1200,
-        alt: 'Ayush Sharma - Full Stack Developer & AI Engineer',
+          alt: 'Ayush Sharma - Full Stack Developer and AI Engineer',
       },
     ],
   },
@@ -75,7 +76,7 @@ export const metadata: Metadata = {
     site: '@cyberboyayush',
     creator: '@cyberboyayush',
     title: 'Ayush Sharma | Full Stack Developer & AI Engineer',
-    description: 'Full Stack Lead Developer specializing in AI-powered applications and modern web development.',
+    description: 'Full Stack Developer and AI Engineer, currently Chief Technology Officer at Kakiyo OÜ, building backend-heavy AI applications and scalable products.',
     images: ['https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPlhi1W0hsc5pTOzgtJsIUQNxveLu9Gr6FBYjX'],
   },
   robots: {
@@ -106,12 +107,12 @@ export default function RootLayout({
     name: 'Ayush Sharma',
     url: 'https://aysh.me',
     image: 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPlhi1W0hsc5pTOzgtJsIUQNxveLu9Gr6FBYjX',
-    jobTitle: 'Full Stack Lead Developer',
+    jobTitle: 'Chief Technology Officer',
     worksFor: {
       '@type': 'Organization',
       name: 'Kakiyo OÜ',
     },
-    description: 'Full Stack Lead Developer specializing in AI-powered applications, modern web development with React, Next.js, TypeScript, and cloud infrastructure.',
+    description: 'Chief Technology Officer, Full Stack Developer, and AI Engineer focused on backend-heavy AI applications, scalable systems, low-latency architecture, and end-to-end product execution.',
     knowsAbout: [
       'React',
       'Next.js',
@@ -120,6 +121,7 @@ export default function RootLayout({
       'Node.js',
       'Python',
       'AI/ML',
+      'Applied AI',
       'LLM Integration',
       'OpenRouter',
       'Vercel AI SDK',
@@ -127,9 +129,10 @@ export default function RootLayout({
       'AWS',
       'Docker',
       'PostgreSQL',
+      'PlanetScale',
       'MongoDB',
-      'Full Stack Development',
-      'Web Development'
+      'Backend Architecture',
+      'Scalable Systems'
     ],
     sameAs: [
       'https://github.com/cyberboyayush',
@@ -149,7 +152,7 @@ export default function RootLayout({
     '@type': 'WebSite',
     name: 'Ayush Sharma Portfolio',
     url: 'https://aysh.me',
-    description: 'Full Stack Developer & AI Engineer portfolio showcasing projects, blogs, and expertise in React, Next.js, TypeScript, and AI integration.',
+    description: 'Portfolio of a Full Stack Developer and AI Engineer, currently Chief Technology Officer at Kakiyo OÜ, building backend-heavy AI applications, scalable systems, case studies, and technical writing with React, Next.js, TypeScript, and production AI integrations.',
     author: {
       '@type': 'Person',
       name: 'Ayush Sharma',
