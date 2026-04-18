@@ -8,7 +8,7 @@ import SectionHeading from './section-heading';
 import { getAllExperiences } from '../data/experience';
 import {
   SiTypescript, SiReact, SiNextdotjs, SiNodedotjs,
-  SiPostgresql, SiAmazon, SiDocker, SiTailwindcss, SiPrisma, SiGraphql
+  SiPostgresql, SiAmazon, SiDocker, SiTailwindcss, SiPrisma, SiGraphql, SiPlanetscale
 } from 'react-icons/si';
 import { useThemeSafe } from './theme-provider';
 
@@ -18,6 +18,7 @@ const techIconMap: { [key: string]: React.ComponentType<{ className?: string }> 
   'TypeScript': SiTypescript,
   'Node.js': SiNodedotjs,
   'PostgreSQL': SiPostgresql,
+  'PlanetScale': SiPlanetscale,
   'AWS': SiAmazon,
   'Docker': SiDocker,
   'TailwindCSS': SiTailwindcss,

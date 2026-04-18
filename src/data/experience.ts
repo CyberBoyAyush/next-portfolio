@@ -27,17 +27,18 @@ export const experiences: Experience[] = [
   {
     id: 1,
     company: 'Kakiyo OÜ',
-    position: 'Lead Developer',
+    position: 'Chief Technology Officer',
     duration: 'July 2025 - Present',
     startDate: 'July 2025',
-    description: 'Leading full-stack development initiatives, architecting scalable solutions, and driving technical excellence in modern web applications.',
+    description: 'Progressed from Full Stack Developer to CTO while leading backend architecture, AI product delivery, hiring, and infrastructure decisions for Kakiyo.',
     responsibilities: [
-      'Built AI-powered LinkedIn automation platform with Next.js/React, improving client outreach engagement by 70%',
-      'Reduced Appwrite costs by 70% through query optimization and caching, maintaining sub-100ms API response times',
-      'Shipped production features rapidly with 99.9% uptime, iterating based on real-time user feedback',
-      'Architect and implement scalable backend systems with modern cloud infrastructure',
-      'Lead technical decisions and mentor development teams on best practices',
-      'Drive performance optimization initiatives across full-stack applications'
+      'Migrated millions of rows from Appwrite to PlanetScale.',
+      'Lowered latency from 2.8 seconds (P50) to 20 ms (P50) and 90 ms (P90).',
+      'Removed latency bottlenecks across critical user flows.',
+      'Crafted end-to-end features from product requirements to production rollout.',
+      'Created the hiring pipeline for the company.',
+      'Managed the team across delivery, reviews, and technical direction.',
+      'Reduced the overall infrastructure cost by 50%.'
     ],
     technologies: [
       'React',
@@ -45,6 +46,7 @@ export const experiences: Experience[] = [
       'TypeScript',
       'Node.js',
       'PostgreSQL',
+      'PlanetScale',
       'AWS',
       'Docker',
       'TailwindCSS',
@@ -57,17 +59,24 @@ export const experiences: Experience[] = [
     current: true,
     roles: [
       {
+        title: 'Chief Technology Officer',
+        type: 'Full-time',
+        duration: 'Apr 2026 - Present',
+        startDate: 'Apr 2026'
+      },
+      {
         title: 'Lead Developer',
         type: 'Full-time',
-        duration: 'Aug 2025 - Present',
-        startDate: 'Aug 2025'
+        duration: 'Sep 2025 - Apr 2026',
+        startDate: 'Sep 2025',
+        endDate: 'Apr 2026'
       },
       {
         title: 'Full Stack Developer',
         type: 'Part-time',
-        duration: 'July 2025 - Aug 2025',
+        duration: 'Jul 2025 - Sep 2025',
         startDate: 'July 2025',
-        endDate: 'Aug 2025'
+        endDate: 'Sep 2025'
       }
     ]
   }

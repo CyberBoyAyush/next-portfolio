@@ -23,7 +23,7 @@ export const projects: Project[] = [
     id: 1,
     title: "MemContext",
     description:
-      "Persistent memory layer for AI coding agents — save once, retrieve forever across all sessions.",
+      "Persistent, evolving memory layer for AI coding agents with MCP-native integrations, hybrid retrieval, and cross-session recall.",
     image:
       "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPuFUBv7VILjGC7RxNs1WqaPXeldA0nz3E968k",
     tags: [
@@ -49,13 +49,12 @@ export const projects: Project[] = [
     color: "from-violet-600 to-indigo-600",
     slug: "memcontext",
     detailedDescription:
-      "MemContext is a persistent memory layer for AI coding agents that solves the problem of AI assistants forgetting everything between sessions. It provides automatic memory saving and semantic retrieval via the Model Context Protocol (MCP). Features include intelligent memory with automatic save and retrieve, semantic search using 1536-dimensional vector embeddings for meaning-based retrieval, cross-tool sync across Claude, Cursor, Windsurf, Cline, Codex and more, auto-updating memories that evolve without duplicates, encrypted and private storage, and project-scoped memory organization. Built as a Turborepo monorepo with a Hono API backend, Next.js dashboard, MCP server, and marketing website — all sharing types via a packages layer.",
+      "MemContext solves one of the biggest gaps in AI-assisted development: agents lose user preferences, project context, and prior decisions between sessions. I built it as a persistent memory layer that plugs into MCP-compatible tools so assistants can save, retrieve, and evolve context instead of starting from zero every time. The hosted product is designed to be simple to adopt, connect an API key, add the MCP config, and your assistant starts remembering across sessions.\n\nThe system combines a Hono API, MCP server, Next.js dashboard, public docs, and marketing site inside a Turborepo monorepo. Under the hood it uses hybrid retrieval with vector embeddings and PostgreSQL full-text search, relation-aware memory updates, temporal expiry, feedback-aware ranking, and project-scoped organization. That makes the memory layer useful not only for one agent, but across Claude, Cursor, OpenCode, Codex CLI, Windsurf, and other MCP-compatible clients.",
     challenges: [
-      "Implementing semantic search with 1536-dim vector embeddings for meaning-based memory retrieval instead of keyword matching",
-      "Building automatic memory deduplication and relation classification (saved, updated, extended) using AI",
-      "Designing cross-tool memory sync that works across Claude, Cursor, Windsurf, Cline, and other MCP-compatible clients",
-      "Architecting a Turborepo monorepo with clean separation between API, MCP server, dashboard, and website apps",
-      "Implementing rate limiting, secure API key authentication, and encrypted storage for user privacy",
+      "Combining vector embeddings, PostgreSQL full-text search, and query-variant retrieval into a memory layer that surfaces relevant context instead of noisy matches.",
+      "Designing evolving memory flows so entries can be saved, updated, extended, expired, and ranked by feedback without creating duplicate context.",
+      "Building MCP-native integrations that work reliably across multiple coding agents, transports, and setup styles.",
+      "Structuring a monorepo that shares types cleanly across the API, MCP server, dashboard, docs, and website while keeping deployments independent.",
     ],
     category: "AI",
   },
@@ -63,7 +62,7 @@ export const projects: Project[] = [
     id: 2,
     title: "Zenox",
     description:
-      "OpenCode plugin for intelligent agent orchestration with specialized subagents and parallel background tasks.",
+      "Agent orchestration plugin for OpenCode with specialized subagents, background tasks, and fast multi-agent workflows.",
     image:
       "https://res.cloudinary.com/dyetf2h9n/image/upload/v1768073623/ZENOX_e4boob.png",
     tags: ["TypeScript", "OpenCode", "AI Agents", "MCP", "Bun"],
@@ -75,13 +74,12 @@ export const projects: Project[] = [
     color: "from-cyan-600 to-blue-600",
     slug: "zenox",
     detailedDescription:
-      "Zenox supercharges OpenCode with specialized AI agents that handle different aspects of development. Instead of one agent doing everything, you get a team of experts — each optimized for their domain. Features 4 specialized agents (Explorer for codebase grep, Librarian for docs research, Oracle for strategic decisions, UI Planner for visual design), background tasks for parallel execution, thinking mode variants, keyword triggers like 'ultrawork' and 'deep research', session history querying, code intelligence via LSP, and todo continuation. Includes MCP servers for Exa web search, grep_app for GitHub search, and sequential-thinking for complex reasoning.",
+      "Zenox extends OpenCode with a team-of-agents model instead of a single monolithic assistant. I designed four specialized agents: Explorer for codebase search, Librarian for external docs and examples, Oracle for strategy and reviews, and UI Planner for frontend work. The goal was to make agent delegation feel fast, practical, and built for real engineering workflows.\n\nThe plugin adds background task execution, keyword-triggered deep research modes, configurable reasoning profiles, and bundled MCP support for Exa, GitHub search, and sequential thinking. It turns OpenCode into a more scalable orchestration environment where agents can research and act in parallel instead of serially.",
     challenges: [
-      "Designing intelligent delegation patterns that automatically route tasks to the right specialized agent",
-      "Implementing parallel background task execution with proper notification and result retrieval",
-      "Building thinking mode variants with configurable reasoning levels (high, xhigh, max) per agent",
-      "Creating keyword trigger system for special modes like ultrawork and deep research",
-      "Integrating multiple MCP servers (Exa, grep_app, sequential-thinking) seamlessly",
+      "Designing delegation rules that route work to the right agent without making the system feel unpredictable.",
+      "Implementing background execution and result retrieval so independent research can run in parallel and still surface coherently.",
+      "Balancing aggressive automation with clear developer control over when agents should search, review, or escalate.",
+      "Integrating multiple MCP tools into one plugin while keeping prompts, modes, and output quality consistent.",
     ],
     category: "AI",
   },
@@ -89,7 +87,7 @@ export const projects: Project[] = [
     id: 3,
     title: "Plnr",
     description:
-      "AI-powered CLI tool for intelligent codebase planning and context-aware implementation assistance",
+      "AI planning and security CLI for codebases that turns architecture context into concrete implementation plans.",
     image:
       "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPipbvM9fLSeCsIaE1NktK9ur3Tyv6x4QMqg8z",
     tags: ["TypeScript", "OpenRouter", "Node.js", "MCP", "Exa AI"],
@@ -101,13 +99,12 @@ export const projects: Project[] = [
     color: "from-indigo-600 to-purple-600",
     slug: "plnr",
     detailedDescription:
-      "Plnr is an intelligent CLI tool that revolutionizes software development planning. It analyzes your entire codebase, understands project architecture, and generates detailed implementation plans using advanced AI models via OpenRouter. Features include automatic framework detection, security audits (OWASP Top 10), real-time web search integration with Exa AI, and Model Context Protocol (MCP) for accessing up-to-date library documentation. The tool supports multiple AI models including GPT-5, Claude 4.5, Grok, and Gemini, with smart context window optimization (100K-2M+ tokens). Built with TypeScript and featuring a beautiful terminal UI, plnr helps developers make informed decisions before writing code.",
+      "Plnr is a CLI built for the phase before implementation starts: understanding the codebase, mapping the architecture, and turning ambiguity into an actionable plan. It inspects frameworks, dependencies, code patterns, and security risks, then combines that context with modern LLMs to produce implementation guidance that is grounded in the repo instead of generic advice.\n\nI also built dedicated planning, chat, and security flows so it can answer architecture questions, generate step-by-step execution plans, and run OWASP-style audits from the terminal. The project is especially strong for backend-heavy repositories where context gathering and risk reduction matter before code gets written.",
     challenges: [
-      "Building intelligent todo management system that ensures all analysis tasks complete before providing responses",
-      "Implementing dynamic context window optimization for different AI models (100K to 2M+ tokens)",
-      "Integrating multiple AI tool calling systems (MCP, Exa Search, file operations) with proper error recovery",
-      "Creating a professional terminal UI with real-time progress indicators and prompt enhancement features",
-      "Developing comprehensive security audit capabilities covering 12 OWASP vulnerability categories",
+      "Fitting rich codebase context into model windows without losing the signals that matter for planning.",
+      "Building prompt flows that can switch between chat, planning, and security review while still staying context-aware.",
+      "Integrating live docs and web search through MCP so generated plans are based on current library behavior.",
+      "Designing a CLI UX that feels fast and readable even when analysis spans many files and multiple reasoning steps.",
     ],
     category: "AI",
     videoUrl: "https://www.youtube.com/embed/8VMi3AoLEz4?si=b5JoXW31UPcFPfLj",
@@ -116,16 +113,17 @@ export const projects: Project[] = [
     id: 4,
     title: "CappyChat",
     description:
-      "Fastest LLM chat on the planet right now, Multi Model and Realtime Sync too.",
+      "Production AI chat workspace with multi-model routing, realtime sync, tool calling, and a local-first UX.",
     image:
       "https://res.cloudinary.com/dyetf2h9n/image/upload/v1759138327/AV_1_zztl3w.png",
     tags: [
-      "NextJS",
+      "Next.js",
+      "TypeScript",
       "Appwrite",
       "OpenRouter",
-      "Realtime API",
-      "Convex",
-      "Vercel",
+      "Zustand",
+      "Upstash Redis",
+      "TailwindCSS",
     ],
     demoLink: "https://cappychat.com",
     githubLink: "https://github.com/cyberboyayush/CappyChat",
@@ -135,12 +133,12 @@ export const projects: Project[] = [
     color: "from-indigo-600 to-purple-600",
     slug: "cappychat",
     detailedDescription:
-      "CappyChat revolutionizes AI conversations with blazing-fast response times and multi-model support. Leveraging OpenRouter API and Convex for real-time synchronization, it provides seamless switching between different LLM models. The application features a clean interface with real-time collaboration capabilities, making AI chat accessible and efficient.",
+      "CappyChat is my take on a serious AI chat product, not just a thin wrapper over one model. It supports 30+ models, realtime sync, a local-first architecture, voice input, file uploads, image generation, and collaborative workflows. The product is optimized around responsiveness so users can switch models, recover prior context, and keep working without the interface feeling slow or fragile.\n\nThe later versions pushed the system much further with plan mode, AI artifacts, model-driven tool calling, web search, logging, and production hardening. That meant solving not only for prompt quality but also for rate limits, synchronization, bundle size, state management, and the UX details required to make a real AI application feel fast in everyday use.",
     challenges: [
-      "Achieving sub-second response times with optimized API calls",
-      "Implementing real-time sync across multiple devices using Appwrite Realtime",
-      "Managing state for multiple AI models simultaneously",
-      "Handling rate limits and API errors gracefully",
+      "Building a local-first chat experience that stays responsive while still syncing reliably across devices through Appwrite Realtime.",
+      "Supporting many model providers and capabilities without turning the interface into configuration overload.",
+      "Adding tool calling, artifacts, and web search in a way that keeps responses useful instead of noisy.",
+      "Hardening the product for production with logging, rate limiting, and performance work across a rapidly evolving feature set.",
     ],
     videoUrl: "https://www.youtube.com/embed/vP5HSx9GxjI?si=SwFiZUV4No-Ji8pV",
     category: "AI",
@@ -148,10 +146,11 @@ export const projects: Project[] = [
   {
     id: 5,
     title: "Bucket Buddy",
-    description: "Modern Cloud Storage Management",
+    description:
+      "Secure S3-style storage manager for AWS, Cloudflare R2, and other compatible providers with a polished developer UX.",
     image:
       "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPI5rAcrjSq8BcalUnAK51orufTp2SNkO7GxHz",
-    tags: ["NextJS", "Prisma", "Postgres", "AWS API", "TailwindCSS", "VPS"],
+    tags: ["Next.js", "Prisma", "Postgres", "AWS SDK", "TailwindCSS", "Better Auth"],
     demoLink: "https://bucketbuddy.aysh.me/",
     githubLink: "https://github.com/cyberboyayush/bucketbuddy",
     featured: true,
@@ -160,12 +159,12 @@ export const projects: Project[] = [
     color: "from-indigo-600 to-purple-600",
     slug: "bucket-buddy",
     detailedDescription:
-      "Bucket Buddy is a comprehensive cloud storage management solution that simplifies S3 bucket operations. Built with modern technologies, it provides an intuitive interface for managing AWS S3 buckets with features like drag-and-drop uploads, file previews, and advanced search capabilities. The application focuses on security and performance, offering seamless integration with AWS services.",
+      "Bucket Buddy turns object storage management into a cleaner, safer workflow for developers and small teams. Instead of forcing users into raw cloud consoles, it provides a focused interface for bucket setup, file previews, uploads, search, and multi-provider management across AWS S3, Cloudflare R2, and other S3-compatible services.\n\nA major part of the project was building trust into the product: credential handling, session management, and a UI that makes storage operations feel straightforward without hiding critical information. It is a backend-oriented tool wrapped in a much better user experience.",
     challenges: [
-      "Implementing secure AWS credential management while maintaining ease of use",
-      "Optimizing large file uploads with chunked uploads and progress tracking",
-      "Building real-time sync between local state and AWS S3 buckets",
-      "Designing an intuitive UI for complex S3 operations",
+      "Handling cloud credentials securely while still making multi-provider setup approachable for non-expert users.",
+      "Designing file operations, previews, and bulk actions for large object stores without making the UI feel bloated.",
+      "Normalizing provider-specific behavior across AWS S3 and S3-compatible services.",
+      "Keeping uploads, browsing, and search responsive while working through remote storage APIs.",
     ],
     category: "Others",
   },
@@ -173,15 +172,15 @@ export const projects: Project[] = [
     id: 6,
     title: "TuduAI",
     description:
-      " An AI-powered productivity app with natural language task creation, collaborative workspaces, and a minimalist UI for effortless planning.",
+      "Natural-language task manager with collaborative workspaces, smart organization, and AI-assisted task creation.",
     image:
       "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPFe7ghJ5FxlZUcq1BwOub9PyMKG7d26vQfaTC",
     tags: [
       "React",
-      "Javascript",
+      "JavaScript",
       "TailwindCSS",
       "Appwrite",
-      "OpenAi API",
+      "OpenAI API",
       "Clerk",
     ],
     demoLink: "https://tuduai.aysh.me/",
@@ -192,36 +191,36 @@ export const projects: Project[] = [
     color: "from-indigo-600 to-purple-600",
     slug: "tuduai",
     detailedDescription:
-      "TuduAI transforms task management with natural language processing. Simply describe your tasks in plain English, and the AI understands context, priority, and deadlines. Built with React and powered by OpenAI, it features collaborative workspaces, smart task organization, and a minimalist interface that keeps you focused on what matters.",
+      "TuduAI is a productivity app built around the idea that users should be able to write tasks the way they think. Instead of forcing structured inputs up front, the app uses AI to parse natural language, extract dates and intent, and create organized tasks automatically. It also layers in workspace collaboration so teams can plan together instead of treating task management as a solo workflow.\n\nThe value of the product comes from turning loose, human input into structured execution. That meant combining AI parsing, task grouping, reminders, and comments into a system that still feels minimal instead of over-engineered.",
     challenges: [
-      "Implementing accurate natural language parsing for task creation",
-      "Building real-time collaboration features with Appwrite",
-      "Integrating Clerk authentication seamlessly",
-      "Creating an intuitive yet powerful task management interface",
+      "Making natural-language task creation reliable enough to be useful in real planning, not just in demos.",
+      "Designing collaboration flows on top of Appwrite without slowing down the core single-user experience.",
+      "Balancing a minimal interface with enough structure for deadlines, comments, and workspace membership.",
+      "Handling fuzzy date and intent parsing from natural language without creating confusing task output.",
     ],
     category: "AI",
   },
   {
     id: 7,
     title: "QuickBang",
-    description: "Lightning-fast search shortcuts to enhance your workflow.",
+    description: "Browser search shortcut utility that brings bang-style redirects to any search bar.",
     image:
       "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAP4yZsxBVEKBr0gueU6fJkSAaYjWMON8X2HPdV",
-    tags: ["React", "Typecript", "Browser Engine"],
+    tags: ["React", "TypeScript", "Browser Engine"],
     demoLink: "https://quickbang.aysh.me/",
     githubLink: "https://github.com/cyberboyayush/quickbang",
-    featured: true,
+    featured: false,
     year: "2025",
     duration: "5 Days",
     color: "from-indigo-600 to-purple-600",
     slug: "quickbang",
     detailedDescription:
-      "QuickBang is a browser extension that brings the power of DuckDuckGo bangs to any search bar. Type shortcuts like !g for Google, !gh for GitHub, and instantly search across different platforms. Built with React and TypeScript, it integrates seamlessly with browser engines for lightning-fast searches.",
+      "QuickBang is a lightweight browser utility inspired by DuckDuckGo bangs. It lets users type shortcuts like `!g`, `!gh`, or `!yt` directly into a search field and jump to the right destination instantly. The idea was to remove friction from repetitive search workflows without requiring users to learn a heavy extension UI.\n\nIt is intentionally small and fast: most of the work happens on the client, configuration stays simple, and the product focuses on one job only, making search redirection feel immediate and useful.",
     challenges: [
-      "Creating cross-browser compatible extension architecture",
-      "Implementing fast pattern matching for bang shortcuts",
-      "Designing minimal UI that doesn't interfere with browsing",
-      "Handling various search bar implementations across websites",
+      "Building shortcut parsing that feels instant and predictable across different query patterns.",
+      "Keeping the extension simple enough to stay fast while still supporting customization.",
+      "Handling browser-specific behavior around search engines and search bar integrations.",
+      "Designing a narrow utility product that solves one workflow well without adding unnecessary UI.",
     ],
     category: "Others",
   },
@@ -229,7 +228,7 @@ export const projects: Project[] = [
     id: 8,
     title: "Effisense",
     description:
-      "Experience the future of productivity with AI-powered task scheduling, smart prioritization, and intelligent workload balancing.",
+      "AI productivity dashboard for scheduling, focus planning, analytics, and Google Calendar-aware workload management.",
     image:
       "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPfgNH3bZTmUXblVz2o8y4iIF6cHMBLqAhke5Y",
     tags: [
@@ -245,16 +244,16 @@ export const projects: Project[] = [
     githubLink: "https://github.com/cyberboyayush/effisense",
     featured: false,
     year: "2025",
-    duration: "3 months",
+    duration: "3 Months",
     color: "from-indigo-600 to-purple-600",
     slug: "effisense",
     detailedDescription:
-      "Effisense leverages AI to revolutionize productivity management. It analyzes your tasks, predicts completion times, and intelligently balances your workload. Integration with Google Calendar ensures your schedule stays optimized, while Recharts provides beautiful visualizations of your productivity patterns. Built with GROQ for fast AI inference.",
+      "Effisense is an AI-powered productivity dashboard that tries to answer a harder question than simple task lists: how should your actual time be allocated? It combines task planning, focus-time suggestions, productivity analytics, and Google Calendar integration so users can understand both what they need to do and when they should realistically do it.\n\nThe project also pushed into behavioral insight and reporting. With charts, AI-generated suggestions, and scheduling support, it moves beyond storage and into helping users manage workload quality.",
     challenges: [
-      "Building accurate AI models for task duration prediction",
-      "Integrating Google Calendar API with real-time sync",
-      "Creating intuitive data visualizations with Recharts",
-      "Implementing intelligent workload balancing algorithms",
+      "Using AI to generate time and focus recommendations that feel practical instead of arbitrary.",
+      "Integrating Google Calendar cleanly while keeping the task workflow central to the product.",
+      "Turning productivity data into visualizations that help users act, not just observe.",
+      "Keeping a feature-rich dashboard coherent across planning, analytics, and scheduling flows.",
     ],
     category: "AI",
   },
@@ -262,7 +261,7 @@ export const projects: Project[] = [
     id: 9,
     title: "SkillCompass",
     description:
-      "Unlock your potential with AI-powered personalized learning paths, interactive content, and real-time progress tracking.",
+      "Adaptive learning platform that generates AI-powered curricula, flashcards, quizzes, and progress tracking.",
     image:
       "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPUFlBGN1k8DdHYcXLswQzrg6SM7qbVytx3Npf",
     tags: ["React", "Gemini", "Appwrite", "TailwindCSS", "Groq", "Llama 3.3"],
@@ -275,12 +274,12 @@ export const projects: Project[] = [
     isHackathonProject: true,
     slug: "skillcompass",
     detailedDescription:
-      "SkillCompass was built in 72 hours for a hackathon, combining Gemini AI and Llama 3.3 to create personalized learning paths. It analyzes your goals and current skill level to generate custom curricula with interactive content. Real-time progress tracking keeps you motivated, while Appwrite handles user data securely. Won recognition for innovative AI integration.",
+      "SkillCompass was built in 72 hours for a hackathon and focused on personalized learning instead of static course catalogs. Users define a goal, and the system generates a learning path with interactive content, quizzes, flashcards, and progress tracking that adapts to their journey.\n\nThe project combined Gemini, Groq, Appwrite, and external content sources to create a compact but ambitious learning product in a very short timeframe. It is a good example of shipping a broad AI feature set quickly without losing usability.",
     challenges: [
-      "Developing the entire application in just 72 hours",
-      "Integrating multiple AI models (Gemini and Llama 3.3) effectively",
-      "Creating adaptive learning paths based on user progress",
-      "Building a polished UI under extreme time constraints",
+      "Building a multi-surface learning experience in only 72 hours without collapsing into unfinished features.",
+      "Coordinating multiple AI providers so curriculum generation and interactive content stayed reliable.",
+      "Designing adaptive progress flows that feel motivating instead of overwhelming.",
+      "Shipping a polished UX under hackathon constraints while still integrating auth, storage, and AI generation.",
     ],
     videoUrl: "https://www.youtube.com/embed/-7sjCjZc0SI?si=4UnRtmOgKWqKjA1t",
     category: "AI",
@@ -288,7 +287,7 @@ export const projects: Project[] = [
   {
     id: 10,
     title: "PortDev",
-    description: "Create Devloper Portfolio in Minutes.",
+    description: "Portfolio generator for developers with dynamic skill visuals, templates, and real-time content management.",
     image:
       "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPiVdP9VfLSeCsIaE1NktK9ur3Tyv6x4QMqg8z",
     tags: ["React", "Firebase", "TailwindCSS", "Framer Motion"],
@@ -296,23 +295,23 @@ export const projects: Project[] = [
     githubLink: "https://github.com/cyberboyayush/portdev",
     featured: false,
     year: "2025",
-    duration: "1.5 months",
+    duration: "1.5 Months",
     color: "from-rose-600 to-pink-600",
     slug: "portdev",
     detailedDescription:
-      "PortDev makes creating developer portfolios effortless. With pre-built templates and Firebase backend, developers can have their portfolio live in minutes. Features include project showcases, skill listings, and contact forms. Built with React, TailwindCSS, and animated with Framer Motion for smooth, professional transitions.",
+      "PortDev is a portfolio builder made specifically for developers who want something more tailored than generic website builders. It focuses on technical profiles, project showcases, skill sections, and live content management, with a UI designed to help users publish quickly without having to assemble everything from scratch.\n\nOne of the more interesting parts of the product is the dynamic skill visualization and logo fetching flow, which makes technical stacks look richer without burdening users with manual setup for every icon or skill asset.",
     challenges: [
-      "Designing flexible templates that work for various developer profiles",
-      "Implementing real-time preview of portfolio changes",
-      "Integrating Firebase for seamless data storage",
-      "Creating smooth animations without impacting performance",
+      "Designing templates that feel useful for different developer profiles without becoming too restrictive.",
+      "Building dynamic skill and icon presentation so portfolios feel polished with minimal manual input.",
+      "Using Firebase for auth, storage, and content sync while keeping the editing flow straightforward.",
+      "Balancing visual polish with a fast path to publication for users who just want to get online quickly.",
     ],
     category: "Others",
   },
   {
     id: 11,
     title: "React Portfolio",
-    description: "Personal Portfolio Website using React Js",
+    description: "Earlier portfolio built with React, Framer Motion, and custom interaction details for a stronger personal web presence.",
     image:
       "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPIh52zvSq8BcalUnAK51orufTp2SNkO7GxHzm",
     tags: ["React", "TailwindCSS", "Framer Motion", "Particles.js"],
@@ -320,22 +319,21 @@ export const projects: Project[] = [
     githubLink: "https://github.com/cyberboyayush/React-Portfolio",
     featured: false,
     year: "2025",
-    duration: "5 days",
+    duration: "5 Days",
     color: "from-indigo-600 to-purple-600",
     slug: "react-portfolio",
     detailedDescription:
-      "A personal portfolio website built with React, showcasing projects and skills with elegant animations. Features particle effects, smooth scrolling, and responsive design. Uses Framer Motion for fluid page transitions and TailwindCSS for modern styling. Optimized for performance and SEO.",
+      "This was my earlier portfolio system built in React to sharpen how I present projects, skills, and experience online. It leaned into motion, scroll-based interactions, dark mode, and custom effects to create a stronger personal brand than a plain static site.\n\nThe project mattered less as a product and more as a proving ground for interaction design, responsive behavior, and the kind of front-end craft that later fed into more polished product work.",
     challenges: [
-      "Optimizing Particles.js performance on mobile devices",
-      "Creating smooth scroll animations without lag",
-      "Ensuring responsive design across all screen sizes",
-      "Balancing visual effects with fast load times",
+      "Getting animations, scroll behavior, and visual effects to feel smooth without dragging down performance.",
+      "Balancing a visually expressive interface with mobile responsiveness and readability.",
+      "Designing a personal site that felt distinctive while still keeping the content easy to scan.",
+      "Managing motion-heavy UI choices without turning the portfolio into a distraction from the work itself.",
     ],
     category: "Others",
   },
 ];
 
-// Helper functions
 export const getFeaturedProjects = (): Project[] => {
   return projects.filter((project) => project.featured);
 };

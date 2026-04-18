@@ -6,7 +6,7 @@ import {
   SiJavascript, SiTypescript, SiReact,
   SiNextdotjs, SiNodedotjs, SiMongodb, SiTailwindcss,
   SiFirebase, SiPython, SiAmazon, SiDocker,
-  SiGit, SiPostgresql, SiVercel, SiAppwrite, SiSupabase,
+  SiGit, SiPostgresql, SiVercel, SiAppwrite, SiSupabase, SiPlanetscale,
   SiC, SiCplusplus, SiCloudflare, SiBun
 } from 'react-icons/si';
 import { DiRedis } from 'react-icons/di';
@@ -29,6 +29,7 @@ const techStack = [
   { id: 'cplusplus', name: 'C++', icon: SiCplusplus },
   { id: 'mongodb', name: 'MongoDB', icon: SiMongodb },
   { id: 'postgresql', name: 'PostgreSQL', icon: SiPostgresql },
+  { id: 'planetscale', name: 'PlanetScale', icon: SiPlanetscale },
   { id: 'firebase', name: 'Firebase', icon: SiFirebase },
   { id: 'appwrite', name: 'Appwrite', icon: SiAppwrite },
   { id: 'supabase', name: 'Supabase', icon: SiSupabase },
@@ -55,6 +56,7 @@ const TECH_COLORS: Record<string, string> = {
   'C++': '#00599C',
   'MongoDB': '#47A248',
   'PostgreSQL': '#4169E1',
+  'PlanetScale': '#ffffff',
   'Firebase': '#FFCA28',
   'Appwrite': '#FD366E',
   'Supabase': '#3ECF8E',
@@ -81,6 +83,7 @@ const TECH_COLORS_LIGHT: Record<string, string> = {
   'C++': '#00599C',
   'MongoDB': '#47A248',
   'PostgreSQL': '#4169E1',
+  'PlanetScale': '#000000',
   'Firebase': '#dd7200',
   'Appwrite': '#FD366E',
   'Supabase': '#3ECF8E',

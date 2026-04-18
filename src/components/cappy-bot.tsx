@@ -39,7 +39,7 @@ export default function CappyBot() {
     {
       id: 'welcome',
       role: 'assistant' as const,
-      parts: [{ type: 'text' as const, text: "Hi! I'm CappyBot, Ayush Sharma's AI portfolio assistant.\n\nAsk me about his experience, skills, or projects.\n\nI can also forward your message directly to Ayush if you share your email and query." }],
+      parts: [{ type: 'text' as const, text: "Hi! I'm CappyBot, Ayush Sharma's AI portfolio assistant.\n\nAsk me about his AI applications, backend systems, scalable products, experience, or case studies.\n\nI can also forward your message directly to Ayush if you share your email and query." }],
       createdAt: new Date(),
     }
   ] : messages;
