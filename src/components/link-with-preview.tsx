@@ -367,6 +367,7 @@ export function LinkWithPreview({
   return (
     <>
       <a
+        {...rest}
         ref={linkRef}
         href={href}
         target="_blank"
@@ -377,7 +378,6 @@ export function LinkWithPreview({
         onFocus={handleFocus}
         onBlur={handleMouseLeave}
         aria-describedby={open ? previewId : undefined}
-        {...rest}
       >
         {children}
         <ArrowUpRight

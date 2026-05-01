@@ -246,13 +246,11 @@ export default async function BlogPost({ params }: Props) {
                               {children}
                             </LinkWithPreview>
                           ),
-                          img: ({ src, alt, ...props }) => (
-                            <BlogImage
-                              src={typeof src === 'string' ? src : ''}
-                              alt={alt ?? ''}
-                              {...props}
-                            />
-                          ),
+                          img: ({ src, alt, ...props }) => {
+                            const safeSrc = typeof src === 'string' ? src : '';
+                            if (!safeSrc) return null;
+                            return <BlogImage src={safeSrc} alt={alt ?? ''} {...props} />;
+                          },
                         }}
                       />
                     </BlogContent>
