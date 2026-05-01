@@ -7,6 +7,8 @@ import rehypeHighlight from 'rehype-highlight';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 import CodeBlock from '@/components/code-block';
+import { LinkWithPreview } from '@/components/link-with-preview';
+import { BlogImage } from '@/components/blog-image';
 import CopyMarkdownButton from '@/components/copy-markdown-button';
 import BlogContent, { BlogProvider, BlogFontWrapper, BlogFloatingControls } from '@/components/blog-content-wrapper';
 import BlogShareButton from '@/components/blog-share-button';
@@ -238,6 +240,18 @@ export default async function BlogPost({ params }: Props) {
                             <CodeBlock>
                               <pre {...props}>{children}</pre>
                             </CodeBlock>
+                          ),
+                          a: ({ href, children, ...props }) => (
+                            <LinkWithPreview href={href ?? '#'} {...props}>
+                              {children}
+                            </LinkWithPreview>
+                          ),
+                          img: ({ src, alt, ...props }) => (
+                            <BlogImage
+                              src={typeof src === 'string' ? src : ''}
+                              alt={alt ?? ''}
+                              {...props}
+                            />
                           ),
                         }}
                       />
