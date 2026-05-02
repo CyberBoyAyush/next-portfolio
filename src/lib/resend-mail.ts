@@ -7,8 +7,13 @@ interface EmailOptions {
   html?: string;
 }
 
-// Initialize Resend client
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResendClient() {
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error('RESEND_API_KEY is not set');
+  }
+
+  return new Resend(process.env.RESEND_API_KEY);
+}
 
 // Parse name from email address
 export function parseNameFromEmail(email: string): string {
@@ -33,14 +38,11 @@ export function parseNameFromEmail(email: string): string {
 // Send email using Resend
 export async function sendResendEmail(options: EmailOptions): Promise<boolean> {
   try {
-    if (!process.env.RESEND_API_KEY) {
-      throw new Error('RESEND_API_KEY is not set');
-    }
-
     if (!process.env.RESEND_FROM_EMAIL) {
       throw new Error('RESEND_FROM_EMAIL is not set');
     }
 
+    const resend = getResendClient();
     const { data, error } = await resend.emails.send({
       from: `${process.env.RESEND_FROM_NAME || 'CappyBot'} <${process.env.RESEND_FROM_EMAIL}>`,
       to: [options.to],
@@ -69,10 +71,6 @@ export async function sendThankYouEmail(
   message: string
 ): Promise<boolean> {
   try {
-    if (!process.env.RESEND_API_KEY) {
-      throw new Error('RESEND_API_KEY is not set');
-    }
-
     if (!process.env.RESEND_FROM_EMAIL) {
       throw new Error('RESEND_FROM_EMAIL is not set');
     }
@@ -123,6 +121,7 @@ hi@aysh.me
 This is an automated confirmation. You will receive a personal response from hi@aysh.me shortly.
     `.trim();
 
+    const resend = getResendClient();
     const { data, error } = await resend.emails.send({
       from: `Ayush Sharma <${process.env.RESEND_FROM_EMAIL}>`,
       to: [visitorEmail],

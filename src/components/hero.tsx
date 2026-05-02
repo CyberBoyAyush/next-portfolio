@@ -13,11 +13,12 @@ import {
   Network,
   Sparkles,
 } from "lucide-react";
-import Image from "next/image";
+import Image from "@/components/image";
 import TechTicker from "./tech-ticker";
 import TerminalCommand from "./terminal-command";
 import { getCalApi } from "@calcom/embed-react";
 import { useThemeSafe } from "./theme-provider";
+import { heroProfileImage } from "@/lib/seo";
 
 const XIcon = ({ size = 18, className = "" }) => (
   <svg
@@ -33,6 +34,7 @@ const XIcon = ({ size = 18, className = "" }) => (
 
 const Hero = () => {
   const ref = useRef<HTMLDivElement>(null);
+  const profileImageRef = useRef<HTMLImageElement>(null);
   const statusBadgeRef = useRef<HTMLDivElement>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -156,6 +158,14 @@ const Hero = () => {
     }
   }, [imageLoaded]);
 
+  useEffect(() => {
+    const image = profileImageRef.current;
+    if (image?.complete && image.naturalWidth > 0) {
+      setImageLoaded(true);
+      setImageError(false);
+    }
+  }, []);
+
   const handleImageError = useCallback(() => {
     if (!imageError && !imageAttempted) {
       setImageError(true);
@@ -169,7 +179,8 @@ const Hero = () => {
 
     return (
       <Image
-        src="https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPhWVT9F8tcdLGNp9S0ETXmuk4jy87UFaBIrYw"
+        ref={profileImageRef}
+        src={heroProfileImage}
         alt="Ayush Sharma - Full Stack Developer and AI Engineer"
         fill
         sizes="(max-width: 768px) 10rem, 12rem"

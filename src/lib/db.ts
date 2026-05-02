@@ -11,12 +11,13 @@ import {
   AnyPgColumn,
 } from "drizzle-orm/pg-core";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL environment variable is required");
-}
+export function getDb() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL environment variable is required");
+  }
 
-const sql = neon(process.env.DATABASE_URL);
-export const db = drizzle({ client: sql });
+  return drizzle({ client: neon(process.env.DATABASE_URL) });
+}
 
 export const blogLikes = pgTable(
   "blog_likes",
@@ -47,4 +48,3 @@ export const blogComments = pgTable(
     index("blog_comments_parent_id_idx").on(table.parentId),
   ]
 );
-
