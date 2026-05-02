@@ -119,7 +119,7 @@ export default function ReadingProgress() {
         </motion.div>
       </div>
       
-      <style jsx global>{`
+      <style>{`
         @keyframes catRunDown {
           0%, 49% { background-position: -192px -96px; } /* [-6, -3] */
           50%, 100% { background-position: -224px -64px; } /* [-7, -2] */

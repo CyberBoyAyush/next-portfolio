@@ -100,26 +100,6 @@ export default function BlogComments({ slug }: BlogCommentsProps) {
     }
   };
 
-  const formatDate = (date: Date | string) => {
-    const d = typeof date === "string" ? new Date(date) : date;
-    return d.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const maskEmail = (email: string) => {
-    const [local, domain] = email.split("@");
-    if (!local || !domain) return email;
-    const maskedLocal = local.length > 2 
-      ? `${local[0]}${"*".repeat(local.length - 2)}${local[local.length - 1]}`
-      : local;
-    return `${maskedLocal}@${domain}`;
-  };
-
   return (
     <section className="w-full">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -473,4 +453,3 @@ function CommentItem({
     </motion.div>
   );
 }
-

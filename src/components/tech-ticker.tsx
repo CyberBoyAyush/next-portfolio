@@ -15,7 +15,7 @@ import {
   SiNodedotjs,
   SiPython,
 } from "react-icons/si";
-import { OpenRouter } from "@lobehub/icons";
+import { OpenRouter } from "@/components/brand-icons";
 import { Network } from "lucide-react";
 import { useThemeSafe } from "./theme-provider";
 

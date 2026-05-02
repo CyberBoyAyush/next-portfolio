@@ -9,7 +9,7 @@ interface RateLimitEntry {
 const rateLimitMap = new Map<string, RateLimitEntry>();
 
 // Cleanup old entries every 5 minutes
-setInterval(() => {
+const cleanupInterval = setInterval(() => {
   const now = Date.now();
   for (const [key, entry] of rateLimitMap.entries()) {
     if (now > entry.resetTime) {
@@ -17,6 +17,8 @@ setInterval(() => {
     }
   }
 }, 5 * 60 * 1000);
+
+cleanupInterval.unref?.();
 
 export interface RateLimitConfig {
   maxRequests: number;
@@ -80,4 +82,3 @@ export function getClientIdentifier(req: Request): string {
   const ip = cfConnectingIp || realIp || forwarded?.split(',')[0] || 'unknown';
   return ip.trim();
 }
-

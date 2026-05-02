@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import Link from '@/components/link';
 import { motion } from 'framer-motion';
 import { Github, Linkedin, Mail, ArrowUp, Heart } from 'lucide-react';
 import { useThemeSafe } from './theme-provider';

@@ -2,7 +2,7 @@
 
 import { useState, createContext, useContext, useRef, useEffect } from "react";
 import { Minus, Plus, Check, CaseSensitive } from "lucide-react";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "@/lib/fonts";
 import { useThemeSafe } from "./theme-provider";
 import ThemeSwitcher from "./theme-switcher";
 

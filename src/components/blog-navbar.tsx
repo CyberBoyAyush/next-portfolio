@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '@/components/link';
 import { Code2, Github, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useThemeSafe } from './theme-provider';

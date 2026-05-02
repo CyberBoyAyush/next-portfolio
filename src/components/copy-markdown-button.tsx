@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ClipboardCopy, ClipboardCheck } from "lucide-react";
+import { ClipboardCopy, ClipboardCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tooltip } from "./blog-content-wrapper";
 

@@ -3,7 +3,7 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Briefcase } from 'lucide-react';
-import Image from 'next/image';
+import Image from '@/components/image';
 import SectionHeading from './section-heading';
 import { getAllExperiences } from '../data/experience';
 import {

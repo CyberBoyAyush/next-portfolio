@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import Image from 'next/image';
+import Image from '@/components/image';
 import SectionHeading from './section-heading';
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";

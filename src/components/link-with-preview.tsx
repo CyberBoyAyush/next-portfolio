@@ -260,7 +260,6 @@ export function LinkWithPreview({
                   className="link-preview-card__favicon"
                 >
                   {faviconUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={faviconUrl}
                       alt=""

@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Sparkles, Brain, Layers } from 'lucide-react';
-import Link from 'next/link';
+import Link from '@/components/link';
 import ProjectCard from './project-card';
 import { getFeaturedProjects } from '../data/projects';
 import { useThemeSafe } from './theme-provider';
@@ -20,7 +20,7 @@ const Portfolio = () => {
     ? featuredProjects
     : featuredProjects.filter(project => project.category === activeFilter);
 
-  const filters = [
+  const filters: { id: 'All' | 'AI' | 'Others'; label: string; icon: typeof Sparkles }[] = [
     { id: 'All', label: 'All', icon: Sparkles },
     { id: 'AI', label: 'AI', icon: Brain },
     { id: 'Others', label: 'Others', icon: Layers },
@@ -63,7 +63,7 @@ const Portfolio = () => {
             {filters.map((filter) => (
               <button
                 key={filter.id}
-                onClick={() => setActiveFilter(filter.id as any)}
+                onClick={() => setActiveFilter(filter.id)}
                 className={`relative px-5 py-2 text-sm font-medium transition-all duration-300 focus:outline-none ${
                   activeFilter === filter.id 
                     ? isLight ? 'text-gray-900' : 'text-white'
