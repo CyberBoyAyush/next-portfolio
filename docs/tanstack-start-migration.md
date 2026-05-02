@@ -53,6 +53,15 @@ This project was migrated from Next.js App Router to TanStack Start while preser
 - `next/image` was replaced with `src/components/image.tsx`, preserving the `fill`, `priority`, `quality`, and `unoptimized` call sites used by existing UI code.
 - `next/font` was replaced with Fontsource variable fonts imported from `src/styles/globals.css` and helper definitions in `src/lib/fonts.ts`.
 
+## Image Optimization
+
+- UploadThing and Cloudinary source URLs remain in project and blog data.
+- Runtime image delivery is optimized through Cloudflare Transformations on the `aysh.me` zone.
+- Cloudflare allowed origins must include `1kf0b6y5pd.ufs.sh` and `res.cloudinary.com`.
+- `src/lib/image-optimization.ts` wraps supported remote image URLs with `/cdn-cgi/image` transformations.
+- Responsive image `srcset` uses fixed widths `480`, `768`, and `1200` to keep Cloudflare unique transformations predictable.
+- The hero profile image is preloaded through the Cloudflare transformation path with `format=auto`.
+
 ## Files Removed
 
 - `next.config.ts`
@@ -66,3 +75,4 @@ This project was migrated from Next.js App Router to TanStack Start while preser
 - `pnpm typecheck` passes.
 - `pnpm build` passes and generates `.output/server/index.mjs` for Railway.
 - `pnpm lint` has no errors.
+- Production Lighthouse performance improved after Cloudflare image optimization, with a measured run reaching 85 performance, 100 accessibility, 92 best practices, and 100 SEO.
