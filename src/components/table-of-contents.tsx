@@ -291,7 +291,7 @@ export default function TableOfContents({ headings, contentTriggerId, contentEnd
                 </ul>
             </nav>
 
-            <style jsx global>{`
+            <style>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;
         }

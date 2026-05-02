@@ -11,7 +11,7 @@ export function getAllBlogSlugs(): string[] {
     return fileNames
       .filter((fileName) => fileName.endsWith('.mdx'))
       .map((fileName) => fileName.replace(/\.mdx$/, ''));
-  } catch (error) {
+  } catch {
     return [];
   }
 }
@@ -33,7 +33,7 @@ export function getBlogBySlug(slug: string): BlogPost | null {
       frontmatter,
       content,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }

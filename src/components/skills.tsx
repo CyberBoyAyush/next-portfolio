@@ -11,7 +11,7 @@ import {
 } from 'react-icons/si';
 import { DiRedis } from 'react-icons/di';
 import { Code } from 'lucide-react';
-import { OpenRouter } from '@lobehub/icons';
+import { OpenRouter } from '@/components/brand-icons';
 import SectionHeading from './section-heading';
 import { useThemeSafe } from './theme-provider';
 

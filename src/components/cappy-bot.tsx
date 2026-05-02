@@ -2,12 +2,11 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import Image from 'next/image';
+import Image from '@/components/image';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { MessageCircle, X, Send, ChevronRight, Cpu, Zap, Briefcase, Mail, Sparkles, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { QUICK_QUESTIONS } from '@/lib/cappybot-context';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useThemeSafe } from './theme-provider';
@@ -123,14 +122,6 @@ export default function CappyBot() {
     sendMessage({ text: question });
   };
 
-  const formatTime = (date: Date | string) => {
-    const value = typeof date === 'string' ? new Date(date) : date;
-    return value.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
   const handleReset = () => {
     // Reload the page to reset chat state since useChat doesn't expose a clear method directly
     // Or usually we can just reload the window or setMessages([]) if exposed, but useChat from Vercel AI SDK 
@@ -168,7 +159,6 @@ export default function CappyBot() {
     }
     : undefined;
   const formPaddingClass = isMobileViewport ? (isKeyboardVisible ? 'py-2.5' : 'py-3.5') : 'py-4';
-  const inputShellPadding = isMobileViewport ? (isKeyboardVisible ? 'py-1.5' : 'py-2') : 'py-2.5';
   const inputTextSizeClass = isMobileViewport ? 'text-base' : 'text-[13px]';
 
   const chatUI = (
@@ -299,7 +289,7 @@ export default function CappyBot() {
                               key={i}
                               remarkPlugins={[remarkGfm]}
                               components={{
-                                a: ({ node, ...props }) => (
+                                a: ({ node: _node, ...props }) => (
                                   <a {...props} target="_blank" rel="noopener noreferrer" className={`underline transition-all ${
                                     isLight ? 'text-blue-600 decoration-blue-600/30 hover:decoration-blue-600' : 'text-blue-400 decoration-blue-400/30 hover:decoration-blue-400'
                                   }`} />

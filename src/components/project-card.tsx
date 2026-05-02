@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import Link from 'next/link';
+import Link from '@/components/link';
 import { Github, Globe2, ChevronRight, Server, Calendar, Bot, Database, X, Sparkles } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -23,8 +23,8 @@ import {
   SiGooglechrome,
   SiBun
 } from 'react-icons/si';
-import Image from 'next/image';
-import { OpenRouter, Groq as GroqIcon, MCP } from '@lobehub/icons';
+import Image from '@/components/image';
+import { OpenRouter, Groq as GroqIcon, MCP } from '@/components/brand-icons';
 import { useThemeSafe } from './theme-provider';
 
 interface Project {
@@ -97,9 +97,9 @@ const getTechIcon = (tech: string) => {
 const ProjectCard = ({
   project,
   index,
-  isInView,
+  isInView: _isInView,
   showFeaturedBadge = false,
-  variant = 'default'
+  variant: _variant = 'default'
 }: ProjectCardProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -164,6 +164,8 @@ const ProjectCard = ({
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              priority={index < 3}
+              quality={75}
             />
 {!isLight && <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />}
           </div>
@@ -284,6 +286,8 @@ const ProjectCard = ({
                       alt={`${project.title} project screenshot`}
                       fill
                       className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 900px"
+                      quality={80}
                     />
                     {!isLight && (
                       <>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname } from '@/lib/navigation';
 
 interface Position {
   x: number;
@@ -257,7 +257,6 @@ export default function OnekoCat() {
         cancelAnimationFrame(animationFrameId.current);
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nekoPos, mousePos, frameCount, idleTime, idleAnimation, idleAnimationFrame, isVisible, isDisabled]);
 
   const handleContextMenu = (e: React.MouseEvent) => {
