@@ -96,7 +96,7 @@ const getTechIcon = (tech: string) => {
 
 const ProjectCard = ({
   project,
-  index: _index,
+  index,
   isInView: _isInView,
   showFeaturedBadge = false,
   variant: _variant = 'default'
@@ -164,6 +164,8 @@ const ProjectCard = ({
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              priority={index < 3}
+              quality={75}
             />
 {!isLight && <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />}
           </div>
@@ -284,6 +286,8 @@ const ProjectCard = ({
                       alt={`${project.title} project screenshot`}
                       fill
                       className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 900px"
+                      quality={80}
                     />
                     {!isLight && (
                       <>

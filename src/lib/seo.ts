@@ -1,11 +1,12 @@
 import type { BlogPost } from '@/types/blog';
 import type { Project } from '@/data/projects';
+import { getOptimizedImageSrc } from '@/lib/image-optimization';
 
 export const siteUrl = 'https://aysh.me';
 export const siteName = 'Ayush Sharma Portfolio';
 export const defaultOgImage = 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPlhi1W0hsc5pTOzgtJsIUQNxveLu9Gr6FBYjX';
 export const blogOgImage = 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPpI4L2UUj5BXoEqJIk6cGWnQRgCupb9K7ijPt';
-export const heroProfileImage = '/profile-avatar.png';
+export const heroProfileImage = 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPhWVT9F8tcdLGNp9S0ETXmuk4jy87UFaBIrYw';
 
 export function rootHead() {
   return {
@@ -44,7 +45,11 @@ export function rootHead() {
       { name: 'cc:attributionURL', content: siteUrl },
     ],
     links: [
-      { rel: 'preload', as: 'image', href: heroProfileImage, fetchPriority: 'high' as const },
+      { rel: 'preconnect', href: 'https://1kf0b6y5pd.ufs.sh', crossOrigin: 'anonymous' as const },
+      { rel: 'dns-prefetch', href: 'https://1kf0b6y5pd.ufs.sh' },
+      { rel: 'preconnect', href: 'https://res.cloudinary.com', crossOrigin: 'anonymous' as const },
+      { rel: 'dns-prefetch', href: 'https://res.cloudinary.com' },
+      { rel: 'preload', as: 'image', href: getOptimizedImageSrc(heroProfileImage, 256, 80), fetchPriority: 'high' as const },
       { rel: 'icon', type: 'image/png', href: '/icon.png' },
       { rel: 'apple-touch-icon', href: '/icon.png' },
       { rel: 'manifest', href: '/manifest.json' },
