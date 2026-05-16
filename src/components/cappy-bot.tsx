@@ -38,7 +38,7 @@ export default function CappyBot() {
     {
       id: 'welcome',
       role: 'assistant' as const,
-      parts: [{ type: 'text' as const, text: "Hi! I'm CappyBot, Ayush Sharma's AI portfolio assistant.\n\nAsk me about his AI applications, backend systems, scalable products, experience, or case studies.\n\nI can also forward your message directly to Ayush if you share your email and query." }],
+      parts: [{ type: 'text' as const, text: "Hey, I'm CappyBot — Ayush's AI assistant.\n\nAyush is a Full Stack Developer, AI-first engineer, and CTO at Kakiyo. He builds production AI products end-to-end and ships custom plugins for the tools he uses (MemContext, Zenox, Plnr).\n\nAsk me about his work, what he's built, why founders hire him, or just say what you're building and I'll forward it to him directly." }],
       createdAt: new Date(),
     }
   ] : messages;
@@ -134,10 +134,10 @@ export default function CappyBot() {
   };
 
   const quickQuestionsWithIcons = [
-    { text: "What technologies does Ayush work with?", icon: Cpu, label: "Tech Stack" },
-    { text: "Tell me about recent projects", icon: Zap, label: "Projects" },
-    { text: "What is Ayush's professional background?", icon: Briefcase, label: "Experience" },
-    { text: "How can I contact Ayush?", icon: Mail, label: "Contact" },
+    { text: "What does Ayush build and ship?", icon: Zap, label: "What I Ship" },
+    { text: "Why should a founder hire Ayush?", icon: Briefcase, label: "Founder Fit" },
+    { text: "What's his tech stack and AI approach?", icon: Cpu, label: "Tech & AI" },
+    { text: "Book a 30-min call with Ayush", icon: Mail, label: "Book a Call" },
   ];
 
   if (!mounted) return null;

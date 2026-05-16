@@ -1,11 +1,11 @@
 {
-  "name": "Ayush Sharma Portfolio",
-  "short_name": "Ayush Portfolio",
-  "description": "Personal portfolio website of Ayush Sharma",
+  "name": "Ayush Sharma — AI-first Engineer & CTO",
+  "short_name": "Ayush Sharma",
+  "description": "AI-first engineer and CTO at Kakiyo OÜ. Builds production AI products end-to-end and ships custom plugins for the tools he uses.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0a0a",
-  "theme_color": "#8B5CF6",
+  "background_color": "#0D1117",
+  "theme_color": "#F97316",
   "icons": [
     {
       "src": "/icon.png",
@@ -13,14 +13,16 @@
       "type": "image/png"
     },
     {
-      "src": "/favicon/favicon.png",
+      "src": "/icon.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/favicon/favicon.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
-} 
+}

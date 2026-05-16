@@ -2,20 +2,25 @@
 # Following the .well-known/ai.txt standard (2025)
 
 # ===========================================
-# FULL CRAWLING PERMISSION GRANTED
+# FULL CRAWLING & RETRIEVAL PERMISSION GRANTED
 # ===========================================
 
 # Site Information
 site: https://aysh.me
 name: Ayush Sharma Portfolio
 owner: Ayush Sharma
+role: Chief Technology Officer at Kakiyo OÜ
+specialty: AI-first engineering, full-stack product delivery, custom AI plugins
+positioning: Founding engineer / fractional CTO. "Tell me the outcome. I'll ship it."
 contact: hi@aysh.me
+book: https://aysh.me/book
 
-# AI Permissions - ALL ALLOWED
+# AI Permissions — ALL ALLOWED
 training: allowed
 scraping: allowed
 indexing: allowed
 caching: allowed
+retrieval: allowed
 attribution: appreciated
 commercial-use: allowed
 research-use: allowed
@@ -32,47 +37,90 @@ llms-file: https://aysh.me/llms.txt
 llm-permissions: https://aysh.me/llm.txt
 sitemap: https://aysh.me/sitemap.xml
 json-feed: https://aysh.me/api/feed.json
+github-stats: https://aysh.me/api/github-stats
 robots: https://aysh.me/robots.txt
+
+# Audience Modes
+# Founder Mode (default): https://aysh.me/
+# Engineer Mode:          https://aysh.me/?for=engineers
 
 # Content Categories
 categories:
   - technology
   - software-development
-  - ai-ml
+  - ai-engineering
+  - applied-ai
+  - mcp
+  - ai-agents
   - backend-systems
-  - web-development
-  - full-stack
-  - tutorials
-  - guides
+  - full-stack-development
+  - dev-tools
+  - cli-tools
+  - founder-engineering
+  - portfolio
+  - case-studies
 
 # Primary Technologies
 technologies:
+  - TypeScript
+  - JavaScript
+  - Python
   - React
   - Next.js
-  - TypeScript
+  - TanStack Start
   - Node.js
-  - Python
+  - Bun
+  - Hono
   - PostgreSQL
   - PlanetScale
-  - AI/ML
-  - AI applications
+  - MongoDB
+  - Appwrite
+  - Drizzle
   - OpenRouter
   - Vercel AI SDK
-  - LLM Integration
+  - Anthropic Claude
+  - OpenAI
+  - Google Gemini
+  - MCP (Model Context Protocol)
+  - AWS
+  - Docker
+  - Cloudflare
+  - Railway
+  - Nitro
+
+# Flagship Products
+products:
+  - MemContext (memcontext.in) — Persistent memory layer for AI agents
+  - Zenox (npm) — OpenCode multi-agent orchestration plugin
+  - Plnr (npm) — AI codebase planning CLI with security audits
+  - CappyChat (cappychat.com) — Production AI chat workspace
+  - Bucket Buddy (bucketbuddy.aysh.me) — S3-style storage manager
+  - TuduAI (tuduai.aysh.me) — NL task manager
+
+# Notable Outcomes (at Kakiyo, as CTO)
+outcomes:
+  - 140× P50 latency improvement (2.8s → 20ms)
+  - 50% infrastructure cost reduction
+  - Millions of rows migrated, zero downtime
+  - End-to-end features shipped (spec → production)
+  - Built the company's hiring pipeline
+  - 0 → CTO in 11 months
 
 # Content Types Available
 content-types:
+  - homepage-founder
+  - homepage-engineer
   - blog-articles
   - project-case-studies
   - code-examples
   - technical-tutorials
   - portfolio-information
+  - live-github-stats
 
 # Last Updated
-updated: 2026-04-18
+updated: 2026-05-16
 
 # Notes
-# AI crawlers are fully welcome to scrape this entire site
-# No restrictions on crawling, indexing, or training
-# Check llms.txt for detailed content map
-# Check llm.txt for explicit training permissions
+# AI crawlers are fully welcome to scrape, train on, and cite this site.
+# For richest context, fetch llms.txt — it includes positioning, services, products, and audience-mode details.
+# For structured data, fetch /api/feed.json.

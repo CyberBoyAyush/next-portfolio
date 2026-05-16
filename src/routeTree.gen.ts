@@ -21,6 +21,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as BlogsSlugRouteImport } from './routes/blogs.$slug'
 import { Route as ApiProjectsRouteImport } from './routes/api.projects'
+import { Route as ApiGithubStatsRouteImport } from './routes/api.github-stats'
 import { Route as ApiFeedDotjsonRouteImport } from './routes/api.feed[.]json'
 import { Route as ApiContactRouteImport } from './routes/api.contact'
 import { Route as ApiChatRouteImport } from './routes/api.chat'
@@ -88,6 +89,11 @@ const ApiProjectsRoute = ApiProjectsRouteImport.update({
   path: '/api/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiGithubStatsRoute = ApiGithubStatsRouteImport.update({
+  id: '/api/github-stats',
+  path: '/api/github-stats',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiFeedDotjsonRoute = ApiFeedDotjsonRouteImport.update({
   id: '/api/feed.json',
   path: '/api/feed.json',
@@ -133,6 +139,7 @@ export interface FileRoutesByFullPath {
   '/api/chat': typeof ApiChatRoute
   '/api/contact': typeof ApiContactRoute
   '/api/feed.json': typeof ApiFeedDotjsonRoute
+  '/api/github-stats': typeof ApiGithubStatsRoute
   '/api/projects': typeof ApiProjectsRoute
   '/blogs/$slug': typeof BlogsSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -153,6 +160,7 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/api/contact': typeof ApiContactRoute
   '/api/feed.json': typeof ApiFeedDotjsonRoute
+  '/api/github-stats': typeof ApiGithubStatsRoute
   '/api/projects': typeof ApiProjectsRoute
   '/blogs/$slug': typeof BlogsSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -174,6 +182,7 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/api/contact': typeof ApiContactRoute
   '/api/feed.json': typeof ApiFeedDotjsonRoute
+  '/api/github-stats': typeof ApiGithubStatsRoute
   '/api/projects': typeof ApiProjectsRoute
   '/blogs/$slug': typeof BlogsSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -196,6 +205,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/contact'
     | '/api/feed.json'
+    | '/api/github-stats'
     | '/api/projects'
     | '/blogs/$slug'
     | '/projects/$slug'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/contact'
     | '/api/feed.json'
+    | '/api/github-stats'
     | '/api/projects'
     | '/blogs/$slug'
     | '/projects/$slug'
@@ -236,6 +247,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/contact'
     | '/api/feed.json'
+    | '/api/github-stats'
     | '/api/projects'
     | '/blogs/$slug'
     | '/projects/$slug'
@@ -257,6 +269,7 @@ export interface RootRouteChildren {
   ApiChatRoute: typeof ApiChatRoute
   ApiContactRoute: typeof ApiContactRoute
   ApiFeedDotjsonRoute: typeof ApiFeedDotjsonRoute
+  ApiGithubStatsRoute: typeof ApiGithubStatsRoute
   ApiProjectsRoute: typeof ApiProjectsRoute
 }
 
@@ -344,6 +357,13 @@ declare module '@tanstack/react-router' {
       path: '/api/projects'
       fullPath: '/api/projects'
       preLoaderRoute: typeof ApiProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/github-stats': {
+      id: '/api/github-stats'
+      path: '/api/github-stats'
+      fullPath: '/api/github-stats'
+      preLoaderRoute: typeof ApiGithubStatsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/feed.json': {
@@ -441,6 +461,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiChatRoute: ApiChatRoute,
   ApiContactRoute: ApiContactRoute,
   ApiFeedDotjsonRoute: ApiFeedDotjsonRoute,
+  ApiGithubStatsRoute: ApiGithubStatsRoute,
   ApiProjectsRoute: ApiProjectsRoute,
 }
 export const routeTree = rootRouteImport

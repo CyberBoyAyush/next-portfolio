@@ -16,9 +16,10 @@ import {
 import Image from "@/components/image";
 import TechTicker from "./tech-ticker";
 import TerminalCommand from "./terminal-command";
+import AudienceSwitch from "./audience-switch";
 import { getCalApi } from "@calcom/embed-react";
 import { useThemeSafe } from "./theme-provider";
-import { heroProfileImage } from "@/lib/seo";
+import { heroProfileImageEngineer } from "@/lib/seo";
 
 const XIcon = ({ size = 18, className = "" }) => (
   <svg
@@ -180,7 +181,7 @@ const Hero = () => {
     return (
       <Image
         ref={profileImageRef}
-        src={heroProfileImage}
+        src={heroProfileImageEngineer}
         alt="Ayush Sharma - Full Stack Developer and AI Engineer"
         fill
         sizes="(max-width: 768px) 10rem, 12rem"
@@ -225,6 +226,11 @@ const Hero = () => {
             animate="visible"
             className="space-y-3 sm:space-y-4 flex-grow flex flex-col justify-center items-center w-full"
           >
+            {/* Audience Switch */}
+            <motion.div variants={itemVariants}>
+              <AudienceSwitch variant="hero" />
+            </motion.div>
+
             {/* Profile Image */}
             <motion.div
               variants={itemVariants}
