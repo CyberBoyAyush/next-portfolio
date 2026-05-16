@@ -36,8 +36,9 @@ export const Route = createFileRoute('/api/chat')({
           if (!process.env.OPENROUTER_API_KEY) return new Response('Service temporarily unavailable', { status: 503 });
 
           const openrouter = createOpenRouter({ apiKey: process.env.OPENROUTER_API_KEY });
+          // grok-4-fast was deprecated in May 2026. xAI recommends grok-4.3.
           const result = streamText({
-            model: openrouter.chat('x-ai/grok-4-fast'),
+            model: openrouter.chat('x-ai/grok-4.3'),
             system: CAPPYBOT_SYSTEM_PROMPT,
             messages: convertToModelMessages(messages),
             tools: cappybotTools,

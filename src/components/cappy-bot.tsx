@@ -335,8 +335,8 @@ export default function CappyBot() {
                 </motion.div>
               )}
 
-              {/* Quick Questions - Grid Layout */}
-              {displayMessages.length === 1 && (
+              {/* Quick Questions — only on the welcome state (before user sends anything) */}
+              {messages.length === 0 && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -427,7 +427,7 @@ export default function CappyBot() {
                 </button>
               </form>
               <div className="mt-2 text-center">
-                <span className={`text-[9px] font-medium tracking-wide ${isLight ? 'text-gray-400' : 'text-slate-600'}`}>POWERED BY AI · GEMINI 2.5 FLASH</span>
+                <span className={`text-[9px] font-medium tracking-wide ${isLight ? 'text-gray-400' : 'text-slate-600'}`}>POWERED BY AI · GROK 4.3 VIA OPENROUTER</span>
               </div>
             </div>
           </motion.div>
