@@ -226,14 +226,13 @@ const ContributionGraphTile = ({ isLight }: { isLight: boolean }) => {
             }}
           />
         ) : (
-          <a
-            href={`https://github.com/${GITHUB_USERNAME}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          // Outer tile is already an anchor to github.com/<user>; render a span here
+          // to avoid nested <a> (invalid HTML).
+          <span
             className={`text-xs sm:text-sm font-mono underline underline-offset-4 ${isLight ? "text-orange-700" : "text-orange-300"}`}
           >
             View graph on github.com/{GITHUB_USERNAME} →
-          </a>
+          </span>
         )}
       </div>
     </a>

@@ -52,10 +52,27 @@ async function fetchJson<T>(url: string): Promise<T> {
   return (await res.json()) as T;
 }
 
+const PER_PAGE = 100;
+// Hard cap on pages to keep the unauthenticated rate-limit budget safe.
+// 5 pages × 100 repos = 500 owner repos, which is well beyond Ayush's current 73.
+const MAX_REPO_PAGES = 5;
+
+async function fetchAllOwnerRepos(): Promise<GitHubRepo[]> {
+  const all: GitHubRepo[] = [];
+  for (let page = 1; page <= MAX_REPO_PAGES; page++) {
+    const repos = await fetchJson<GitHubRepo[]>(
+      `https://api.github.com/users/${USERNAME}/repos?per_page=${PER_PAGE}&type=owner&page=${page}`,
+    );
+    all.push(...repos);
+    if (repos.length < PER_PAGE) break;
+  }
+  return all;
+}
+
 async function getStats(): Promise<GitHubStatsResponse> {
   const [user, repos] = await Promise.all([
     fetchJson<GitHubUser>(`https://api.github.com/users/${USERNAME}`),
-    fetchJson<GitHubRepo[]>(`https://api.github.com/users/${USERNAME}/repos?per_page=100&type=owner&sort=updated`),
+    fetchAllOwnerRepos(),
   ]);
 
   const ownRepos = repos.filter((r) => !r.fork && !r.archived);

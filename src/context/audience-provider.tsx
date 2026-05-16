@@ -64,26 +64,6 @@ function getInitialAudience(): Audience {
   return "founder";
 }
 
-function syncUrlParam(audience: Audience) {
-  if (typeof window === "undefined") return;
-  try {
-    const url = new URL(window.location.href);
-    // Only sync on the homepage to keep deep pages clean
-    if (url.pathname !== "/" && url.pathname !== "") return;
-
-    // Founder is the default — clean URL means founder.
-    if (audience === "founder") {
-      url.searchParams.delete(AUDIENCE_URL_PARAM);
-    } else {
-      url.searchParams.set(AUDIENCE_URL_PARAM, urlValueFromAudience(audience));
-    }
-    const next = `${url.pathname}${url.search}${url.hash}`;
-    window.history.replaceState(window.history.state, "", next);
-  } catch {
-    // Ignore URL sync failures
-  }
-}
-
 export function AudienceProvider({ children }: { children: React.ReactNode }) {
   const [audience, setAudienceState] = useState<Audience>("founder");
   const [mounted, setMounted] = useState(false);
@@ -101,8 +81,30 @@ export function AudienceProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // localStorage not available
     }
-    syncUrlParam(audience);
-  }, [audience, mounted]);
+
+    // Only sync URL when the user is on the homepage. Routing through
+    // router.navigate (instead of window.history.replaceState) keeps
+    // TanStack Router's search state and Route.useSearch() in sync.
+    const pathname = router.state.location.pathname;
+    if (pathname !== "/" && pathname !== "") return;
+
+    void router
+      .navigate({
+        search: ((prev: Record<string, unknown> | undefined) => {
+          const next: Record<string, unknown> = { ...(prev ?? {}) };
+          if (audience === "founder") {
+            delete next[AUDIENCE_URL_PARAM];
+          } else {
+            next[AUDIENCE_URL_PARAM] = urlValueFromAudience(audience);
+          }
+          return next;
+        }) as never,
+        replace: true,
+      })
+      .catch(() => {
+        // Ignore navigation cancellation / failures
+      });
+  }, [audience, mounted, router]);
 
   // Keep the in-memory audience in sync with browser navigation (back/forward).
   // We only react to URL changes on the homepage to avoid noisy state churn.
