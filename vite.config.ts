@@ -63,6 +63,14 @@ export default defineConfig({
         '/api/**': {
           headers: apiHeaders,
         },
+        // GitHub stats is safe to cache aggressively — public info, no secrets.
+        // 1 hour shared cache, 24 hours stale-while-revalidate.
+        '/api/github-stats': {
+          headers: {
+            ...securityHeaders,
+            'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400',
+          },
+        },
       },
     }),
   ],
