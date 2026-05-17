@@ -33,7 +33,7 @@ const FounderCodingStats = () => {
         <SectionHeading
           subtitle="Public Receipts"
           title="I ship every day."
-          description="No LeetCode theatre. Just GitHub — the only proof that actually matters."
+          description="What I actually shipped. Live, public, every day."
           className="mb-12"
         />
 
