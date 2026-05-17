@@ -39,7 +39,7 @@ const BeyondCode = () => {
       <div className="container mx-auto px-4 max-w-6xl">
         <SectionHeading
           subtitle="Beyond The Code"
-          title="I'm not just into tech."
+          title="More than the code."
           description="The work doesn't end at the IDE. Here's the other half of how I show up."
           className="mb-12"
         />
@@ -68,9 +68,9 @@ const BeyondCode = () => {
             </span>
             <p className={`mt-3 text-lg sm:text-xl md:text-2xl leading-relaxed font-medium ${isLight ? "text-gray-800" : "text-gray-100"}`}>
               <span className={isLight ? "text-gray-900" : "text-white"}>
-                I&apos;m not just into tech.
+                More than the code.
               </span>{" "}
-              I love building{" "}
+              I ship{" "}
               <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 border align-middle font-mono text-base sm:text-lg ${
                 isLight ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-blue-500/10 text-blue-300 border-blue-500/20"
               }`}>

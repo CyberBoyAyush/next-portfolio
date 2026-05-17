@@ -103,10 +103,10 @@ export const outcomeTiles: OutcomeTile[] = [
   },
   {
     id: "features",
-    tag: "Velocity",
+    tag: "Ownership",
     metric: "End-to-end",
-    caption: "Multiple features at Kakiyo",
-    detail: "Owned features from product spec to production rollout. Frontend, backend, infra, the whole loop.",
+    caption: "Full feature ownership at Kakiyo",
+    detail: "Spec → backend → frontend → infra → ship. No handoffs, no waiting on someone else's queue.",
     accent: "purple",
   },
   {
@@ -128,13 +128,13 @@ export const outcomeTiles: OutcomeTile[] = [
   {
     id: "production-ready",
     tag: "Production",
-    metric: "Looks good in production",
-    caption: "Built end-to-end, ready to monetize",
-    detail: "Every product I ship is production-grade — clean codebase, auth, infra, and the rails to plug a payment provider in tomorrow.",
+    metric: "Live by default",
+    caption: "Every product I ship runs in production",
+    detail: "Not demoware. Auth, infra, monitoring, payment rails ready. Plug into real users on day one.",
     accent: "rose",
     colSpan: 2,
     rowSpan: 1,
-    chips: ["Production-grade", "Payment-ready", "Manageable codebase"],
+    chips: ["Auth", "Infra", "Monitoring", "Payment rails"],
   },
   {
     id: "packages",
