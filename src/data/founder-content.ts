@@ -276,44 +276,46 @@ export const shippedItems: ShippedItem[] = [
 ];
 
 // -----------------------------------------------------------------------------
-// What you can hand me — better icons + slight rewording.
+// Roles I take — ordered so Fractional CTO leads (idx 0 = featured/large tile).
+// Every card describes a way the same person plugs into a team, not a menu of
+// freelance services.
 // -----------------------------------------------------------------------------
 
 export const services: ServiceTile[] = [
   {
+    id: "fractional",
+    icon: "Crown", // IconCrown — leadership
+    title: "Fractional CTO / Founding Engineer",
+    body: "The default engagement. I take ownership of the engineering function — architecture, hiring, reviews, AI direction, infra. Deeply embedded, long-term. Your team treats me like a co-founder.",
+    accent: "rose",
+  },
+  {
     id: "mvp",
     icon: "RocketLaunch", // IconRocket
     title: "Zero-to-MVP",
-    body: "Idea to live product in weeks, not quarters. Full stack, AI included, shipped to real users — not a Figma deck.",
+    body: "First engineer in. Idea → live product in weeks, not quarters. Full stack, AI included, shipped to real users. No deck. Just code.",
     accent: "blue",
   },
   {
     id: "ai-layer",
     icon: "Sparkles", // IconSparkles
     title: "Build your AI layer",
-    body: "Agents, RAG, tool calling, MCP, the infra around models. Production-grade and observable — not demoware.",
+    body: "Own the AI surface end-to-end. Agents, RAG, tool calling, MCP, the observable infra around models. Production-grade, not demoware.",
     accent: "purple",
-  },
-  {
-    id: "plugins",
-    icon: "Puzzle", // IconPuzzle — better than Plug
-    title: "Custom plugins & integrations",
-    body: "MCP servers, CLIs, IDE plugins, browser extensions. I extend the tools your team already lives in.",
-    accent: "amber",
   },
   {
     id: "rescue",
     icon: "Lifebuoy", // IconLifebuoy — rescue metaphor
-    title: "Rescue a stalled codebase",
-    body: "Take over, stabilize, ship. I'll find the bottlenecks, kill the dead weight, and unblock the team in weeks.",
+    title: "Take over a stalled engineering function",
+    body: "When shipping has stopped, I come in, find what's broken, kill the dead weight, and get the team moving again in weeks.",
     accent: "emerald",
   },
   {
-    id: "fractional",
-    icon: "Crown", // IconCrown — leadership
-    title: "Fractional CTO / founding engineer",
-    body: "Deeply embedded, long-term. Architecture, hiring, reviews, infra, AI direction — the whole engineering function.",
-    accent: "rose",
+    id: "plugins",
+    icon: "Puzzle", // IconPuzzle
+    title: "Strategic plugin & integration work",
+    body: "When the leverage is high enough to justify it — MCP servers, CLIs, IDE plugins. I've shipped Zenox, Plnr, and MemContext on this pattern.",
+    accent: "amber",
   },
 ];
 

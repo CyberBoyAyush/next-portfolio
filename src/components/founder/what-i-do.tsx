@@ -33,9 +33,9 @@ const WhatIDo = () => {
 
       <div className="container mx-auto px-4 max-w-6xl">
         <SectionHeading
-          subtitle="Hand It Over"
-          title="What you can hand me."
-          description="Pick one. Or all of them. I work end-to-end."
+          subtitle="Engagements"
+          title="Roles I take."
+          description="Not tasks. Not tickets. The whole engineering function — for as long as you need me there."
           className="mb-12"
         />
 
@@ -48,7 +48,8 @@ const WhatIDo = () => {
           {services.map((service, idx) => {
             const IconCmp = iconMap[service.icon] ?? IconRocket;
             const accent = accentMap[service.accent];
-            // Make the first one (Zero-to-MVP) and last one (Fractional CTO) span more on lg
+            // First card (Fractional CTO) is the featured/large tile; last card
+            // is widened on tablet for a balanced layout.
             const isFeatured = idx === 0;
             const isWideOnLast = idx === services.length - 1;
 
