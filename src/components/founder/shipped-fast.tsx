@@ -351,7 +351,7 @@ const ShippedFast = () => {
         <SectionHeading
           subtitle="What I Ship"
           title="Shipped fast. Still running."
-          description="MemContext is the flagship. The rest are real plugins and production-ready apps — built end-to-end, all live."
+          description="MemContext is the flagship. The rest are real plugins and production-ready apps. Built end-to-end, all live."
           className="mb-12"
         />
 

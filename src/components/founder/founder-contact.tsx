@@ -75,7 +75,7 @@ const FounderContact = () => {
           </blockquote>
 
           <p className={`text-base sm:text-lg max-w-xl mx-auto mb-10 ${isLight ? "text-gray-600" : "text-gray-400"}`}>
-            30 minutes. No deck needed. Just bring the problem and what done looks like — I&apos;ll handle the rest.
+            30 minutes. No deck needed. Just bring the problem and what done looks like. I&apos;ll handle the rest.
           </p>
         </motion.div>
 
@@ -103,7 +103,7 @@ const FounderContact = () => {
                 Book a 30-min call
               </h3>
               <p className={`text-sm sm:text-base ${isLight ? "text-gray-600" : "text-gray-400"}`}>
-                Tell me what you&apos;re building, where you&apos;re stuck, and what shipping looks like. I&apos;ll tell you exactly how I&apos;d approach it — whether or not we end up working together.
+                Tell me what you&apos;re building, where you&apos;re stuck, and what shipping looks like. I&apos;ll tell you exactly how I&apos;d approach it, whether or not we end up working together.
               </p>
               <ul className={`space-y-2 text-sm ${isLight ? "text-gray-700" : "text-gray-300"}`}>
                 {[
