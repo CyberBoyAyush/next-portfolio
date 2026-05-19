@@ -141,7 +141,7 @@ export const outcomeTiles: OutcomeTile[] = [
     tag: "OSS",
     metric: "4+",
     caption: "NPM packages live",
-    detail: "Plnr · Zenox · MemContext · and counting. Built, published, maintained — used by real developers.",
+    detail: "Plnr · Zenox · MemContext · and counting. Built, published, maintained. Used by real developers.",
     accent: "purple",
   },
 ];
@@ -155,7 +155,7 @@ export const philosophy: PhilosophyCard[] = [
     id: "ai-first",
     icon: "Sparkles", // IconSparkles
     headline: "AI-first, not AI-enabled.",
-    body: "I don't just use AI tools — I build the plugins, agents, and CLIs that extend them. Zenox for OpenCode, Plnr for codebase planning, MemContext for any MCP client. If a tool I use is missing something, I ship the extension myself.",
+    body: "I don't just use AI tools. I build the plugins, agents, and CLIs that extend them. Zenox for OpenCode, Plnr for codebase planning, MemContext for any MCP client. If a tool I use is missing something, I ship the extension myself.",
     accent: "purple",
   },
   {
@@ -169,7 +169,7 @@ export const philosophy: PhilosophyCard[] = [
     id: "no-tickets",
     icon: "Target", // IconTarget — definition of done
     headline: "No tickets. Just outcomes.",
-    body: "Tell me the user problem and the constraints. I'll handle scope, architecture, and trade-offs. Skip the JIRA ceremony — give me a definition of done and I'll get there.",
+    body: "Tell me the user problem and the constraints. I'll handle scope, architecture, and trade-offs. Skip the JIRA ceremony. Give me a definition of done and I'll get there.",
     accent: "blue",
   },
   {
@@ -197,14 +197,14 @@ export const beyondCode: BeyondCodeItem[] = [
     id: "team-player",
     icon: "UsersGroup", // IconUsersGroup — group of people, stronger than Users
     headline: "I lift the team.",
-    body: "I review code, mentor juniors, write docs that don't suck, unblock teammates daily. I work like a co-founder, not a contractor — your team becomes my team.",
+    body: "I review code, mentor juniors, write docs that don't suck, unblock teammates daily. I work like a co-founder, not a contractor. Your team becomes my team.",
     accent: "emerald",
   },
   {
     id: "people-first",
     icon: "HeartHandshake", // IconHeartHandshake — relational
     headline: "People over frameworks.",
-    body: "Users, teammates, founders — they matter more than the framework du jour. I optimize for what actually works for them, not what trends on Twitter this week.",
+    body: "Users, teammates, founders. They matter more than the framework du jour. I optimize for what actually works for them, not what trends on Twitter this week.",
     accent: "rose",
   },
 ];
@@ -225,7 +225,7 @@ export const shippedItems: ShippedItem[] = [
     timeToShip: "Flagship",
     channel: "memcontext.in · MCP + REST API",
     outcome:
-      "Persistent, evolving memory layer for AI. Hybrid search, auto-expiring temporal facts, feedback-driven ranking, version history. Plugs into Claude, Cursor, Windsurf, Copilot, Cline, Codex — any MCP client — or any custom app via REST.",
+      "Persistent, evolving memory layer for AI. Hybrid search, auto-expiring temporal facts, feedback-driven ranking, version history. Plugs into Claude, Cursor, Windsurf, Copilot, Cline, Codex, or any MCP client. Or any custom app via REST.",
     kind: "plugin",
     image: "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPuFUBv7VILjGC7RxNs1WqaPXeldA0nz3E968k",
     href: "/projects/memcontext",
@@ -240,7 +240,7 @@ export const shippedItems: ShippedItem[] = [
     timeToShip: "5 days",
     channel: "npm · v1.6.2 · 39★ GitHub",
     outcome:
-      "OpenCode plugin that ships a team of AI agents instead of one. Explorer, Librarian, Oracle, UI Planner — each with the right model, background tasks, keyword triggers, and auto-updating project docs.",
+      "OpenCode plugin that ships a team of AI agents instead of one. Explorer, Librarian, Oracle, UI Planner. Each with the right model, background tasks, keyword triggers, and auto-updating project docs.",
     kind: "plugin",
     image: "https://res.cloudinary.com/dyetf2h9n/image/upload/v1768073623/ZENOX_e4boob.png",
     href: "/projects/zenox",
@@ -286,7 +286,7 @@ export const services: ServiceTile[] = [
     id: "fractional",
     icon: "Crown", // IconCrown — leadership
     title: "Fractional CTO / Founding Engineer",
-    body: "The default engagement. I take ownership of the engineering function — architecture, hiring, reviews, AI direction, infra. Deeply embedded, long-term. Your team treats me like a co-founder.",
+    body: "The default engagement. I take ownership of the engineering function: architecture, hiring, reviews, AI direction, infra. Deeply embedded, long-term. Your team treats me like a co-founder.",
     accent: "rose",
   },
   {
@@ -314,7 +314,7 @@ export const services: ServiceTile[] = [
     id: "plugins",
     icon: "Puzzle", // IconPuzzle
     title: "Strategic plugin & integration work",
-    body: "When the leverage is high enough to justify it — MCP servers, CLIs, IDE plugins. I've shipped Zenox, Plnr, and MemContext on this pattern.",
+    body: "When the leverage is high enough to justify it: MCP servers, CLIs, IDE plugins. I've shipped Zenox, Plnr, and MemContext on this pattern.",
     accent: "amber",
   },
 ];

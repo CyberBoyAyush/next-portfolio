@@ -35,7 +35,7 @@ const WhatIDo = () => {
         <SectionHeading
           subtitle="Engagements"
           title="Roles I take."
-          description="Not tasks. Not tickets. The whole engineering function — for as long as you need me there."
+          description="Not tasks. Not tickets. The whole engineering function, for as long as you need me there."
           className="mb-12"
         />
 
