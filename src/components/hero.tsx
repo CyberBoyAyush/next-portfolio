@@ -7,7 +7,6 @@ import {
   Github,
   Linkedin,
   Mail,
-  FileText,
   Calendar,
   TrendingUp,
   Network,
@@ -362,6 +361,7 @@ const Hero = () => {
               variants={itemVariants}
               className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-1"
             >
+              {/*
               <a
                 href="/Resume.pdf"
                 className={`inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-semibold hover:scale-105 active:scale-95 transition-all shadow-xl text-sm sm:text-base ${isLight ? 'bg-gray-900 text-white hover:bg-gray-800 shadow-gray-300/30' : 'bg-white text-gray-900 hover:bg-gray-100 shadow-white/5'}`}
@@ -369,6 +369,7 @@ const Hero = () => {
                 <FileText size={18} className="sm:w-[18px] sm:h-[18px]" />
                 Resume / CV
               </a>
+              */}
               <a
                 href="#contact"
                 className={`inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-transparent font-medium transition-all border text-sm sm:text-base ${isLight ? 'text-gray-700 border-gray-300 hover:bg-gray-100 hover:border-gray-400' : 'text-white border-white/10 hover:bg-white/5 hover:border-white/30'}`}
