@@ -2,7 +2,7 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import { motion, type Variants } from "framer-motion";
-import { Calendar, FileText, Linkedin, Github, Mail, ChevronDown, ArrowRight } from "lucide-react";
+import { Calendar, Linkedin, Github, Mail, ChevronDown, ArrowRight } from "lucide-react";
 import Image from "@/components/image";
 import { getCalApi } from "@calcom/embed-react";
 import { useThemeSafe } from "@/components/theme-provider";
@@ -218,6 +218,7 @@ const FounderHero = () => {
                 Schedule a call
                 <ArrowRight size={14} className="opacity-70" />
               </button>
+              {/*
               <a
                 href="/Resume.pdf"
                 className={`inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-medium transition-all border hover:scale-[1.03] active:scale-[0.98] text-sm sm:text-base ${
@@ -229,6 +230,7 @@ const FounderHero = () => {
                 <FileText size={18} />
                 Resume
               </a>
+              */}
               <a
                 href="/x"
                 className={`inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 font-medium transition-all border hover:scale-[1.03] active:scale-[0.98] text-sm sm:text-base ${
