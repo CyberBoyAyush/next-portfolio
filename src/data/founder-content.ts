@@ -58,6 +58,13 @@ export interface ShippedItem {
    * is weak but the impact numbers are strong.
    */
   flagshipMetrics?: Array<{ value: string; label: string; accent: Accent }>;
+  /** Optional production proof shown on the flagship card (keeps the screenshot). */
+  proof?: {
+    kicker: string;
+    metric: string;
+    metricLabel: string;
+    body: string;
+  };
 }
 
 export interface ServiceTile {
@@ -77,45 +84,67 @@ export interface BeyondCodeItem {
 }
 
 // -----------------------------------------------------------------------------
-// Outcomes wall — kept exactly as user signed off on it (Image 14).
-// No MRR claims; "production-ready" is the strongest revenue-related framing.
+// Outcomes wall — Kakiyo production receipts first; personal plugins last.
+// No MRR claims.
 // -----------------------------------------------------------------------------
 
 export const outcomeTiles: OutcomeTile[] = [
   {
-    id: "latency",
-    tag: "Performance",
-    metric: "140× faster",
-    caption: "P50 latency at Kakiyo",
-    detail: "Cut response times from 2.8s to 20ms (P90: 90ms). Same product, completely different feel.",
+    id: "throughput",
+    tag: "Scale",
+    metric: "5M+",
+    caption: "Requests/day at Kakiyo",
+    detail: "Production traffic on kakiyo.com. Same product, rebuilt for this load.",
     accent: "blue",
     colSpan: 2,
     rowSpan: 1,
+    chips: ["10K+ users", "9K+ teams"],
+  },
+  {
+    id: "latency",
+    tag: "Performance",
+    metric: "140×",
+    caption: "P50 latency",
+    detail: "Cut response times from 2.8s to 20ms. Same product, completely different feel.",
+    accent: "cyan",
     chips: ["2.8s → 20ms", "P90: 90ms"],
+  },
+  {
+    id: "errors",
+    tag: "Reliability",
+    metric: "−90%",
+    caption: "Error rate",
+    detail: "Fewer failures, near-100% uptime after the stack rewrite.",
+    accent: "emerald",
+    chips: ["~100% uptime"],
+  },
+  {
+    id: "migration",
+    tag: "Migration",
+    metric: "40M+",
+    caption: "Rows migrated, zero downtime",
+    detail: "Moved live production data from Appwrite to PlanetScale with rollback paths.",
+    accent: "rose",
+    colSpan: 2,
+    rowSpan: 1,
+    chips: ["35+ tables", "Rollbacks", "Appwrite → PlanetScale"],
   },
   {
     id: "cost",
     tag: "Infra",
-    metric: "−50%",
-    caption: "Infrastructure cost",
-    detail: "Rearchitected the stack at Kakiyo, halved the monthly cloud bill.",
+    metric: "$1.2k/mo → $200/mo",
+    caption: "Infrastructure",
+    detail: "Same product. Cloud bill from $1,200/mo to $200/mo.",
     accent: "emerald",
   },
   {
     id: "features",
-    tag: "Ownership",
-    metric: "End-to-end",
-    caption: "Full feature ownership at Kakiyo",
-    detail: "Spec → backend → frontend → infra → ship. No handoffs, no waiting on someone else's queue.",
+    tag: "Shipping",
+    metric: "Spec → live",
+    caption: "Features shipped on this stack",
+    detail: "Replaced Appwrite auth, realtime, and email — then kept shipping product on top.",
     accent: "purple",
-  },
-  {
-    id: "migration",
-    tag: "Scale",
-    metric: "Millions",
-    caption: "Rows migrated, zero downtime",
-    detail: "Moved live production data from Appwrite to PlanetScale without dropping a single request.",
-    accent: "cyan",
+    chips: ["Auth", "Realtime", "Email"],
   },
   {
     id: "cto",
@@ -124,17 +153,6 @@ export const outcomeTiles: OutcomeTile[] = [
     caption: "in 11 months",
     detail: "Full Stack Dev → Lead Developer → Chief Technology Officer. Promoted twice in under a year.",
     accent: "amber",
-  },
-  {
-    id: "production-ready",
-    tag: "Production",
-    metric: "Live by default",
-    caption: "Every product I ship runs in production",
-    detail: "Not demoware. Auth, infra, monitoring, payment rails ready. Plug into real users on day one.",
-    accent: "rose",
-    colSpan: 2,
-    rowSpan: 1,
-    chips: ["Auth", "Infra", "Monitoring", "Payment rails"],
   },
   {
     id: "packages",
@@ -176,7 +194,7 @@ export const philosophy: PhilosophyCard[] = [
     id: "full-stack",
     icon: "Stack2", // IconStack2 — layered stack
     headline: "I own the whole stack.",
-    body: "Frontend, backend, infra, AI integrations, code review, hiring. I work like a founding engineer because that's how startups actually win. Specialization slows founders down.",
+    body: "Frontend, backend, infra, AI integrations, code review, hiring. I replaced a BaaS with a custom stack at Kakiyo and still ship product on it. Specialization slows founders down.",
     accent: "emerald",
   },
 ];
@@ -226,12 +244,18 @@ export const shippedItems: ShippedItem[] = [
     channel: "memcontext.in · MCP + REST API",
     outcome:
       "Persistent, evolving memory layer for AI. Hybrid search, auto-expiring temporal facts, feedback-driven ranking, version history. Plugs into Claude, Cursor, Windsurf, Copilot, Cline, Codex, or any MCP client. Or any custom app via REST.",
-    kind: "plugin",
+    kind: "product",
     image: "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPuFUBv7VILjGC7RxNs1WqaPXeldA0nz3E968k",
     href: "/projects/memcontext",
-    highlights: ["MCP + REST", "Hybrid retrieval", "Auto-TTL memories", "Feedback ranking"],
+    highlights: ["Used by enterprises", "MCP + REST", "Hybrid retrieval", "Auto-TTL memories"],
     flagship: true,
-    statusLabel: "Free to start · Live",
+    statusLabel: "Live in production",
+    proof: {
+      kicker: "Used by enterprises & companies",
+      metric: "80%",
+      metricLabel: "of support tickets handled",
+      body: "A company built their AI support on MemContext. It now handles 80% of tickets without a human in the loop — powered by MemContext.",
+    },
   },
   // Rest in 3-col grid: Zenox, Plnr, CappyChat. TuduAI removed.
   {
@@ -286,7 +310,7 @@ export const services: ServiceTile[] = [
     id: "fractional",
     icon: "Crown", // IconCrown — leadership
     title: "Fractional CTO / Founding Engineer",
-    body: "The default engagement. I take ownership of the engineering function: architecture, hiring, reviews, AI direction, infra. Deeply embedded, long-term. Your team treats me like a co-founder.",
+    body: "The default engagement. I take ownership of the engineering function: architecture, hiring, reviews, AI direction, infra. I already operate Kakiyo at 5M+ requests/day. Deeply embedded, long-term. Your team treats me like a co-founder.",
     accent: "rose",
   },
   {

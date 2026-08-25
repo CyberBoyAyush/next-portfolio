@@ -5,7 +5,7 @@ import Image from '@/components/image';
 import Link from '@/components/link';
 import { Project, projects } from '@/data/projects';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowLeft, ExternalLink, Github, Calendar, Clock, ArrowRight, CheckCircle2, Layers, Trophy, Sparkles } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Github, Calendar, Clock, ArrowRight, CheckCircle2, Layers, Trophy, Sparkles, Building2 } from 'lucide-react';
 import {
   SiNextdotjs, SiPrisma, SiPostgresql, SiTailwindcss, SiReact,
   SiTypescript, SiAppwrite, SiVercel, SiJavascript, SiOpenai,
@@ -264,6 +264,35 @@ export default function ProjectDetailClient({ project }: ProjectDetailClientProp
                 <span className={`w-1.5 h-8 bg-gradient-to-b ${project.color}`} />
                 Project Overview
               </h2>
+              {project.impact && (
+                <div className={`mb-8 flex flex-col sm:flex-row sm:items-stretch gap-4 p-5 border ${
+                  isLight
+                    ? 'bg-gradient-to-br from-violet-50/80 via-white to-indigo-50/50 border-violet-200'
+                    : 'bg-gradient-to-br from-violet-500/[0.08] via-white/[0.02] to-indigo-500/[0.06] border-violet-500/20'
+                }`}>
+                  <div className={`flex-shrink-0 sm:min-w-[10rem] sm:pr-5 sm:border-r ${isLight ? 'sm:border-violet-200' : 'sm:border-white/10'}`}>
+                    <div className={`text-[10px] font-mono font-bold uppercase tracking-[0.16em] mb-1.5 ${isLight ? 'text-violet-700' : 'text-violet-300'}`}>
+                      {project.impact.kicker}
+                    </div>
+                    <div className={`text-4xl sm:text-5xl font-bold font-mono leading-none bg-clip-text text-transparent ${
+                      isLight
+                        ? 'bg-gradient-to-br from-gray-900 to-violet-600'
+                        : 'bg-gradient-to-br from-white to-violet-300'
+                    }`}>
+                      {project.impact.metric}
+                    </div>
+                    <div className={`mt-1.5 text-[11px] font-medium leading-snug ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>
+                      {project.impact.metricLabel}
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2.5 min-w-0">
+                    <Building2 className={`w-4 h-4 flex-shrink-0 mt-0.5 ${isLight ? 'text-violet-600' : 'text-violet-400'}`} />
+                    <p className={`text-sm sm:text-base leading-relaxed ${isLight ? 'text-gray-700' : 'text-gray-300'}`}>
+                      {project.impact.body}
+                    </p>
+                  </div>
+                </div>
+              )}
               <div className={`prose prose-lg max-w-none leading-relaxed ${isLight ? 'prose-gray text-gray-600' : 'prose-invert text-gray-300/90'}`}>
                 {project.detailedDescription.split('\n\n').map((paragraph, idx) => (
                   <p key={idx} className="mb-4">{paragraph}</p>

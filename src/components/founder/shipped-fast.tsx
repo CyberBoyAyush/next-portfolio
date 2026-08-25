@@ -10,6 +10,7 @@ import {
   IconBriefcase,
   IconStar,
   IconCircleCheckFilled,
+  IconBuilding,
 } from "@tabler/icons-react";
 import type { Icon } from "@tabler/icons-react";
 import Link from "@/components/link";
@@ -185,6 +186,46 @@ const FlagshipCard = ({ item, isLight }: { item: ShippedItem; isLight: boolean }
           {item.outcome}
         </p>
 
+        {item.proof && (
+          <div
+            className={`mt-5 flex flex-col sm:flex-row sm:items-stretch gap-4 p-4 sm:p-5 border ${
+              isLight
+                ? "bg-gradient-to-br from-orange-50/80 via-white to-rose-50/50 border-orange-200"
+                : "bg-gradient-to-br from-orange-500/[0.08] via-white/[0.02] to-rose-500/[0.06] border-orange-500/20"
+            }`}
+          >
+            <div className={`flex-shrink-0 sm:min-w-[9.5rem] sm:pr-5 sm:border-r ${
+              isLight ? "sm:border-orange-200" : "sm:border-white/10"
+            }`}>
+              <div className={`text-[10px] font-mono font-bold uppercase tracking-[0.16em] mb-1.5 ${
+                isLight ? "text-orange-700" : "text-orange-300"
+              }`}>
+                {item.proof.kicker}
+              </div>
+              <div className={`text-4xl sm:text-5xl font-bold font-mono leading-none bg-clip-text text-transparent ${
+                isLight
+                  ? "bg-gradient-to-br from-gray-900 to-orange-600"
+                  : "bg-gradient-to-br from-white to-orange-300"
+              }`}>
+                {item.proof.metric}
+              </div>
+              <div className={`mt-1.5 text-[11px] font-medium leading-snug ${isLight ? "text-gray-600" : "text-gray-400"}`}>
+                {item.proof.metricLabel}
+              </div>
+            </div>
+            <div className="flex items-start gap-2.5 min-w-0">
+              <IconBuilding
+                size={16}
+                stroke={1.8}
+                className={`flex-shrink-0 mt-0.5 ${isLight ? "text-orange-600" : "text-orange-400"}`}
+              />
+              <p className={`text-sm leading-relaxed ${isLight ? "text-gray-700" : "text-gray-300"}`}>
+                {item.proof.body}
+              </p>
+            </div>
+          </div>
+        )}
+
         {item.highlights && item.highlights.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-5 pt-5 border-t border-dashed border-current opacity-90">
             {item.highlights.map((h) => (
@@ -351,7 +392,7 @@ const ShippedFast = () => {
         <SectionHeading
           subtitle="What I Ship"
           title="Shipped fast. Still running."
-          description="MemContext is the flagship. The rest are real plugins and production-ready apps. Built end-to-end, all live."
+          description="MemContext is the flagship — used by enterprises in production. The rest are real plugins and production-ready apps. Built end-to-end, all live."
           className="mb-12"
         />
 

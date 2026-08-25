@@ -329,12 +329,12 @@ const Hero = () => {
               className="space-y-3 text-center max-w-3xl mx-auto px-4"
             >
               <p className={`text-base sm:text-lg md:text-xl leading-relaxed ${isLight ? 'text-gray-600' : 'text-gray-300'}`}>
-                I build{" "}
+                CTO at Kakiyo — 5M+ requests a day. I build{" "}
                 <span className={`inline-flex items-center gap-1.5 px-3 py-1 font-medium text-sm align-middle transition-colors ${isLight ? 'bg-green-100 text-green-700 border border-green-200 hover:bg-green-200' : 'bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20'}`}>
                   <TrendingUp size={14} />
                   Scalable
                 </span>
-                , backend-heavy AI applications and products engineered for real-world scale, low latency, and strong infrastructure. I focus on applied AI, end-to-end execution, and exceptional{" "}
+                , backend-heavy AI applications engineered for production scale, low latency, and strong infrastructure. I focus on applied AI, end-to-end execution, and exceptional{" "}
                 <span className={`inline-flex items-center gap-1.5 px-3 py-1 font-medium text-sm align-middle transition-colors ${isLight ? 'bg-blue-100 text-blue-700 border border-blue-200 hover:bg-blue-200' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20'}`}>
                   <Sparkles size={14} />
                   User Experience
