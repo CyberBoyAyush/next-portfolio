@@ -38,7 +38,7 @@ export default function CappyBot() {
     {
       id: 'welcome',
       role: 'assistant' as const,
-      parts: [{ type: 'text' as const, text: "Hey, I'm CappyBot — Ayush's AI assistant.\n\nAyush is a Full Stack Developer, AI-first engineer, and CTO at Kakiyo. He builds production AI products end-to-end and ships custom plugins for the tools he uses (MemContext, Zenox, Plnr).\n\nAsk me about his work, what he's built, why founders hire him, or just say what you're building and I'll forward it to him directly." }],
+      parts: [{ type: 'text' as const, text: "Hey, I'm CappyBot — Ayush's AI assistant.\n\nAyush is CTO at Kakiyo. He runs kakiyo.com at 5M+ requests/day — 40M+ row migration, ~90% fewer errors, infra $1,200/mo → $200/mo — and still ships product end-to-end (MemContext, Zenox, Plnr).\n\nAsk me about his work, what he's built, why founders hire him, or just say what you're building and I'll forward it to him directly." }],
       createdAt: new Date(),
     }
   ] : messages;

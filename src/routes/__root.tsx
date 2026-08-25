@@ -48,7 +48,7 @@ function RootComponent() {
       addressCountry: 'IN',
     },
     description:
-      'AI-first engineer and Chief Technology Officer at Kakiyo OÜ. Builds production AI products end-to-end and ships custom plugins for the AI tooling ecosystem (MemContext, Zenox, Plnr). Positioning: "Tell me the outcome. I will ship it." Best fit for founders.',
+      'CTO at Kakiyo OÜ. Operates kakiyo.com at 5M+ requests/day. Led a 40M+ row Appwrite to PlanetScale migration, cut errors ~90%, dropped infra from $1,200/mo to $200/mo, and still ships product end-to-end. Positioning: "I already run production. Tell me the outcome. I will ship it."',
     knowsAbout: [
       'AI-first Engineering',
       'AI Agents',
@@ -105,10 +105,10 @@ function RootComponent() {
     telephone: '+91-9990969661',
     hasOccupation: {
       '@type': 'Occupation',
-      name: 'AI-first Engineer & Chief Technology Officer',
+      name: 'Chief Technology Officer',
       occupationLocation: { '@type': 'Country', name: 'India' },
       skills:
-        'AI-first engineering, full-stack product delivery, MCP integrations, custom plugin development, backend architecture, founding-engineer execution',
+        'Production systems at scale, backend architecture, database migration, low-latency systems, full-stack product delivery, AI-first engineering, founding-engineer execution',
     },
   };
 
@@ -118,7 +118,7 @@ function RootComponent() {
     name: 'Ayush Sharma Portfolio',
     url: siteUrl,
     description:
-      'Portfolio of Ayush Sharma — AI-first engineer and CTO at Kakiyo OÜ. Two homepage modes: Founder Mode (default, outcome-led) and Engineer Mode (technical-deep). Showcases live products (MemContext, Zenox, Plnr, CappyChat), case studies, and technical writing.',
+      'Portfolio of Ayush Sharma — CTO at Kakiyo OÜ, operating kakiyo.com at 5M+ requests/day. Two homepage modes: Founder Mode (default, outcome-led) and Engineer Mode (technical-deep). Showcases live products (MemContext, Zenox, Plnr, CappyChat), case studies, and technical writing.',
     author: { '@type': 'Person', name: 'Ayush Sharma' },
     inLanguage: 'en-US',
     potentialAction: {

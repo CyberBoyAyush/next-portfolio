@@ -15,6 +15,7 @@ const spanClass = (col: 1 | 2 | 3 | undefined, row: 1 | 2 | undefined): string =
 const Tile = ({ tile, isLight, index }: { tile: OutcomeTile; isLight: boolean; index: number }) => {
   const accent = accentMap[tile.accent];
   const isHero = (tile.colSpan ?? 1) >= 2;
+  const longMetric = tile.metric.length > 12;
 
   return (
     <motion.div
@@ -46,8 +47,12 @@ const Tile = ({ tile, isLight, index }: { tile: OutcomeTile; isLight: boolean; i
           </span>
         )}
 
-        <div className={`font-bold font-mono leading-[1.05] mb-2 ${
-          isHero ? "text-4xl sm:text-5xl md:text-6xl" : "text-3xl sm:text-4xl"
+        <div className={`font-bold font-mono leading-[1.15] mb-2 ${
+          isHero
+            ? "text-4xl sm:text-5xl md:text-6xl"
+            : longMetric
+              ? "text-2xl sm:text-3xl"
+              : "text-3xl sm:text-4xl"
         } ${isLight ? "text-gray-900" : "text-white"}`}>
           <span className={`bg-clip-text text-transparent ${
             isLight
@@ -114,7 +119,7 @@ const OutcomesWall = () => {
         <SectionHeading
           subtitle="Receipts"
           title="Numbers, not narratives."
-          description="What I've shipped, who's paying for it, and what changed because of it."
+          description="What changed at Kakiyo — traffic, latency, reliability, cost — and what I still ship."
           className="mb-12"
         />
 

@@ -30,15 +30,15 @@ export const experiences: Experience[] = [
     position: 'Chief Technology Officer',
     duration: 'July 2025 - Present',
     startDate: 'July 2025',
-    description: 'Progressed from Full Stack Developer to CTO while leading backend architecture, AI product delivery, hiring, and infrastructure decisions for Kakiyo.',
+    description: 'Progressed from Full Stack Developer to CTO. Run kakiyo.com at 5M+ requests/day — architecture, reliability, hiring, and shipping on a custom stack built for this scale.',
     responsibilities: [
-      'Migrated millions of rows from Appwrite to PlanetScale.',
-      'Lowered latency from 2.8 seconds (P50) to 20 ms (P50) and 90 ms (P90).',
-      'Removed latency bottlenecks across critical user flows.',
-      'Crafted end-to-end features from product requirements to production rollout.',
-      'Created the hiring pipeline for the company.',
-      'Managed the team across delivery, reviews, and technical direction.',
-      'Reduced the overall infrastructure cost by 50%.'
+      'Operate kakiyo.com at 5M+ requests/day for 10K+ users and 9K+ teams.',
+      'Led a zero-downtime Appwrite to PlanetScale migration: 35+ tables, 40M+ rows, with rollback paths.',
+      'Replaced Appwrite primitives (auth, realtime, database, email) with a custom stack built for this scale.',
+      'Cut P50 latency from 2.8s to 20ms (P90: 90ms), dropped error rate ~90%, with near-100% uptime.',
+      'Cut infrastructure from $1,200/mo to $200/mo.',
+      'Ship features end-to-end on that stack — spec to production.',
+      'Built the hiring pipeline and run the team across delivery, reviews, and technical direction.',
     ],
     technologies: [
       'React',

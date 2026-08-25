@@ -7,18 +7,18 @@ export const Route = createFileRoute('/llms.txt')({
         const baseUrl = 'https://aysh.me';
         const content = `# Ayush Sharma — Portfolio (LLM Content Map)
 
-> Full Stack Developer, AI-first Engineer, and Chief Technology Officer at Kakiyo OÜ. Based in Delhi, India. Builds backend-heavy AI applications, production-grade SaaS products, and custom plugins for the AI tooling ecosystem. Best fit for founders.
+> Full Stack Developer, AI-first Engineer, and Chief Technology Officer at Kakiyo OÜ. Based in Delhi, India. Operates kakiyo.com at 5M+ requests/day. Builds backend-heavy AI applications and production-grade SaaS. Plugins and products on the side. Best fit for founders who need someone already running production.
 
 ## One-line positioning
 
-"I don't need a job description. Tell me the outcome. I'll ship it."
+"I already run production. 5M+ requests a day. Tell me the outcome — I'll ship it."
 
 ## Snapshot
 
 - **Role**: Chief Technology Officer at Kakiyo OÜ (promoted from Full Stack Dev → Lead → CTO in 11 months)
-- **Specialty**: AI-first engineering, full-stack product delivery, custom plugins for AI tooling
+- **Specialty**: Production systems at scale, full-stack product delivery, custom AI tooling
 - **Style**: Ship fast, iterate in production, own the whole stack
-- **Best fit for**: Founders building AI products, dev tools, or backend-heavy systems
+- **Best fit for**: Founders building AI products, dev tools, or backend-heavy systems who need someone who already operates at this scale
 - **Not for**: JIRA-heavy outsourcing engagements; he works as a founding engineer, not a contractor
 
 ## Contact
@@ -35,7 +35,7 @@ export const Route = createFileRoute('/llms.txt')({
 
 The homepage has two modes via the \`?for\` query parameter:
 
-- **Founder Mode** (default, ${baseUrl}/ or ${baseUrl}/?for=founders) — outcome-led homepage with receipts (140× latency win at Kakiyo, −50% infra cost, end-to-end features, millions of rows migrated, 0 → CTO in 11 months, 4+ NPM packages), shipped products with time-to-ship metrics, philosophy (AI-first, ship-first, no-tickets, full-stack), team-player section, services for founders, GitHub stats, and a direct Cal.com booking CTA.
+- **Founder Mode** (default, ${baseUrl}/ or ${baseUrl}/?for=founders) — outcome-led homepage with receipts (5M+ req/day at Kakiyo, 140× latency, −90% errors, 40M+ rows migrated, $1.2k/mo → $200/mo infra, spec → live shipping, 0 → CTO in 11 months, 4+ NPM packages), shipped products with time-to-ship metrics, philosophy (AI-first, ship-first, no-tickets, full-stack), team-player section, services for founders, GitHub stats, and a direct Cal.com booking CTA.
 - **Engineer Mode** (${baseUrl}/?for=engineers) — technical portfolio with hero, skills bento, full work history, project case studies, blog articles, GitHub + LeetCode stats, terminal contact form.
 
 ## How Ayush Works (Four Principles)
@@ -43,7 +43,7 @@ The homepage has two modes via the \`?for\` query parameter:
 1. **AI-first, not AI-enabled.** He doesn't just use AI tools — he builds the plugins, agents, and CLIs that extend them. Zenox for OpenCode. Plnr for codebase planning. MemContext for any MCP-compatible client.
 2. **Ship first. Polish in production.** Rather have it live and rough than perfect and unreleased. Iterates against real user feedback, not assumptions.
 3. **No tickets. Just outcomes.** Give him the user problem and constraints. He handles scope, architecture, and trade-offs.
-4. **He owns the whole stack.** Frontend, backend, infra, AI integrations, code review, hiring. Founding-engineer pattern.
+4. **He owns the whole stack.** Frontend, backend, infra, AI integrations, code review, hiring. Replaced a BaaS with a custom stack at Kakiyo. Founding-engineer pattern.
 
 ## Beyond the Code
 
@@ -59,11 +59,14 @@ CTO at Kakiyo. Career arc:
 - Apr 2026 – Present: Chief Technology Officer (full-time)
 
 Receipts at Kakiyo:
-- Migrated millions of rows from Appwrite to PlanetScale, zero downtime
+- Operates kakiyo.com at 5M+ requests/day for 10K+ users and 9K+ teams
+- Zero-downtime Appwrite → PlanetScale migration: 35+ tables, 40M+ rows, rollback paths
+- Replaced Appwrite primitives (auth, realtime, database, email) with a custom stack
 - Lowered P50 latency from 2.8s to 20ms (140× faster), P90 to 90ms
-- Reduced overall infrastructure cost by 50%
+- Dropped error rate ~90%, near-100% uptime
+- Cut infrastructure from $1,200/mo to $200/mo
 - Built the company's hiring pipeline
-- Shipped multiple AI features end-to-end (spec to production rollout)
+- Shipped multiple features end-to-end (spec to production rollout)
 - Manages the team across delivery, code review, and technical direction
 
 Kakiyo tech: React, Next.js, TypeScript, Node.js, PostgreSQL, PlanetScale, AWS, Docker, TailwindCSS, Prisma, GraphQL.
@@ -73,6 +76,8 @@ Kakiyo tech: React, Next.js, TypeScript, Node.js, PostgreSQL, PlanetScale, AWS, 
 URL: https://memcontext.in · MCP + REST API
 
 Persistent, evolving memory layer for AI. Hybrid search (vector + keyword fused via Reciprocal Rank Fusion), auto-expiring temporal facts, feedback-driven ranking, version history. Plugs into Claude, Cursor, Windsurf, GitHub Copilot, Cline, Codex, Gemini — any MCP-compatible client — or any custom app via REST.
+
+Used by enterprises and companies in production. One company built their AI support on MemContext; that system now handles 80% of their support tickets, powered by MemContext.
 
 Free plan available (300 memories), paid tiers go up to 10K. This is the flagship product and the one Ayush is most committed to keeping accessible.
 
@@ -100,7 +105,7 @@ Free plan available (300 memories), paid tiers go up to 10K. This is the flagshi
 2. **Build your AI layer** — Agents, RAG, tool calling, MCP, observable infra around models.
 3. **Custom plugins & integrations** — MCP servers, CLIs, IDE plugins, browser extensions.
 4. **Rescue a stalled codebase** — Take over, stabilize, ship in weeks.
-5. **Fractional CTO / founding engineer** — Deeply embedded, architecture, hiring, reviews, infra.
+5. **Fractional CTO / founding engineer** — Deeply embedded, architecture, hiring, reviews, infra. Operates Kakiyo at 5M+ requests/day.
 
 ## Key Pages
 

@@ -16,6 +16,12 @@ export interface Project {
   challenges: string[];
   videoUrl?: string;
   category: "AI" | "Others";
+  impact?: {
+    kicker: string;
+    metric: string;
+    metricLabel: string;
+    body: string;
+  };
 }
 
 export const projects: Project[] = [
@@ -23,7 +29,7 @@ export const projects: Project[] = [
     id: 1,
     title: "MemContext",
     description:
-      "Persistent, evolving memory layer for AI coding agents with MCP-native integrations, hybrid retrieval, and cross-session recall.",
+      "Persistent memory layer for AI. Used by enterprises — one company built their AI support on it, and it now handles 80% of their tickets.",
     image:
       "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPuFUBv7VILjGC7RxNs1WqaPXeldA0nz3E968k",
     tags: [
@@ -49,7 +55,7 @@ export const projects: Project[] = [
     color: "from-violet-600 to-indigo-600",
     slug: "memcontext",
     detailedDescription:
-      "MemContext solves one of the biggest gaps in AI-assisted development: agents lose user preferences, project context, and prior decisions between sessions. I built it as a persistent memory layer that plugs into MCP-compatible tools so assistants can save, retrieve, and evolve context instead of starting from zero every time. The hosted product is designed to be simple to adopt, connect an API key, add the MCP config, and your assistant starts remembering across sessions.\n\nThe system combines a Hono API, MCP server, Next.js dashboard, public docs, and marketing site inside a Turborepo monorepo. Under the hood it uses hybrid retrieval with vector embeddings and PostgreSQL full-text search, relation-aware memory updates, temporal expiry, feedback-aware ranking, and project-scoped organization. That makes the memory layer useful not only for one agent, but across Claude, Cursor, OpenCode, Codex CLI, Windsurf, and other MCP-compatible clients.",
+      "MemContext solves one of the biggest gaps in AI-assisted development: agents lose user preferences, project context, and prior decisions between sessions. I built it as a persistent memory layer that plugs into MCP-compatible tools so assistants can save, retrieve, and evolve context instead of starting from zero every time. The hosted product is designed to be simple to adopt, connect an API key, add the MCP config, and your assistant starts remembering across sessions.\n\nIt is used by enterprises and companies in production — not just as a coding-agent plugin. One company built their AI support on MemContext; that system now handles 80% of their support tickets, powered by the same memory layer.\n\nThe system combines a Hono API, MCP server, Next.js dashboard, public docs, and marketing site inside a Turborepo monorepo. Under the hood it uses hybrid retrieval with vector embeddings and PostgreSQL full-text search, relation-aware memory updates, temporal expiry, feedback-aware ranking, and project-scoped organization. That makes the memory layer useful not only for one agent, but across Claude, Cursor, OpenCode, Codex CLI, Windsurf, custom apps via REST, and production support workloads.",
     challenges: [
       "Combining vector embeddings, PostgreSQL full-text search, and query-variant retrieval into a memory layer that surfaces relevant context instead of noisy matches.",
       "Designing evolving memory flows so entries can be saved, updated, extended, expired, and ranked by feedback without creating duplicate context.",
@@ -57,6 +63,12 @@ export const projects: Project[] = [
       "Structuring a monorepo that shares types cleanly across the API, MCP server, dashboard, docs, and website while keeping deployments independent.",
     ],
     category: "AI",
+    impact: {
+      kicker: "Used by enterprises & companies",
+      metric: "80%",
+      metricLabel: "of support tickets handled",
+      body: "A company built their AI support on MemContext. It now handles 80% of tickets without a human in the loop — powered by MemContext.",
+    },
   },
   {
     id: 2,

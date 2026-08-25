@@ -176,15 +176,15 @@ const FounderHero = () => {
             <motion.div variants={itemVariants} className="space-y-2 text-center">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight">
                 <span className={`drop-shadow-sm ${isLight ? "text-gray-900" : "text-white"}`}>
-                  I don&apos;t need a
+                  I already run
                 </span>
                 <br />
                 <span className={`text-transparent bg-clip-text ${isLight ? "bg-gradient-to-br from-gray-900 via-orange-700 to-rose-700" : "bg-gradient-to-br from-white via-orange-200 to-amber-300"}`}>
-                  job description.
+                  production.
                 </span>
               </h1>
               <p className={`text-lg sm:text-xl md:text-2xl font-medium ${isLight ? "text-gray-600" : "text-gray-400"}`}>
-                Tell me the outcome.{" "}
+                5M+ requests a day. Tell me the outcome —{" "}
                 <span className={`font-semibold ${isLight ? "text-gray-900" : "text-white"}`}>
                   I&apos;ll ship it.
                 </span>
@@ -194,11 +194,20 @@ const FounderHero = () => {
             {/* Description */}
             <motion.div variants={itemVariants} className="max-w-3xl mx-auto px-2">
               <p className={`text-sm sm:text-base md:text-lg leading-relaxed text-center ${isLight ? "text-gray-600" : "text-gray-300"}`}>
-                AI-first engineer. CTO at{" "}
-                <span className={`font-semibold ${isLight ? "text-gray-900" : "text-white"}`}>Kakiyo</span>.
-                I build crazy fast, iterate in production, and ship{" "}
-                <span className={`font-semibold ${isLight ? "text-orange-700" : "text-orange-300"}`}>custom plugins</span>{" "}
-                for every tool I use. Best fit for founders who don&apos;t write tickets and judge on what&apos;s live.
+                CTO at{" "}
+                <a
+                  href="https://kakiyo.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`font-semibold underline-offset-2 hover:underline ${isLight ? "text-gray-900" : "text-white"}`}
+                >
+                  kakiyo.com
+                </a>
+                . Replaced a BaaS with a custom stack, moved 40M+ rows with zero downtime, cut errors ~90%, and dropped infra{" "}
+                <span className={`whitespace-nowrap font-semibold ${isLight ? "text-gray-900" : "text-white"}`}>
+                  $1.2k/mo → $200/mo
+                </span>
+                . I still ship product end-to-end — plugins and products on the side.
               </p>
             </motion.div>
 

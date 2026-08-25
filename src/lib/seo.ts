@@ -14,9 +14,9 @@ export const heroProfileImage = 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPWUHGCk8
 // darker visual language matches the rest of the technical-deep flow.
 export const heroProfileImageEngineer = 'https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPhWVT9F8tcdLGNp9S0ETXmuk4jy87UFaBIrYw';
 
-const ROOT_TITLE = 'Ayush Sharma | AI-first Engineer & CTO at Kakiyo';
-const ROOT_DESCRIPTION = 'AI-first engineer and CTO at Kakiyo OÜ. I build production AI products end-to-end and ship custom plugins for the tools I use — MemContext (MCP memory layer), Zenox (OpenCode agents), Plnr (AI planning CLI). 140× latency wins, 50% infra cost cuts, end-to-end features. Best fit for founders.';
-const ROOT_TWITTER_DESCRIPTION = 'AI-first engineer and CTO. I ship production AI products and custom plugins for the tools I use. Tell me the outcome — I\'ll ship it.';
+const ROOT_TITLE = 'Ayush Sharma | CTO at Kakiyo — 5M+ requests/day';
+const ROOT_DESCRIPTION = 'CTO at Kakiyo (kakiyo.com). 5M+ requests/day, 40M+ rows migrated Appwrite → PlanetScale, ~90% fewer errors, infra $1,200/mo → $200/mo. I still ship product end-to-end — MemContext, Zenox, Plnr. Tell me the outcome — I\'ll ship it.';
+const ROOT_TWITTER_DESCRIPTION = 'CTO at Kakiyo. 5M+ requests/day. 40M+ row migration, ~90% fewer errors, infra $1.2k/mo → $200/mo. Tell me the outcome — I\'ll ship it.';
 
 export function rootHead() {
   return {
@@ -36,7 +36,7 @@ export function rootHead() {
       { property: 'og:image', content: defaultOgImage },
       { property: 'og:image:width', content: '2400' },
       { property: 'og:image:height', content: '1200' },
-      { property: 'og:image:alt', content: 'Ayush Sharma — AI-first Engineer and CTO at Kakiyo' },
+      { property: 'og:image:alt', content: 'Ayush Sharma — CTO at Kakiyo, 5M+ requests/day' },
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:site', content: '@theayush' },
       { name: 'twitter:creator', content: '@theayush' },

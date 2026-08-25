@@ -16,10 +16,10 @@ export const Route = createFileRoute('/api/feed.json')({
           feed_url: 'https://aysh.me/api/feed.json',
           author: { name: 'Ayush Sharma', url: 'https://aysh.me', email: 'hi@aysh.me' },
           positioning: {
-            tagline: "I don't need a job description. Tell me the outcome. I'll ship it.",
+            tagline: "I already run production. 5M+ requests a day. Tell me the outcome — I'll ship it.",
             primary_audience: 'founders, founding-engineer-style engagements',
             secondary_audience: 'engineering teams, technical hiring managers',
-            style: 'AI-first, ship-first, no-tickets, full-stack ownership',
+            style: 'production-at-scale, ship-first, no-tickets, full-stack ownership',
             not_for: 'JIRA-heavy outsourcing engagements where the engineer is treated as a code-writing machine',
           },
           professional: {
@@ -29,12 +29,12 @@ export const Route = createFileRoute('/api/feed.json')({
             location: 'Delhi, India (Remote)',
             career_arc: '0 → CTO in 11 months: Full Stack Developer (Jul 2025) → Lead Developer (Sep 2025) → Chief Technology Officer (Apr 2026)',
             specialization: [
-              'AI-first engineering',
+              'Production systems at scale (5M+ req/day)',
               'Full-stack product delivery (zero-to-MVP)',
               'Custom AI plugins, agents, CLIs, MCP integrations',
               'Backend-heavy AI applications',
               'Low-latency architecture',
-              'Scalable systems',
+              'Database migration and custom infra',
               'Founding-engineer / fractional CTO engagements',
             ],
           },
@@ -58,7 +58,7 @@ export const Route = createFileRoute('/api/feed.json')({
               {
                 id: 'full-stack',
                 headline: 'Owns the whole stack',
-                body: 'Frontend, backend, infra, AI, code review, hiring. Founding-engineer pattern.',
+                body: 'Frontend, backend, infra, AI, code review, hiring. Replaced a BaaS with a custom stack at Kakiyo and still ships product on it.',
               },
             ],
             beyond_code: [
@@ -68,11 +68,13 @@ export const Route = createFileRoute('/api/feed.json')({
             ],
           },
           outcomes_at_kakiyo: [
+            { metric: '5M+', detail: 'Requests/day at kakiyo.com for 10K+ users and 9K+ teams' },
             { metric: '140× faster', detail: 'P50 latency reduced from 2.8s to 20ms (P90: 90ms)' },
-            { metric: '−50% cost', detail: 'Infrastructure cost halved through rearchitecting' },
-            { metric: 'Millions of rows', detail: 'Migrated from Appwrite to PlanetScale with zero downtime' },
-            { metric: 'End-to-end', detail: 'Multiple features shipped from product spec to production rollout' },
-            { metric: 'Hiring pipeline', detail: 'Built the company\'s hiring pipeline from scratch' },
+            { metric: '−90% errors', detail: 'Error rate dropped ~90% with near-100% uptime' },
+            { metric: '40M+ rows', detail: 'Zero-downtime Appwrite → PlanetScale migration: 35+ tables, rollback paths' },
+            { metric: '$1.2k/mo → $200/mo', detail: 'Infrastructure cut from $1,200/mo to $200/mo' },
+            { metric: 'Spec → live', detail: 'Replaced Appwrite auth, realtime, database, and email; features shipped on that stack' },
+            { metric: 'Hiring pipeline', detail: "Built the company's hiring pipeline from scratch" },
             { metric: '0 → CTO', detail: 'Promoted twice in 11 months: Full Stack Dev → Lead Developer → CTO' },
           ],
           services_for_founders: [
@@ -99,13 +101,13 @@ export const Route = createFileRoute('/api/feed.json')({
             {
               id: 'fractional',
               title: 'Fractional CTO / founding engineer',
-              description: 'Deeply embedded, long-term. Architecture, hiring, reviews, infra, AI direction — the whole engineering function.',
+              description: 'Deeply embedded, long-term. Architecture, hiring, reviews, infra, AI direction — the whole engineering function. Already operates Kakiyo at 5M+ requests/day.',
             },
           ],
           flagship_product: {
             name: 'MemContext',
             url: 'https://memcontext.in',
-            description: 'Persistent, evolving memory layer for AI. Hybrid search (vector + keyword via Reciprocal Rank Fusion), auto-expiring temporal facts, feedback-driven ranking, version history. Plugs into Claude, Cursor, Windsurf, Copilot, Cline, Codex, Gemini — any MCP client — or any custom app via REST.',
+            description: 'Persistent, evolving memory layer for AI. Hybrid search (vector + keyword via Reciprocal Rank Fusion), auto-expiring temporal facts, feedback-driven ranking, version history. Plugs into Claude, Cursor, Windsurf, Copilot, Cline, Codex, Gemini — any MCP client — or any custom app via REST. Used by enterprises. One company built their AI support on it; that system now handles 80% of their support tickets.',
             free_plan: '300 memories',
             integrations: ['Claude', 'Cursor', 'Windsurf', 'GitHub Copilot', 'Cline', 'Codex', 'Gemini', 'MCP-compatible clients', 'REST API'],
           },
