@@ -1,0 +1,474 @@
+---
+title: "Leaving a NoSQL Backend for Postgres: How We Migrated Kakiyo Off Appwrite"
+description: "We moved Kakiyo from Appwrite to PlanetScale Postgres: 40M+ rows, 35+ tables, dual writes, catch-up scripts, Better Auth, and what actually got better after cutover."
+date: "2026-09-01"
+author: "Ayush Sharma"
+tags: ["Databases", "PostgreSQL", "PlanetScale", "Appwrite", "Migration", "Backend", "NoSQL"]
+readingTime: "28 min read"
+featured: true
+isHidden: false
+imageUrl: "https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPy419gxboEDeUo3XJ0zRAdWNGj9hns5b6fBcZ"
+---
+
+Every migration guide tells you to start with a small, quiet table and build confidence. We started with our biggest and busiest one, on a live product, while people were still writing to it. That choice is why the other thirty-four tables felt almost boring.
+
+We moved Kakiyo off Appwrite and onto **PlanetScale Postgres**. **40M+ rows. 35+ tables.** A NoSQL-style document backend, with permissions, teams, realtime, and auth baked in, rebuilt on a real Postgres database hosted on PlanetScale. The product stayed up the whole time. The one thing users noticed later was a forced re-login when we invalidated old sessions.
+
+One thing up front, because tone matters: this is **not** an "Appwrite is bad" post. We are genuinely **grateful to Appwrite and the Appwrite team**. Appwrite is the service that helped us **build Kakiyo** in the first place and **scale it through the early years**. **Permissions, teams, realtime, auth**, and a fast path from idea to product were real advantages. If we were remaking a product from scratch tomorrow, Appwrite would still be a **strong default** for a lot of teams, including us in the right stage.
+
+What changed is our use case. At our current read volume, query shapes, cost profile, and need for raw SQL control, PlanetScale Postgres fit better. The migration happened because the product outgrew the shape of the stack we started with, not because Appwrite stopped being a great service.
+
+Calendar-wise this took about **two months**. Not because 40M rows magically need eight weeks if you freeze the company around them. We were shipping new features in parallel the entire time. The migration was interleaved with the roadmap, which is why it stretched, and also why anything new in that window was built on PlanetScale from day one.
+
+By the end of this post you will know the phase order we used, why PlanetScale was the destination, how dual writes and catch-up scripts behave under real write volume, why we skipped Postgres RLS, why we changed login before the hard auth cutover, and which small decisions keep a migration from becoming a very bad weekend.
+
+---
+
+## On paper this is five migrations, not one
+
+Appwrite is not just a database. That is the whole point of it, and that is also why leaving it is more work than "export rows, import rows." That product depth is exactly why Appwrite was so useful early on.
+
+When you use Appwrite as your backend, you get a product stack that feels like one thing:
+
+- Document storage with a flexible schema
+- Document-level permissions
+- Teams and memberships as a first-class feature
+- Realtime subscriptions
+- Users and sessions, including email/password auth
+- ID generation that produces unique IDs for you
+
+PlanetScale gives us hosted Postgres: storage, indexes, roles, branching-friendly operations, and the usual Postgres primitives, without handing you Appwrite's finished product stack on top. The moment you say "we are moving to PlanetScale Postgres," you are planning several migrations at once:
+
+1. **Storage**: document shapes to relational tables
+2. **Authorization**: document ACLs to application-level checks
+3. **Realtime**: server-pushed events to something you own
+4. **Identity**: Appwrite users and sessions to your own auth system
+5. **IDs**: keep primary keys stable so every foreign key still resolves
+
+Any one of those is a normal sprint. Doing all five while the product is live is the part that looks scary. It is doable if you phase it.
+
+Here is the shape of what changed:
+
+![Before and after architecture](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPl0jcbzsc5pTOzgtJsIUQNxveLu9Gr6FBYjX2)
+
+---
+
+## The phases, end to end
+
+Every table went through roughly the same sequence:
+
+1. Design the Postgres schema for that table's real query shapes
+2. Backfill existing rows from Appwrite in batches
+3. Dual-write new changes to both databases
+4. Catch up anything the backfill missed or that changed mid-flight
+5. Verify, then flip reads to Postgres only (no Appwrite read fallback)
+6. Soak for about a week with dual-write still running
+7. Stop writing to Appwrite
+
+![Migration phases](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAP6ZNojEGiUkrPREo3c6FW0Bix92TjyuKDaz5n)
+
+Order matters. Reads flip after the data is verified. Dual-write stops last, because that is your rollback window. Give that up too early and your only recovery plan is a restore.
+
+A few words beginners need before the details: **backfill** copies history into Postgres. **Dual-write** means live creates and updates go to both stores for a while. **Catch-up** re-syncs rows that changed while the backfill was running. **Soak** is the period after Postgres reads go live where you keep writing to both, so flipping back is still cheap.
+
+And step one is the part migration posts usually skip: you have to design the SQL.
+
+---
+
+## We migrated the scariest table first
+
+Most advice says start small. We did the opposite. We started with our hottest and largest table: **10M+ rows**, read and written from many places in the product.
+
+The easy tables teach you almost nothing about scale. A quiet settings table migrates cleanly, and you learn nothing about batch size, catch-up drift, or indexes. Then you hit the real table and discover your harness was designed for a workload that does not exist.
+
+The hard table teaches you everything at once:
+
+- How long a full backfill actually takes
+- Whether your batch size is sane
+- What your query shapes really are once you leave the document API
+- Which indexes you actually need
+- How much catch-up drifts under real write volume
+
+There was also a product reason. The pain that started this project was search and complex reads at scale on that exact table. Filtering and sorting across millions of documents was slow, and Postgres was clearly going to be better at it.
+
+So the hardest table was both the biggest risk and the biggest payoff. We took it first, learned the playbook, and the remaining 34 tables were mostly repetition with a different schema.
+
+**If your migration has a scary table, that is your first table.** Leave it for last and everything before it was practice for a test you have not seen.
+
+---
+
+## What we had to rebuild ourselves
+
+Before the migration, our dashboard often talked to Appwrite directly. That is a reasonable way to build, and two Appwrite features made it feel great:
+
+- Team permissions lived on documents, so the database itself blocked cross-team reads
+- Realtime was excellent. Subscribe to a collection and updates arrive without polling
+
+Losing both on the same day is the real cost of this migration. Here is what replaced them.
+
+### Reads go through an authenticated API
+
+After the migration, the dashboard talks to our API. The API authenticates the request, then queries Postgres. Permissions moved up a layer. Instead of document ACLs, we own authorization end to end.
+
+### How permissions work now
+
+Appwrite permissions lived on documents. That is convenient when the client talks to the database. It is awkward once every request already goes through your API.
+
+Our replacement is identifier-based on purpose.
+
+Almost every row carries a clear owner key. For team data, that is a `team_id`. For user-owned rows, that is a `user_id`. Those columns are first-class in the schema, indexed, and set on create. They are not optional metadata stuffed inside JSON.
+
+Then every normal customer request goes through the same sequence:
+
+1. Authenticate the caller
+2. Resolve the active team and membership
+3. Validate in the API / core layer before sensitive work
+4. Scope in SQL with `WHERE team_id = $1` (or the matching user identifier)
+
+Core validation answers "is this person allowed to call this endpoint for this team?" SQL scoping answers "can this query return another team's rows?" You want both. An ID-only lookup without a team filter can leak data. A team filter without membership checks is also incomplete. Both layers have to agree on the same identifiers from the request context.
+
+| | Document ACLs (Appwrite) | Identifier scoping (our API + Postgres) |
+|---|---|---|
+| Where rules live | On each document | In auth/core code and in every tenant query |
+| Primary key for access | Per-document permission list | `team_id` / `user_id` on the row |
+| Failure mode | Forget a permission on write | Forget a scope in a query |
+| Changing rules | Rewrite documents | Change code and schema intentionally |
+
+On create, the server sets `team_id` (or `user_id`) from the authenticated context, not from a free-form client field you blindly trust. On update and delete, you match the row id and the scope identifier.
+
+One honesty check: trusted admin and worker paths can run broader queries on purpose. The point of the shared data layer is that tenant routes use scoped helpers by convention, not that every possible SQL string in the repo is magically tenant-safe. Discipline still matters.
+
+### Why we did not use Postgres RLS
+
+If you know Postgres, you are probably asking about row level security by now. We looked at it and chose not to use it for Kakiyo.
+
+We are a B2B SaaS. Support and admin tooling need to inspect customer data across team boundaries when something breaks. That is not a corner case. It is weekly work. With RLS as the main tenancy wall, you usually invent a bypass role for those tools. The moment a bypass exists, the real boundary is whoever decides which role to use. You end up maintaining two authorization systems and trusting the weaker one.
+
+Our model already assumes an API in front of the database. Untrusted browsers never talk to Postgres directly. RLS's biggest win, safe direct client access, is a win we do not need.
+
+There are also operational reasons. RLS often wants per-request session state on the connection. We run shared pools. Getting that wrong under load is the failure you least want. And when a customer says "my data is missing," "the row does not exist" and "a policy filtered it" look identical. Policies make support harder in a product where support is constant.
+
+RLS is still the right answer for some systems, especially if clients query the database directly or compliance requires database-enforced tenancy. That was not our shape. We kept authorization in the API, put `team_id` / `user_id` on the rows, scoped tenant SQL on purpose, and kept explicit admin paths for debugging.
+
+### Writes go through one shared data layer
+
+Creates, updates, and deletes go through our API and the shared Postgres helpers. The real work was finding every mutation path: routes, workers, schedulers, cleanup jobs, cascaded deletes. Dual-write is not finished until those are all accounted for.
+
+### Smart polling instead of Appwrite realtime
+
+We replaced Appwrite realtime with a centralized polling utility. Not the naive kind that refetches the whole screen every few seconds.
+
+Ours is timestamp-based. The client remembers the last `updated_at` it has seen. On each poll it asks whether anything changed after that time. If nothing changed, the response is tiny. If something did, we only pull the delta. Most polls find nothing new, so usage stayed reasonable.
+
+We kept it as one shared utility so every screen gets the same pause-on-hidden-tab behavior, backoff, and a single place to swap the transport later. WebSockets are still a fair future optimization. We did not want to rebuild a realtime stack in the middle of a database migration.
+
+---
+
+## Half the work happens before you move a single row
+
+If dual-write and catch-up are the scary ops work, schema design decides whether those ops are even worth doing.
+
+Coming from Appwrite, every collection looks like a flexible document. Nested objects are normal. "Just store the JSON" is the easy answer. Postgres does not let you pretend forever. You get real types, constraints, and indexes. That is the upside and the homework.
+
+### You derive the schema from the app
+
+We did not dump documents into a `jsonb` column and call it migrated. That is a transfer, not a redesign.
+
+For each table we looked at the application: how we create the record, how hot screens filter and sort it, which nested blobs are queried versus only returned whole, and which values need uniqueness or team scoping on every read.
+
+If the dashboard always filters by `team_id` and sorts by `updated_at`, those are columns with indexes. If a nested object is only ever loaded with the parent, JSON is fine. If a counter or status drives product logic, it wants a typed column. Document shapes lie. The code tells the truth about how data is used.
+
+### Every type choice needed a viability check
+
+Our destination was always **PlanetScale Postgres**, not "some random Postgres somewhere." That mattered for how we designed schemas and how we operated the cutover: managed Postgres, the type toolkit we needed, and a place we were willing to run production after Appwrite.
+
+PlanetScale's Postgres supports the usual toolkit: `text`, `boolean`, integers, `timestamptz`, `date`, `jsonb`, arrays, and more. The real questions were whether a type worked the way we needed with our client and pooling setup, whether it helped retrieval, and whether we could write clean constraints and indexes around it.
+
+A few examples that came up constantly:
+
+| Document habit | Better Postgres shape when queried | When JSON is still fine |
+|---|---|---|
+| Everything in one flexible object | Typed columns for filter / sort fields | Opaque payloads returned as a unit |
+| Nested status / counters | `integer` or `boolean` | Rarely touched metadata |
+| Timestamps as strings | `timestamptz` (or `date` for calendar days) | Never, if you sort on them |
+
+We defined each table in numbered SQL migrations, with explicit nullability and indexes matched to known query shapes. Pretty SQL is not the goal. Intentional SQL is: types the platform supports, constraints the app can rely on, and a shape the catch-up script can upsert into without guessing.
+
+### The migration was also a database improvement
+
+This is the part I care about most, beyond cost.
+
+We did not only move data. We used the move to store data in a way that is easier to retrieve correctly. Nested blobs that we always filtered on became columns. Frequently updated counters became integers. Team scoping became a first-class `team_id`. Uniqueness rules that used to be "hope the app remembers" became database constraints.
+
+That redesign is why complex reads got faster. Same product facts, better physical layout. Migrate the meaning, not the exact document shape. Keep compatibility at the API and ID layer. Improve storage while you are already rewriting the path.
+
+---
+
+## The backfill and catch-up scripts
+
+We could not just dump the data. There was no clean export of the whole dataset. Appwrite is an HTTP API, so the backfill was a JavaScript migration script:
+
+1. Fetch a batch of documents from Appwrite
+2. Reshape each document into the SQL row shape
+3. Upsert the batch into Postgres
+4. Record progress
+5. Repeat
+
+JS made sense because fetching, reshaping, retrying, and logging is application work, and we already lived in that stack. For the big tables, a full pass took on the order of **12 to 14 hours**. Fine if you plan for it. A disaster if you assumed "run it after dinner and cut over tonight."
+
+### Every script is re-runnable
+
+The important property is not that the script works once. It has to be safe to run again.
+
+Migration scripts get interrupted. Network blips, deploys, rate limits, a bad row deep in the table. Re-runnable means upsert instead of blind insert, durable progress, and honest failure handling. If a batch fails, we retry rows individually so the exact bad rows are named. A run with unresolved skipped rows does not get to report success. Fix the rows, then rerun.
+
+Once the script is safe to rerun, you stop being afraid of it. You run it mid-day. You run it again after a schema tweak. You run it as a verification pass.
+
+### Catch-up uses `updated_at` windows
+
+The first pass takes those 12 to 14 hours. The product does not stop. By the time you finish, some early rows have already changed.
+
+Catch-up asks the source for everything modified since the last pass, in batches, and upserts it. We also capture an upper bound before processing so writes that arrive mid-run belong to the next pass. Reruns are much faster than the first migration because they do not walk every row again. They chase what changed.
+
+Deletes are a separate story. A timestamp window finds creates and updates. It does not magically find a row that disappeared. Deletes had to go through dual-write or an explicit reconciliation path, not only catch-up.
+
+### How `isMigrated` actually works
+
+On the Appwrite side we added an `isMigrated` boolean. Pre-existing rows start as `null` or `false`, so the initial pass can select unfinished work. That default matters for history.
+
+Live dual-written rows are different. When the product creates or updates a row during the migration window, that write already goes to Postgres first. Those rows are marked `isMigrated: true` after the Postgres write succeeds, because they are already migrated. If you left every live create as false, catch-up would keep rediscovering rows you already wrote.
+
+The non-negotiable rule: flip the flag to true only after Postgres confirms. Get this backwards and you create rows that claim to be migrated but are not. Users find those weeks later.
+
+### Preserve the original `updated_at` when marking migrated
+
+When you set `isMigrated = true` on the source record, most systems bump `updated_at`. Your bookkeeping write then looks like a content change. Catch-up uses `updated_at` to find changed rows, so every migrated row immediately reappears as "changed." Catch-up never converges.
+
+So when writing the migration flag, we preserved the original `updated_at`. The flag is metadata about our process, not a change to the user's data.
+
+**Bookkeeping should never look like content.**
+
+### Upserts that refuse to overwrite newer data
+
+This is what lets backfill and live traffic run at the same time without corrupting anything.
+
+Picture Ayush and Rahul on the same lead:
+
+1. At `10:00:00`, the catch-up script reads the lead from Appwrite
+2. At `10:00:03`, someone edits that lead in the product. Dual-write puts the fresh version in Postgres with `updated_at = 10:00:03`
+3. At `10:00:05`, the catch-up batch finally writes its older copy from `10:00:00`
+
+Without a guard, step 3 silently overwrites step 2. The edit disappears. No error, no alert.
+
+The guard is a condition on the write:
+
+```sql
+INSERT INTO records (id, team_id, payload, created_at, updated_at)
+VALUES ($1, $2, $3, $4, $5)
+ON CONFLICT (id) DO UPDATE
+SET payload = EXCLUDED.payload,
+    updated_at = EXCLUDED.updated_at
+WHERE records.updated_at < EXCLUDED.updated_at;
+```
+
+An older version cannot overwrite a newer one. In production we also avoid replacing `created_at` on conflict, and we compare business fields carefully so a marker write cannot pretend to be a content update. The simplified version above is enough to understand the idea. This is what turns "run the migration during a maintenance window" into "run the migration on a Tuesday afternoon."
+
+![Dual-write and catch-up flow](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPBB0ygIeVIGAKpODh8NjoESMQf21053RuqywU)
+
+---
+
+## Dual writes and the one week rollback window
+
+Dual-write means every live write goes to both databases during the transition. Ordering matters.
+
+We wrote to Postgres first, then Appwrite. Postgres is the destination. We want failures on the new system to be loud while the old system is still available. There is no real distributed transaction across the two stores, so each mutation pre-generates one ID and one set of timestamps and sends the same values to both. If the Appwrite create fails after Postgres succeeded, we compensate by deleting the Postgres row we just inserted. Partial failures still happen. You log them, reconcile them, and do not pretend the world is perfectly consistent just because dual-write is on.
+
+### How we knew it was safe to flip reads
+
+Before flipping reads we wanted evidence, not vibes:
+
+- Row counts understood and explained, not only "close enough"
+- Sampled rows compared field by field with the same IDs
+- `created_at` and `updated_at` matching the source where they should
+- A clean second migration run with no unresolved skipped rows
+- Every production read path confirmed to hit Postgres
+
+After the flip, we did **not** fall back to Appwrite on miss. A fallback hides migration gaps and gives you inconsistent behavior. The row is in Postgres, or you have a bug you want to see.
+
+### The soak sequence
+
+1. Dual-write on, reads still from Appwrite. Nothing user-visible changes.
+2. Flip reads to Postgres. If the data is wrong, you find out now. Dual-write is still running, so flipping reads back is still a deploy, not a restore.
+3. Soak for about a week with dual-write still running.
+4. Turn off Appwrite writes. Postgres only.
+
+A week is how long it takes for slow paths to happen at least once: weekly jobs, odd admin flows, timezone edges. During that week, read rollback is still relatively cheap. It is not magic consistency. It is "both stores are receiving writes, so Appwrite is still a usable safety net for reads if Postgres looks wrong."
+
+### Anything new was built on PlanetScale from day one
+
+During those roughly two months of calendar time, new product work went **PlanetScale-only from day one**. That paid off twice. The newest code never had to be migrated, and the team got real practice on the new data layer before it became mandatory.
+
+In that same window request volume grew about **1.5x**. Migrating while traffic rises is annoying. It is also a useful stress test.
+
+Once you have committed to a migration, stop adding to the pile. Every new feature written against the old system is a feature you will migrate twice.
+
+---
+
+## We wrote a thin Postgres layer instead of using an ORM
+
+We did not use Drizzle or Prisma. That is not a religion. Both are good tools. For this migration we already knew our query shapes, still needed Appwrite-shaped documents in memory for a while, and wanted one place to apply team scoping and field mapping.
+
+What we built is a small module every route calls. Every function takes the table name first, then the id or payload:
+
+```typescript
+const lead = await pg.get("LEADS", leadId, { teamId });
+
+const leads = await pg.list("LEADS", {
+  teamId,
+  orderBy: "updated_at",
+  orderDir: "DESC",
+  limit: 50,
+});
+```
+
+A table mapping registry sits underneath. Application fields like `teamId` become `team_id`. Call sites stay simple. Schema details live in one map. Retries, logging, team scoping for tenant reads, and JSON shaping all have one home. If we need to change those later, we change the layer once instead of hunting through forty route files.
+
+### Indexes, because API traffic went up
+
+When the dashboard talked to Appwrite directly, a lot of read traffic never touched our API. After the migration, all of it does. API traffic rose for that reason alone, on top of the ~1.5x product growth. So we added indexes for the filters and sorts the screens actually run. Deeper index mental model: [Database Indexes: The Complete Guide](/blogs/database-indexes-complete-guide).
+
+---
+
+## Keeping the same IDs
+
+My favorite decision in the whole migration: we kept generating IDs with Appwrite's `ID.unique()`.
+
+Not only for old rows. We kept the generator. New Postgres rows still get IDs in the same format.
+
+Your database is a graph of references. Campaigns point at teams. Messages point at conversations. Those IDs are everywhere, including caches, logs, external systems, and bookmarked URLs. Change the format mid-migration and you need a mapping layer across every foreign key. Keep the generator and foreign keys need no remapping at all.
+
+Yes, it is a little odd to still import an Appwrite helper after leaving Appwrite. I will take that trade every time. Changing ID generation later can be its own project. Doing it during a migration means you cannot tell which change broke things.
+
+---
+
+## Teams, memberships, and invitations
+
+Appwrite Teams is a real product feature, not just a table. We had **9K+ teams** using it.
+
+Teams and memberships are relational data. We pulled them in batches into native `teams` and `memberships` tables with the same re-runnable, timestamp-guarded pattern. Once those were native, filtering by `team_id` with an index became a normal Postgres query instead of a permission lookup.
+
+Invitations we rebuilt ourselves. Ours are email-bound: issued to a specific address, accepted only by someone authenticated as that address. A forwarded link does not grant team access to the wrong person. The whole flow lives in our API, which means when someone says the invite email never arrived, we can actually look.
+
+---
+
+## Moving every user without touching a password hash
+
+Auth was the hardest part, and the one place we did not get a soft transition.
+
+We moved to Better Auth. The first decision shaped everything after it.
+
+### We removed email and password login months early
+
+About one to two months before the auth cutover, while the broader migration was already underway, we removed email/password authentication entirely. Everyone moved to email OTP and Google OAuth.
+
+That timing was intentional. If you rip out passwords on the same night you swap session systems, users feel two shocks at once. By changing login first, people already had weeks of normal OTP and Google sign-ins. Re-login on cutover night felt familiar.
+
+The migration reason is still direct: if there are no passwords, there are no password hashes to migrate. Hash migration between auth systems is one of the worst jobs in this line of work. Opaque hashes, mismatched algorithms, compatibility shims that live for months. Or you skip the category.
+
+OTP and Google both verify against something the user already controls. There is nothing secret to carry across systems. It is also a better product decision: fewer password resets, less credential stuffing, fewer "I forgot my password" tickets.
+
+### Migrating the users themselves
+
+User records still had to move. **10K+ users**, batched out of Appwrite into our existing users table, reshaped for Better Auth. We kept the same users table the rest of the schema already referenced so foreign keys stayed valid.
+
+Better Auth also needs its own supporting tables for sessions, linked accounts, short-lived verifications like OTP codes, and signing keys. Those need to exist and be correct before anyone can log in.
+
+### We did not migrate sessions or JWTs
+
+Every data table got a soft transition. Auth did not.
+
+We migrated user records. We did not migrate live Appwrite sessions or the JWTs already sitting in browsers. You can try to bridge two identity systems. We chose not to. Different signing keys, different session shapes, different trust boundaries. Clever session bridging fails in ways you notice when a user is locked out at the worst time.
+
+On cutover we invalidated existing JWTs and sessions when we pushed. Anyone who was logged in signed in again. That is the one place end users clearly felt the migration. Because passwords were already gone, re-authentication was fast: code or Google, back to work.
+
+You can dual-write rows. For identity, we planned a hard cutover on purpose: move login habits early, invalidate old tokens, and keep the re-login path simple.
+
+![Auth cutover](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPPYNQ7iCuKnfgvxPRS34XLWwEtF6UQ19iNpAH)
+
+---
+
+## What actually got better after the switch
+
+### The bill
+
+Appwrite, for the same product database usage we were measuring, was running around **$1,009 per month**, driven by roughly **1.68 billion database reads** and about **3.00 million writes**.
+
+![Appwrite monthly database bill](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAP5HATZxLon9Lj4eUVmCI2isR7uXcaGv0zyEfS)
+
+PlanetScale, for the product database, is about **$169.27 per month**.
+
+![PlanetScale monthly database bill](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPoVzOMIlAIWFlOJbpmqQ03BvMgG8d2VjUE5Ae)
+
+Roughly **6x cheaper** for that database bill. Fair caveat: Appwrite's bill was also paying for a managed product stack. Auth, realtime, and permissions did not become free. They became our API's job under higher request volume. The comparison that matters to us is still the observed database invoice for the same product work.
+
+The structural reason remains. Appwrite pricing scaled with operations. PlanetScale pricing is anchored more to provisioned resources. At low volume, per-operation pricing can be cheaper and simpler. At 1.68 billion reads a month, for us, it was not.
+
+### Reliability and speed
+
+Since cutover the system has been more predictable, with near-continuous uptime on the paths we care about, and better visibility into slow queries and load.
+
+Latency went down, and complex operations got meaningfully faster. Part of that is query shape: search and multi-condition filters across that 10M+ row table are what Postgres is good at once indexes match the screens. Part of that is placement. The dashboard, API, and database live in the same region / zone now. Hops are short. We are not crossing the internet to a separate managed backend for every hot read.
+
+### Errors
+
+In the category this migration targeted, timeouts and failures on heavy reads, complex queries falling over under load, we saw roughly a **90% drop**. Nine out of ten of those are simply gone, because the underlying operation is no longer hard for the system doing it.
+
+![Cost and reliability outcomes](https://1kf0b6y5pd.ufs.sh/f/whL3sWlbNOAPsAry5wM5IKWmQ4hToSfHcD2uAy0z1GgL6dXp)
+
+---
+
+## Was it worth it?
+
+Yes. Same phased approach, in the same order. And yes, PlanetScale was the right destination for where Kakiyo is now.
+
+It was not fun. It was about two months of careful, repetitive work interleaved with shipping product, where the best possible outcome was that nobody noticed. Look at the outcome though: 40M+ rows and 35+ tables moved, 10K+ users and 9K+ teams carried across, the app stayed up, one sixth the database cost on PlanetScale, lower latency, and far fewer errors in the category that hurt most.
+
+The technical work is not the hard part. Reshaping documents into tables is straightforward. The hard part is sequencing, so that at every moment you have a working system and a way back. Get the order right and the rest is typing.
+
+I still mean what I said at the top about Appwrite. We love what they built, and we are grateful we got to grow on it. Same gratitude to PlanetScale for the Postgres platform we landed on: managed, boring in the good way, and a fit for the query and cost shape we have now. This migration is a use-case story: early-stage speed and product primitives on one side, high-volume SQL control on PlanetScale on the other. Migrations do not get easier as you grow. 40M rows is hard. 400M would have been much harder. Doing it while we still had room to sequence carefully was the point.
+
+---
+
+## Key Takeaways
+
+1. **Start with your hardest table.** It teaches you the real batch sizes, indexes, and catch-up drift. Easy tables build false confidence.
+
+2. **Design SQL from how the app reads and writes.** Prove PlanetScale type viability early. Use the move to improve retrieval shape, not only to copy documents.
+
+3. **Make scripts re-runnable and honest.** First passes can take 12 to 14 hours. Catch-up should chase deltas. Failed rows get named. Success means no unresolved skips. Historical rows start unmigrated; live dual-writes mark migrated after Postgres succeeds.
+
+4. **Guard upserts and bookkeeping.** Newer live writes must win over stale catch-up. Marking migrated must not bump `updated_at`.
+
+5. **Dual-write with shared IDs and timestamps, then verify before flipping reads.** Postgres first, compensate on partial failure, soak about a week, and do not hide gaps behind an Appwrite read fallback.
+
+6. **Put tenancy on identifiers in the API and in SQL.** Skip RLS if your SaaS needs explicit admin/support cross-tenant access and your database is never exposed to browsers directly.
+
+7. **Move login habits before the auth cutover.** Remove passwords early, migrate users not sessions, invalidate old JWTs on purpose.
+
+8. **Stop building on the system you are leaving.** Interleave migration with product work if you must, but new features should land on PlanetScale. Poll on `updated_at` deltas until you have a reason to rebuild realtime. And remember: leaving a tool you loved can still be the right call when the use case changes.
+
+---
+
+## Further Reading
+
+- [PlanetScale Documentation](https://planetscale.com/docs) for the Postgres platform we migrated onto
+- [Appwrite Documentation](https://appwrite.io/docs) if you are building or still running on Appwrite. It remains an excellent place to start
+- [Better Auth Documentation](https://www.better-auth.com/docs) for OTP, OAuth, and the supporting auth tables
+- [PostgreSQL: INSERT ... ON CONFLICT](https://www.postgresql.org/docs/current/sql-insert.html) for the upsert mechanics behind safe catch-up
+- [SQL vs NoSQL Databases](/blogs/sql-vs-nosql-databases) for the deeper trade-offs behind a move like this
+- [Database Indexes: The Complete Guide](/blogs/database-indexes-complete-guide) for indexes that match real queries
+- [Realtime Communication Systems](/blogs/realtime-communication-systems) for polling versus WebSockets in more detail
+
+If you are staring down a migration like this one, take away that it is not one heroic cutover. It is a sequence of small, reversible steps where you always have a working system and usually have a way back.
+
+Go build something good.
