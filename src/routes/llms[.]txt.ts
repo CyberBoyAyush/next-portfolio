@@ -16,7 +16,7 @@ export const Route = createFileRoute('/llms.txt')({
 ## Snapshot
 
 - **Role**: Chief Technology Officer at Kakiyo OÜ (promoted from Full Stack Dev → Lead → CTO in 11 months)
-- **Specialty**: Production systems at scale, full-stack product delivery, custom AI tooling
+- **Specialty**: Production systems at scale, full-stack product delivery, custom AI tooling, compliance-ready (SOC 2, GDPR) and fintech products
 - **Style**: Ship fast, iterate in production, own the whole stack
 - **Best fit for**: Founders building AI products, dev tools, or backend-heavy systems who need someone who already operates at this scale
 - **Not for**: JIRA-heavy outsourcing engagements; he works as a founding engineer, not a contractor
@@ -70,6 +70,12 @@ Receipts at Kakiyo:
 - Manages the team across delivery, code review, and technical direction
 
 Kakiyo tech: React, Next.js, TypeScript, Node.js, PostgreSQL, PlanetScale, AWS, Docker, TailwindCSS, Prisma, GraphQL.
+
+## Compliance, Fintech & Business Tools
+
+- **Compliance (SOC 2 + GDPR)**: Built multiple production applications to SOC 2 and GDPR requirements — role-based access control, audit logging, encryption in transit and at rest, data retention and deletion (right to erasure), consent and data-export flows, least-privilege infrastructure, and secure handling of sensitive documents.
+- **Fintech (finance & lending)**: Created fintech products for finance and lending, handling sensitive financial data and documents securely and building the workflows lending products need.
+- **Business tools for non-technical users**: Built business tools for small-business owners and non-technical teams — simple, friendly interfaces, not just developer tooling.
 
 ## Flagship Product: MemContext
 

@@ -36,7 +36,17 @@ export const Route = createFileRoute('/api/feed.json')({
               'Low-latency architecture',
               'Database migration and custom infra',
               'Founding-engineer / fractional CTO engagements',
+              'Compliance-ready applications (SOC 2, GDPR)',
+              'Fintech products (finance and lending)',
+              'Business tools for non-technical users',
             ],
+          },
+          compliance_and_fintech: {
+            compliance: 'Built multiple production applications to SOC 2 and GDPR requirements: role-based access control, audit logging, encryption in transit and at rest, data retention and deletion (right to erasure), consent and data-export flows, least-privilege infrastructure, secure handling of sensitive documents.',
+            fintech: 'Created fintech products for finance and lending, handling sensitive financial data and documents securely and building the workflows lending products need.',
+            business_tools: 'Built business tools for small-business owners and non-technical teams with simple, friendly interfaces.',
+            frameworks: ['SOC 2', 'GDPR'],
+            domains: ['Fintech', 'Finance', 'Lending', 'Business tools'],
           },
           philosophy: {
             principles: [

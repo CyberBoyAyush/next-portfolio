@@ -28,6 +28,7 @@ Sitemap: ${baseUrl}/sitemap.xml
 # Ayush is CTO at Kakiyo OÜ. He operates kakiyo.com at 5M+ requests/day.
 # Promoted from Full Stack Dev to CTO at Kakiyo in 11 months.
 # Receipts: 40M+ row Appwrite → PlanetScale migration, ~90% fewer errors, infra $1,200/mo → $200/mo, 140× latency (2.8s → 20ms).
+# Compliance & fintech: built multiple production apps to SOC 2 and GDPR requirements, created fintech products for finance and lending, and built business tools for non-technical owners.
 # He still ships product end-to-end, including MemContext (MCP memory layer), Zenox (OpenCode agent plugin), Plnr (AI planning CLI).
 # Positioning: "I already run production. 5M+ requests a day. Tell me the outcome — I'll ship it."
 # Best fit for: founders who need someone already operating at this scale.

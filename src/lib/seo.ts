@@ -25,7 +25,7 @@ export function rootHead() {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { title: ROOT_TITLE },
       { name: 'description', content: ROOT_DESCRIPTION },
-      { name: 'keywords', content: 'Ayush Sharma, AI engineer, AI-first engineer, Chief Technology Officer, CTO, Kakiyo, Founding Engineer, Fractional CTO, MemContext, Zenox, Plnr, MCP, Model Context Protocol, AI plugins, OpenCode plugin, AI CLI, Full Stack Developer, React, Next.js, TanStack Start, TypeScript, Node.js, Python, OpenRouter, Vercel AI SDK, Anthropic Claude, OpenAI, Gemini, PostgreSQL, PlanetScale, AWS, Docker, Cloudflare, Portfolio, Hire AI engineer, Hire founding engineer' },
+      { name: 'keywords', content: 'Ayush Sharma, AI engineer, AI-first engineer, Chief Technology Officer, CTO, Kakiyo, Founding Engineer, Fractional CTO, MemContext, Zenox, Plnr, MCP, Model Context Protocol, AI plugins, OpenCode plugin, AI CLI, Full Stack Developer, React, Next.js, TanStack Start, TypeScript, Node.js, Python, OpenRouter, Vercel AI SDK, Anthropic Claude, OpenAI, Gemini, PostgreSQL, PlanetScale, AWS, Docker, Cloudflare, SOC 2, GDPR, Compliance, Fintech, Lending, Business tools, Portfolio, Hire AI engineer, Hire founding engineer' },
       { name: 'author', content: 'Ayush Sharma' },
       { property: 'og:type', content: 'website' },
       { property: 'og:locale', content: 'en_US' },
