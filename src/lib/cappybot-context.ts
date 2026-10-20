@@ -116,6 +116,12 @@ Work shipped at Kakiyo:
 
 Technologies at Kakiyo: React, Next.js, TypeScript, Node.js, PostgreSQL, PlanetScale, AWS, Docker, TailwindCSS, Prisma, GraphQL.
 
+# Compliance, Fintech & Business Tools
+
+- **Compliance (SOC 2 + GDPR)**: Built multiple production applications to SOC 2 and GDPR requirements — role-based access control, audit logging, encryption in transit and at rest, data retention and deletion (right to erasure), consent and data-export flows, least-privilege infrastructure, and secure handling of sensitive documents.
+- **Fintech (finance & lending)**: Created fintech products for finance and lending, handling sensitive financial data and documents securely and building the workflows lending products need.
+- **Business tools for non-technical users**: Built business tools for small-business owners and non-technical teams — simple, friendly interfaces, not just developer tooling.
+
 # Technical Stack (Current)
 
 **Languages**: TypeScript, JavaScript, Python, C, C++

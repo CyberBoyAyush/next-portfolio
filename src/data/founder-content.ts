@@ -162,6 +162,17 @@ export const outcomeTiles: OutcomeTile[] = [
     detail: "Plnr · Zenox · MemContext · and counting. Built, published, maintained. Used by real developers.",
     accent: "purple",
   },
+  {
+    id: "compliance-fintech",
+    tag: "Compliance · Fintech",
+    metric: "SOC 2 · GDPR",
+    caption: "Compliance-ready apps, fintech included",
+    detail: "Built multiple production applications to SOC 2 and GDPR requirements, including fintech products for finance and lending, and business tools simple enough for non-technical owners.",
+    accent: "cyan",
+    colSpan: 2,
+    rowSpan: 1,
+    chips: ["SOC 2", "GDPR", "Fintech", "Lending", "Audit logs", "Encryption", "Business tools"],
+  },
 ];
 
 // -----------------------------------------------------------------------------
